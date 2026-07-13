@@ -10,23 +10,25 @@ not released software).
 
 ### Changed
 
-- Refreshed the Dataverse inventory from the revised source descriptions.
-  Reclassified relationship/intersect tables by **schema structure** (a `tr_`
-  table embedding a second entity reference such as `tr_msnfp_award_msnfp_indicator`)
-  and treated literal `N/A` descriptions as no-description. Classification
-  distribution moved from core 67 / support 9 / intersect 8 / unclear 45 to
-  **core 50 / support 9 / intersect 25 / unclear 45** (total unchanged at 129).
+- Refreshed the Dataverse inventory from the revised source workbook (now carries
+  descriptions for nearly every table: 0 blank, 3 literal `N/A`). Relationship/
+  intersect tables are classified by **schema structure** (a `tr_` table embedding
+  a second entity reference such as `tr_msnfp_award_msnfp_indicator`) and literal
+  `N/A` descriptions are treated as no-description. Classification distribution is
+  now **core 94 / support 9 / intersect 25 / unclear 1** (total 129); the sole
+  unclear table is `tr_ActionItem` (`N/A` description).
 
 ### Security
 
-- Generalized especially sensitive clinical / behavioral-health schema names in
-  the public catalog and summary. PHQ-9 and GAD-7 → *Behavioral-health
-  assessment*; Diagnosis / Diagnostic Impressions → *Clinical classification*;
-  Mental Status → *Mental-status assessment*; Treatment Goals → *Counseling
-  treatment goals*; Medications / Med Log → *Medication-management record*. The
+- Generalized **8 especially sensitive clinical / behavioral-health** schema
+  names in the public catalog and summary into public domains only
+  (*Behavioral-health assessment*, *Clinical classification*, *Mental-status
+  assessment*, *Counseling treatment goals*, *Medication-management record*). The
   exact internal schema identifiers are withheld from published files; the fact
-  that each domain existed is preserved. Documented in `SECURITY.md` and
-  `docs/evidence-register.md`.
+  that each domain existed is preserved. The private schema-name → label mapping
+  is maintained locally in a git-ignored config
+  (`source-private/sensitive-generalizations.json`), loaded at runtime, and is
+  **not committed**. Documented in `SECURITY.md` and `docs/evidence-register.md`.
 
 ### Verified
 

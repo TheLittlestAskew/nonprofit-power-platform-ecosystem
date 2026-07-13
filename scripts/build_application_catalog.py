@@ -31,6 +31,15 @@ except ModuleNotFoundError:  # pragma: no cover
     sys.stderr.write("ERROR: openpyxl is required. python -m pip install openpyxl\n")
     raise SystemExit(2)
 
+# Reuse the single, git-ignored sensitive-name generalization map so the app
+# catalog withholds the same clinical/behavioral-health identifiers as the
+# inventory catalog. The mapping itself is never stored in a tracked file.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from build_dataverse_inventory import (  # noqa: E402
+    load_sensitive_generalizations,
+    public_display,
+)
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SOURCE_FILE = REPO_ROOT / "source-private" / "Davies Admin Bridge SiteMap x.xlsx"
 CATALOG_CSV = REPO_ROOT / "dataverse" / "application-entity-catalog.csv"
@@ -110,23 +119,55 @@ def parse_sitemap(source_file: Path) -> list[tuple[str, str, str, str, str]]:
     return out
 
 
-def write_csv(rows: list[tuple[str, str, str, str, str]], path: Path) -> None:
+def write_csv(
+    rows: list[tuple[str, str, str, str, str]],
+    path: Path,
+    generalizations: dict[str, str],
+) -> None:
+    """Write the public app-entity catalog.
+
+    Sensitive clinical/behavioral-health entities have their exact logical name
+    withheld and replaced with a generalized public domain label; the family
+    classification (derived from the real name at parse time) is preserved, and a
+    ``Public Identifier`` column marks each row as ``as-published`` or
+    ``generalized``. Counting/uniqueness in ``main`` uses the real names, so the
+    verified entity totals are unaffected.
+    """
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as fh:
         w = csv.writer(fh)
-        w.writerow(["Operational Area", "Internal App Area", "Group", "Entity (logical name)", "Entity Family"])
-        for r in rows:
-            w.writerow(r)
+        w.writerow(
+            [
+                "Operational Area",
+                "Internal App Area",
+                "Group",
+                "Entity (logical name)",
+                "Entity Family",
+                "Public Identifier",
+            ]
+        )
+        for public, internal, group, entity, family in rows:
+            label, generalized = public_display(entity, generalizations)
+            if generalized:
+                w.writerow([public, internal, group, label, family, "generalized"])
+            else:
+                w.writerow([public, internal, group, entity, family, "as-published"])
 
 
 def main() -> int:
+    try:
+        generalizations = load_sensitive_generalizations()
+    except (FileNotFoundError, ValueError) as exc:
+        sys.stderr.write(f"ERROR: {exc}\n")
+        return 1
+
     try:
         rows = parse_sitemap(SOURCE_FILE)
     except FileNotFoundError as exc:
         sys.stderr.write(f"ERROR: {exc}\n")
         return 1
 
-    write_csv(rows, CATALOG_CSV)
+    write_csv(rows, CATALOG_CSV, generalizations)
 
     unique = {r[3].lower() for r in rows}
     # Family of each unique entity (first occurrence wins; family is name-derived

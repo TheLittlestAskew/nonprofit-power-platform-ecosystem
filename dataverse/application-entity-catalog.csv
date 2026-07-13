@@ -1,106 +1,106 @@
-Operational Area,Internal App Area,Group,Entity (logical name),Entity Family
-Development Finance & Revenue,Finance Management,Income & Expenses,tr_inex,Custom (tr_)
-Development Finance & Revenue,Finance Management,Income & Expenses,tr_depositledger,Custom (tr_)
-Development Finance & Revenue,Finance Management,Income & Expenses,tr_bills,Custom (tr_)
-Development Finance & Revenue,Finance Management,Income & Expenses,tr_deposit,Custom (tr_)
-Development Finance & Revenue,Finance Management,Income & Expenses,msnfp_transaction,Nonprofit Accelerator
-Development Finance & Revenue,Finance Management,Income & Expenses,tr_stripepropay,Custom (tr_)
-Development Finance & Revenue,Finance Management,Budgeting,msnfp_budget,Nonprofit Accelerator
-Development Finance & Revenue,Finance Management,Budgeting,cr57f_tr_budget_categorieses,Other publisher (budget solution)
-Development Finance & Revenue,Finance Management,Budgeting,cr57f_tr_budget_sub_categorieses,Other publisher (budget solution)
-Development Finance & Revenue,Finance Management,Budgeting,cr57f_tr_budget_details,Other publisher (budget solution)
-Development Finance & Revenue,Finance Management,Donor Management,contact,Standard Microsoft
-Development Finance & Revenue,Finance Management,Donor Management,msnfp_donorcommitment,Nonprofit Accelerator
-Development Finance & Revenue,Finance Management,Donor Management,msnfp_designation,Nonprofit Accelerator
-Development Finance & Revenue,Finance Management,Donor Management,msnfp_workitem,Nonprofit Accelerator
-Development Finance & Revenue,Finance Management,Donor Management,account,Standard Microsoft
-Development Finance & Revenue,Finance Management,Donor Management,organization,Standard Microsoft
-Development Finance & Revenue,Finance Management,Donor Management,cdm_company,Standard Microsoft
-Development Finance & Revenue,Finance Management,Donor Management,tr_lglmirgrationtracker,Custom (tr_)
-Development Finance & Revenue,Finance Management,Donor Management,tr_processorcustomers,Custom (tr_)
-Development Finance & Revenue,Finance Management,Donor Management,tr_vendormapping,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_sheltercalendar,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_guest,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_bedsroomsmen,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_bedsrooms,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_casemeetings,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_casemeeting,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_childinfo,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_discharge,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_guestwins,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_healthinfo,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_infractions,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_phase1,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_phase2,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_phase3,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_waitlist,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_medlog,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_medications,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_resourcecollection,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_commongoals,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_guestsresources,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_nightwatch,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_benefitsincome,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_goals,Custom (tr_)
-Shelter & Case Management,Shelter Management,Case Management,tr_employmentincome,Custom (tr_)
-"Outcomes, Grants & Compliance",Tracking,Mission,msnfp_objective,Nonprofit Accelerator
-"Outcomes, Grants & Compliance",Tracking,Mission,msnfp_deliveryframework,Nonprofit Accelerator
-"Outcomes, Grants & Compliance",Tracking,Mission,msnfp_theoryofchange,Nonprofit Accelerator
-"Outcomes, Grants & Compliance",Tracking,Mission,msnfp_indicator,Nonprofit Accelerator
-"Outcomes, Grants & Compliance",Tracking,Mission,msnfp_indicatorvalue,Nonprofit Accelerator
-"Outcomes, Grants & Compliance",Tracking,Mission,msnfp_result,Nonprofit Accelerator
-"Outcomes, Grants & Compliance",Tracking,Mission,msnfp_operation,Nonprofit Accelerator
-"Outcomes, Grants & Compliance",Tracking,Mission,msnfp_programitem,Nonprofit Accelerator
-"Outcomes, Grants & Compliance",Tracking,Mission,msnfp_assessment,Nonprofit Accelerator
-"Outcomes, Grants & Compliance",Tracking,Mission,msnfp_workitem,Nonprofit Accelerator
-"Outcomes, Grants & Compliance",Tracking,Grant Management,msnfp_award,Nonprofit Accelerator
-"Outcomes, Grants & Compliance",Tracking,Grant Management,msnfp_disbursement,Nonprofit Accelerator
-"Outcomes, Grants & Compliance",Tracking,Grant Management,msnfp_item,Nonprofit Accelerator
-"Outcomes, Grants & Compliance",Tracking,Grant Management,msnfp_report,Nonprofit Accelerator
-"Outcomes, Grants & Compliance",Tracking,Grant Management,report,Standard Microsoft
-"Outcomes, Grants & Compliance",Tracking,Grant Management,account,Standard Microsoft
-"Outcomes, Grants & Compliance",Tracking,Grant Management,tr_goals,Custom (tr_)
-"Outcomes, Grants & Compliance",Tracking,Grant Management,msnfp_measurementitem,Nonprofit Accelerator
-"Outcomes, Grants & Compliance",Tracking,Programs,tr_adminreporting,Custom (tr_)
-"Outcomes, Grants & Compliance",Tracking,Programs,tr_busfare,Custom (tr_)
-"Outcomes, Grants & Compliance",Tracking,Programs,tr_farmbus,Custom (tr_)
-"Outcomes, Grants & Compliance",Tracking,Programs,tr_counselingreporting,Custom (tr_)
-"Outcomes, Grants & Compliance",Tracking,Surveys,tr_casemeetingsurveys,Custom (tr_)
-"Outcomes, Grants & Compliance",Tracking,Surveys,tr_exitsurvey,Custom (tr_)
-"Outcomes, Grants & Compliance",Tracking,Surveys,tr_followupsurvey,Custom (tr_)
-"Outcomes, Grants & Compliance",Tracking,Surveys,tr_intakesurvey,Custom (tr_)
-"Outcomes, Grants & Compliance",Tracking,Surveys,tr_surveylinks,Custom (tr_)
-Volunteer & Community Engagement,Volunteer Management,Volunteers,tr_sheltercalendar,Custom (tr_)
-Volunteer & Community Engagement,Volunteer Management,Volunteers,activitypointer,Standard Microsoft
-Volunteer & Community Engagement,Volunteer Management,Volunteers,msnfp_engagementopportunity,Nonprofit Accelerator
-Volunteer & Community Engagement,Volunteer Management,Volunteers,tr_volunteer,Custom (tr_)
-Volunteer & Community Engagement,Volunteer Management,Volunteers,tr_attendee,Custom (tr_)
-Volunteer & Community Engagement,Volunteer Management,Volunteers,msnfp_group,Nonprofit Accelerator
-Volunteer & Community Engagement,Volunteer Management,Volunteers,msnfp_groupmembership,Nonprofit Accelerator
-Volunteer & Community Engagement,Volunteer Management,Volunteers,msnfp_workitem,Nonprofit Accelerator
-Employee & Administrative Operations,Employee Management,Employee Management,tr_employees,Custom (tr_)
-Employee & Administrative Operations,Employee Management,Employee Management,tr_payperiods,Custom (tr_)
-Employee & Administrative Operations,Employee Management,Employee Management,tr_payroll,Custom (tr_)
-Employee & Administrative Operations,Employee Management,Employee Management,tr_reimbursements,Custom (tr_)
-Employee & Administrative Operations,Employee Management,Employee Management,team,Standard Microsoft
-Employee & Administrative Operations,Employee Management,Employee Management,tr_timeclock,Custom (tr_)
-Employee & Administrative Operations,Employee Management,Employee Management,tr_timeentries,Custom (tr_)
-Employee & Administrative Operations,Employee Management,Employee Management,tr_timepunch,Custom (tr_)
-Employee & Administrative Operations,Employee Management,Employee Management,tr_timesheet,Custom (tr_)
-Employee & Administrative Operations,Employee Management,Employee Management,systemuser,Standard Microsoft
-Employee & Administrative Operations,Employee Management,Employee Management,contact,Standard Microsoft
-Employee & Administrative Operations,Employee Management,Employee Management,tr_date,Custom (tr_)
-Employee & Administrative Operations,Employee Management,Employee Management,tr_scheduler,Custom (tr_)
-Communications & Brand,Communications,Communications,tr_documents,Custom (tr_)
-Communications & Brand,Communications,Communications,emailsignature,Standard Microsoft
-Communications & Brand,Communications,Communications,template,Standard Microsoft
-Communications & Brand,Communications,Communications,tr_casemeetingsurveys,Custom (tr_)
-Communications & Brand,Communications,Communications,tr_exitsurvey,Custom (tr_)
-Communications & Brand,Communications,Communications,tr_followupsurvey,Custom (tr_)
-Communications & Brand,Communications,Communications,tr_intakesurvey,Custom (tr_)
-Communications & Brand,Communications,Communications,tr_surveylinks,Custom (tr_)
-Communications & Brand,Communications,Communications,tr_formspolicies,Custom (tr_)
-Communications & Brand,Communications,Communications,tr_admincommunications,Custom (tr_)
-Communications & Brand,Communications,Communications,tr_guestcommunication,Custom (tr_)
-Communications & Brand,Communications,Communications,flowrun,Standard Microsoft
-Communications & Brand,Communications,Communications,annotation,Standard Microsoft
+Operational Area,Internal App Area,Group,Entity (logical name),Entity Family,Public Identifier
+Development Finance & Revenue,Finance Management,Income & Expenses,tr_inex,Custom (tr_),as-published
+Development Finance & Revenue,Finance Management,Income & Expenses,tr_depositledger,Custom (tr_),as-published
+Development Finance & Revenue,Finance Management,Income & Expenses,tr_bills,Custom (tr_),as-published
+Development Finance & Revenue,Finance Management,Income & Expenses,tr_deposit,Custom (tr_),as-published
+Development Finance & Revenue,Finance Management,Income & Expenses,msnfp_transaction,Nonprofit Accelerator,as-published
+Development Finance & Revenue,Finance Management,Income & Expenses,tr_stripepropay,Custom (tr_),as-published
+Development Finance & Revenue,Finance Management,Budgeting,msnfp_budget,Nonprofit Accelerator,as-published
+Development Finance & Revenue,Finance Management,Budgeting,cr57f_tr_budget_categorieses,Other publisher (budget solution),as-published
+Development Finance & Revenue,Finance Management,Budgeting,cr57f_tr_budget_sub_categorieses,Other publisher (budget solution),as-published
+Development Finance & Revenue,Finance Management,Budgeting,cr57f_tr_budget_details,Other publisher (budget solution),as-published
+Development Finance & Revenue,Finance Management,Donor Management,contact,Standard Microsoft,as-published
+Development Finance & Revenue,Finance Management,Donor Management,msnfp_donorcommitment,Nonprofit Accelerator,as-published
+Development Finance & Revenue,Finance Management,Donor Management,msnfp_designation,Nonprofit Accelerator,as-published
+Development Finance & Revenue,Finance Management,Donor Management,msnfp_workitem,Nonprofit Accelerator,as-published
+Development Finance & Revenue,Finance Management,Donor Management,account,Standard Microsoft,as-published
+Development Finance & Revenue,Finance Management,Donor Management,organization,Standard Microsoft,as-published
+Development Finance & Revenue,Finance Management,Donor Management,cdm_company,Standard Microsoft,as-published
+Development Finance & Revenue,Finance Management,Donor Management,tr_lglmirgrationtracker,Custom (tr_),as-published
+Development Finance & Revenue,Finance Management,Donor Management,tr_processorcustomers,Custom (tr_),as-published
+Development Finance & Revenue,Finance Management,Donor Management,tr_vendormapping,Custom (tr_),as-published
+Shelter & Case Management,Shelter Management,Case Management,tr_sheltercalendar,Custom (tr_),as-published
+Shelter & Case Management,Shelter Management,Case Management,tr_guest,Custom (tr_),as-published
+Shelter & Case Management,Shelter Management,Case Management,tr_bedsroomsmen,Custom (tr_),as-published
+Shelter & Case Management,Shelter Management,Case Management,tr_bedsrooms,Custom (tr_),as-published
+Shelter & Case Management,Shelter Management,Case Management,tr_casemeetings,Custom (tr_),as-published
+Shelter & Case Management,Shelter Management,Case Management,tr_casemeeting,Custom (tr_),as-published
+Shelter & Case Management,Shelter Management,Case Management,tr_childinfo,Custom (tr_),as-published
+Shelter & Case Management,Shelter Management,Case Management,tr_discharge,Custom (tr_),as-published
+Shelter & Case Management,Shelter Management,Case Management,tr_guestwins,Custom (tr_),as-published
+Shelter & Case Management,Shelter Management,Case Management,tr_healthinfo,Custom (tr_),as-published
+Shelter & Case Management,Shelter Management,Case Management,tr_infractions,Custom (tr_),as-published
+Shelter & Case Management,Shelter Management,Case Management,tr_phase1,Custom (tr_),as-published
+Shelter & Case Management,Shelter Management,Case Management,tr_phase2,Custom (tr_),as-published
+Shelter & Case Management,Shelter Management,Case Management,tr_phase3,Custom (tr_),as-published
+Shelter & Case Management,Shelter Management,Case Management,tr_waitlist,Custom (tr_),as-published
+Shelter & Case Management,Shelter Management,Case Management,Medication-management record,Custom (tr_),generalized
+Shelter & Case Management,Shelter Management,Case Management,Medication-management record,Custom (tr_),generalized
+Shelter & Case Management,Shelter Management,Case Management,tr_resourcecollection,Custom (tr_),as-published
+Shelter & Case Management,Shelter Management,Case Management,tr_commongoals,Custom (tr_),as-published
+Shelter & Case Management,Shelter Management,Case Management,tr_guestsresources,Custom (tr_),as-published
+Shelter & Case Management,Shelter Management,Case Management,tr_nightwatch,Custom (tr_),as-published
+Shelter & Case Management,Shelter Management,Case Management,tr_benefitsincome,Custom (tr_),as-published
+Shelter & Case Management,Shelter Management,Case Management,tr_goals,Custom (tr_),as-published
+Shelter & Case Management,Shelter Management,Case Management,tr_employmentincome,Custom (tr_),as-published
+"Outcomes, Grants & Compliance",Tracking,Mission,msnfp_objective,Nonprofit Accelerator,as-published
+"Outcomes, Grants & Compliance",Tracking,Mission,msnfp_deliveryframework,Nonprofit Accelerator,as-published
+"Outcomes, Grants & Compliance",Tracking,Mission,msnfp_theoryofchange,Nonprofit Accelerator,as-published
+"Outcomes, Grants & Compliance",Tracking,Mission,msnfp_indicator,Nonprofit Accelerator,as-published
+"Outcomes, Grants & Compliance",Tracking,Mission,msnfp_indicatorvalue,Nonprofit Accelerator,as-published
+"Outcomes, Grants & Compliance",Tracking,Mission,msnfp_result,Nonprofit Accelerator,as-published
+"Outcomes, Grants & Compliance",Tracking,Mission,msnfp_operation,Nonprofit Accelerator,as-published
+"Outcomes, Grants & Compliance",Tracking,Mission,msnfp_programitem,Nonprofit Accelerator,as-published
+"Outcomes, Grants & Compliance",Tracking,Mission,msnfp_assessment,Nonprofit Accelerator,as-published
+"Outcomes, Grants & Compliance",Tracking,Mission,msnfp_workitem,Nonprofit Accelerator,as-published
+"Outcomes, Grants & Compliance",Tracking,Grant Management,msnfp_award,Nonprofit Accelerator,as-published
+"Outcomes, Grants & Compliance",Tracking,Grant Management,msnfp_disbursement,Nonprofit Accelerator,as-published
+"Outcomes, Grants & Compliance",Tracking,Grant Management,msnfp_item,Nonprofit Accelerator,as-published
+"Outcomes, Grants & Compliance",Tracking,Grant Management,msnfp_report,Nonprofit Accelerator,as-published
+"Outcomes, Grants & Compliance",Tracking,Grant Management,report,Standard Microsoft,as-published
+"Outcomes, Grants & Compliance",Tracking,Grant Management,account,Standard Microsoft,as-published
+"Outcomes, Grants & Compliance",Tracking,Grant Management,tr_goals,Custom (tr_),as-published
+"Outcomes, Grants & Compliance",Tracking,Grant Management,msnfp_measurementitem,Nonprofit Accelerator,as-published
+"Outcomes, Grants & Compliance",Tracking,Programs,tr_adminreporting,Custom (tr_),as-published
+"Outcomes, Grants & Compliance",Tracking,Programs,tr_busfare,Custom (tr_),as-published
+"Outcomes, Grants & Compliance",Tracking,Programs,tr_farmbus,Custom (tr_),as-published
+"Outcomes, Grants & Compliance",Tracking,Programs,tr_counselingreporting,Custom (tr_),as-published
+"Outcomes, Grants & Compliance",Tracking,Surveys,tr_casemeetingsurveys,Custom (tr_),as-published
+"Outcomes, Grants & Compliance",Tracking,Surveys,tr_exitsurvey,Custom (tr_),as-published
+"Outcomes, Grants & Compliance",Tracking,Surveys,tr_followupsurvey,Custom (tr_),as-published
+"Outcomes, Grants & Compliance",Tracking,Surveys,tr_intakesurvey,Custom (tr_),as-published
+"Outcomes, Grants & Compliance",Tracking,Surveys,tr_surveylinks,Custom (tr_),as-published
+Volunteer & Community Engagement,Volunteer Management,Volunteers,tr_sheltercalendar,Custom (tr_),as-published
+Volunteer & Community Engagement,Volunteer Management,Volunteers,activitypointer,Standard Microsoft,as-published
+Volunteer & Community Engagement,Volunteer Management,Volunteers,msnfp_engagementopportunity,Nonprofit Accelerator,as-published
+Volunteer & Community Engagement,Volunteer Management,Volunteers,tr_volunteer,Custom (tr_),as-published
+Volunteer & Community Engagement,Volunteer Management,Volunteers,tr_attendee,Custom (tr_),as-published
+Volunteer & Community Engagement,Volunteer Management,Volunteers,msnfp_group,Nonprofit Accelerator,as-published
+Volunteer & Community Engagement,Volunteer Management,Volunteers,msnfp_groupmembership,Nonprofit Accelerator,as-published
+Volunteer & Community Engagement,Volunteer Management,Volunteers,msnfp_workitem,Nonprofit Accelerator,as-published
+Employee & Administrative Operations,Employee Management,Employee Management,tr_employees,Custom (tr_),as-published
+Employee & Administrative Operations,Employee Management,Employee Management,tr_payperiods,Custom (tr_),as-published
+Employee & Administrative Operations,Employee Management,Employee Management,tr_payroll,Custom (tr_),as-published
+Employee & Administrative Operations,Employee Management,Employee Management,tr_reimbursements,Custom (tr_),as-published
+Employee & Administrative Operations,Employee Management,Employee Management,team,Standard Microsoft,as-published
+Employee & Administrative Operations,Employee Management,Employee Management,tr_timeclock,Custom (tr_),as-published
+Employee & Administrative Operations,Employee Management,Employee Management,tr_timeentries,Custom (tr_),as-published
+Employee & Administrative Operations,Employee Management,Employee Management,tr_timepunch,Custom (tr_),as-published
+Employee & Administrative Operations,Employee Management,Employee Management,tr_timesheet,Custom (tr_),as-published
+Employee & Administrative Operations,Employee Management,Employee Management,systemuser,Standard Microsoft,as-published
+Employee & Administrative Operations,Employee Management,Employee Management,contact,Standard Microsoft,as-published
+Employee & Administrative Operations,Employee Management,Employee Management,tr_date,Custom (tr_),as-published
+Employee & Administrative Operations,Employee Management,Employee Management,tr_scheduler,Custom (tr_),as-published
+Communications & Brand,Communications,Communications,tr_documents,Custom (tr_),as-published
+Communications & Brand,Communications,Communications,emailsignature,Standard Microsoft,as-published
+Communications & Brand,Communications,Communications,template,Standard Microsoft,as-published
+Communications & Brand,Communications,Communications,tr_casemeetingsurveys,Custom (tr_),as-published
+Communications & Brand,Communications,Communications,tr_exitsurvey,Custom (tr_),as-published
+Communications & Brand,Communications,Communications,tr_followupsurvey,Custom (tr_),as-published
+Communications & Brand,Communications,Communications,tr_intakesurvey,Custom (tr_),as-published
+Communications & Brand,Communications,Communications,tr_surveylinks,Custom (tr_),as-published
+Communications & Brand,Communications,Communications,tr_formspolicies,Custom (tr_),as-published
+Communications & Brand,Communications,Communications,tr_admincommunications,Custom (tr_),as-published
+Communications & Brand,Communications,Communications,tr_guestcommunication,Custom (tr_),as-published
+Communications & Brand,Communications,Communications,flowrun,Standard Microsoft,as-published
+Communications & Brand,Communications,Communications,annotation,Standard Microsoft,as-published

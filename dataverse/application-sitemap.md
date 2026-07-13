@@ -58,7 +58,11 @@ Internal sitemap area names map to public operational-area labels as follows.
 
 | Group | Entities |
 |---|---|
-| Case Management | `tr_sheltercalendar`, `tr_guest`, `tr_bedsroomsmen`, `tr_bedsrooms`, `tr_casemeetings`, `tr_casemeeting`, `tr_childinfo`, `tr_discharge`, `tr_guestwins`, `tr_healthinfo`, `tr_infractions`, `tr_phase1`, `tr_phase2`, `tr_phase3`, `tr_waitlist`, `tr_medlog`, `tr_medications`, `tr_resourcecollection`, `tr_commongoals`, `tr_guestsresources`, `tr_nightwatch`, `tr_benefitsincome`, `tr_goals`, `tr_employmentincome` |
+| Case Management | `tr_sheltercalendar`, `tr_guest`, `tr_bedsroomsmen`, `tr_bedsrooms`, `tr_casemeetings`, `tr_casemeeting`, `tr_childinfo`, `tr_discharge`, `tr_guestwins`, `tr_healthinfo`, `tr_infractions`, `tr_phase1`, `tr_phase2`, `tr_phase3`, `tr_waitlist`, *Medication-management record*, *Medication-management record*, `tr_resourcecollection`, `tr_commongoals`, `tr_guestsresources`, `tr_nightwatch`, `tr_benefitsincome`, `tr_goals`, `tr_employmentincome` |
+
+> Two entries above appear as the generalized public label *Medication-management
+> record*; their exact clinical schema identifiers are **withheld** for privacy
+> (see [`../SECURITY.md`](../SECURITY.md)). The 24-entity count is unchanged.
 
 ### 3. Outcomes, Grants & Compliance
 *(internal area: Tracking — 27 entities)*

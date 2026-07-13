@@ -8,6 +8,7 @@ Run with:  python -m pytest tests/ -q
 """
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -104,7 +105,7 @@ def test_na_description_single_entity_is_unclear():
 
 
 def test_support_token_log():
-    classification, basis = inv.classify_custom_table("tr_medlog", "medication log")
+    classification, basis = inv.classify_custom_table("tr_activitylog", "activity log")
     assert classification == inv.CLASS_SUPPORT
     assert "log" in basis
 
@@ -194,30 +195,101 @@ def test_resolve_columns_raises_on_missing():
 
 # --------------------------------------------------------------------------- #
 # Sensitive-name generalization
+#
+# NOTE: These fixtures are INVENTED. The real private schema-name -> public-label
+# mapping is never stored in this tracked test file; it lives only in the
+# git-ignored source-private/sensitive-generalizations.json config. Here we test
+# the *behavior* of public_display / load_sensitive_generalizations against
+# invented inputs, so no production identifier appears in version control.
 # --------------------------------------------------------------------------- #
 
+# Invented mapping used to exercise the generalization behavior.
+FIXTURE_MAP = {
+    "tr_sensitive_assessment_a": "Behavioral-health assessment",
+    "tr_sensitive_assessment_b": "Behavioral-health assessment",
+    "tr_sensitive_classification_a": "Clinical classification",
+    "tr_sensitive_treatment_a": "Counseling treatment goals",
+}
+
+
 def test_sensitive_schema_is_generalized():
-    label, generalized = inv.public_display("tr_PHQ9")
+    label, generalized = inv.public_display("tr_sensitive_assessment_a", FIXTURE_MAP)
     assert generalized is True
     assert label == "Behavioral-health assessment"
-    # exact identifier is not echoed back
-    assert "phq" not in label.lower()
+    # the exact (invented) identifier is not echoed back in the label
+    assert "sensitive" not in label.lower()
 
 
 def test_sensitive_generalization_is_case_insensitive():
-    label, generalized = inv.public_display("TR_MENTALSTATUS")
+    label, generalized = inv.public_display("TR_SENSITIVE_CLASSIFICATION_A", FIXTURE_MAP)
     assert generalized is True
-    assert label == "Mental-status assessment"
+    assert label == "Clinical classification"
 
 
 def test_ordinary_schema_is_not_generalized():
-    label, generalized = inv.public_display("tr_guest")
+    label, generalized = inv.public_display("tr_guest", FIXTURE_MAP)
     assert generalized is False
     assert label == "tr_guest"
 
 
-def test_medication_tables_generalized_to_same_domain():
-    # Both the medication record table and its distribution log generalize to
-    # the same public domain label.
-    assert inv.public_display("tr_medications")[0] == "Medication-management record"
-    assert inv.public_display("tr_medlog")[0] == "Medication-management record"
+def test_two_structures_share_one_public_domain():
+    # Two distinct sensitive tables can generalize to the same public domain.
+    assert inv.public_display("tr_sensitive_assessment_a", FIXTURE_MAP)[0] == "Behavioral-health assessment"
+    assert inv.public_display("tr_sensitive_assessment_b", FIXTURE_MAP)[0] == "Behavioral-health assessment"
+
+
+# --------------------------------------------------------------------------- #
+# Runtime loading of the ignored sensitive-generalization config
+# --------------------------------------------------------------------------- #
+
+def _write_config(tmp_path, payload):
+    p = tmp_path / "sensitive-generalizations.json"
+    p.write_text(json.dumps(payload), encoding="utf-8")
+    return p
+
+
+def test_load_config_returns_lowercased_map(tmp_path):
+    cfg = _write_config(tmp_path, {"generalizations": {"TR_Sensitive_Assessment_A": "Behavioral-health assessment"}})
+    mapping = inv.load_sensitive_generalizations(cfg)
+    assert mapping == {"tr_sensitive_assessment_a": "Behavioral-health assessment"}
+
+
+def test_load_config_missing_raises_filenotfound(tmp_path):
+    missing = tmp_path / "does-not-exist.json"
+    try:
+        inv.load_sensitive_generalizations(missing)
+    except FileNotFoundError as exc:
+        assert "source-private" in str(exc)
+    else:  # pragma: no cover
+        raise AssertionError("expected FileNotFoundError for missing config")
+
+
+def test_load_config_bad_structure_raises_valueerror(tmp_path):
+    cfg = _write_config(tmp_path, {"not_generalizations": {}})
+    try:
+        inv.load_sensitive_generalizations(cfg)
+    except ValueError as exc:
+        assert "generalizations" in str(exc)
+    else:  # pragma: no cover
+        raise AssertionError("expected ValueError for missing 'generalizations' key")
+
+
+def test_load_config_empty_mapping_raises_valueerror(tmp_path):
+    cfg = _write_config(tmp_path, {"generalizations": {}})
+    try:
+        inv.load_sensitive_generalizations(cfg)
+    except ValueError:
+        pass
+    else:  # pragma: no cover
+        raise AssertionError("expected ValueError for empty mapping")
+
+
+def test_load_config_error_does_not_leak_key(tmp_path):
+    # An invalid (empty) label must raise WITHOUT echoing the private key.
+    cfg = _write_config(tmp_path, {"generalizations": {"tr_secret_identifier": ""}})
+    try:
+        inv.load_sensitive_generalizations(cfg)
+    except ValueError as exc:
+        assert "tr_secret_identifier" not in str(exc)
+    else:  # pragma: no cover
+        raise AssertionError("expected ValueError for empty label")

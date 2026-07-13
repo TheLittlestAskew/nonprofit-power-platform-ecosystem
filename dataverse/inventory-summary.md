@@ -10,10 +10,10 @@
 
 | Classification | Count |
 |---|---|
-| Core business table | 50 |
+| Core business table | 94 |
 | Process/support table | 9 |
 | Relationship/intersect table | 25 |
-| Unclear / manual review | 45 |
+| Unclear / manual review | 1 |
 | **Total custom `tr_`** | **129** |
 
 ## Prefix-Detection Rule
@@ -37,7 +37,6 @@ The following custom tables model especially sensitive clinical or behavioral-he
 
 - Behavioral-health assessment
 - Clinical classification
-- Clinical classification (diagnostic impressions)
 - Counseling treatment goals
 - Medication-management record
 - Mental-status assessment
@@ -84,57 +83,13 @@ The following custom tables model especially sensitive clinical or behavioral-he
 - `tr_TaxStatementLog` — support-token heuristic: 'log' in name (confirm manually)
 - `tr_ViewHistory` — support-token heuristic: 'history' in name (confirm manually)
 
-**Unclear / no description (45)**:
+**Unclear / no description (1)**:
 
 - `tr_ActionItem`
-- `tr_AdminReporting`
-- `tr_Attendee`
-- `tr_BusFare`
-- `tr_Children`
-- `tr_CreditDebit`
-- `tr_Date`
-- `tr_DepositLedger`
-- Clinical classification
-- Clinical classification (diagnostic impressions)
-- `tr_Documents`
-- `tr_EmailtoSMS`
-- `tr_EmployeeTypes`
-- `tr_EmploymentVerification`
-- `tr_FarmBus`
-- `tr_Followup`
-- `tr_Goals`
-- `tr_GroupAttendee`
-- `tr_IncomeBenefits`
-- `tr_InventoryTracking`
-- `tr_ManualView`
-- `tr_ManualxRef`
-- `tr_MeasurementSnapshot`
-- Mental-status assessment
-- `tr_PartFullTime`
-- `tr_PaymentFailures`
-- `tr_Payments`
-- `tr_Payroll`
-- Behavioral-health assessment
-- `tr_Policy`
-- `tr_PotentialGuest`
-- `tr_RecurringBilling`
-- `tr_RecurringPayments`
-- `tr_Reimbursements`
-- `tr_ReportingbyDate`
-- `tr_Scheduler`
-- `tr_Session`
-- `tr_SessionGroups`
-- `tr_StripePropay`
-- `tr_Tables`
-- `tr_TaxWithholding`
-- `tr_TimeClock`
-- `tr_TimeEntries`
-- `tr_TimePunch`
-- Counseling treatment goals
 
 ## Unresolved Questions
 
-- Are all support-token matches truly utility tables, or are some primary business entities whose names happen to contain a token (e.g. a medication log)?
+- Are all support-token matches truly utility tables, or are some primary business entities whose names happen to contain a token (e.g. a business table whose name ends in 'log')?
 - Do any *core business* tables actually function as intersect tables without embedding a second-entity reference in their schema name?
 - The unclear rows have no usable source description; `tr_ActionItem` in particular carries no description (`N/A`) in the revised source and remains unverified. They are reported here exactly and not force-classified to shrink the count.
 - This inventory reflects the source workbook only; it is not a live read of the environment and may lag later schema changes.

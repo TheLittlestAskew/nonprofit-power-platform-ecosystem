@@ -28,33 +28,33 @@ unverified.
 - **Public derivatives:**
   - `dataverse/custom-table-catalog.csv`
   - `dataverse/inventory-summary.md`
-- **Verified counts (revised 2026-07-13):** 129 custom `tr_` tables, classified
-  **core 50 / process-support 9 / relationship-intersect 25 / unclear 45**
-  (total 129). This replaces the earlier 67 / 9 / 8 / 45 distribution: 17 join
-  tables that carried a literal `N/A` description (e.g.
-  `tr_msnfp_award_msnfp_indicator`) were reclassified from *core* to
-  *relationship/intersect* on the basis of **schema structure** — the name embeds
-  a second entity reference — not description text.
+- **Verified counts (revised source, SHA-256
+  `eac37dbb…02ac8e8`, modified 2026-07-12):** 129 custom `tr_` tables, classified
+  **core 94 / process-support 9 / relationship-intersect 25 / unclear 1**
+  (total 129). The revised workbook now carries descriptions for nearly every
+  table (0 blank, 3 literal `N/A`), so only **`tr_ActionItem`** (description
+  `N/A`) remains unclear. Relationship/intersect tables (25) are classified by
+  **schema structure** — the name embeds a second entity reference (e.g.
+  `tr_msnfp_award_msnfp_indicator`) — independent of the description.
 - **Sanitization performed:**
   - Only table-level metadata (entity name, schema/logical name, description,
     classification) is emitted. No record-level data exists in or was taken from
     this source. Descriptions were pattern-scanned for emails/phone numbers
     (0 hits).
-  - **Clinical/behavioral-health name generalization:** the exact internal schema
-    identifiers for especially sensitive clinical structures are **withheld** from
-    the public catalog and summary; a generalized domain label is published
-    instead (PHQ-9/GAD-7 → *Behavioral-health assessment*; Diagnosis / Diagnostic
-    Impressions → *Clinical classification*; Mental Status → *Mental-status
-    assessment*; Treatment Goals → *Counseling treatment goals*; Medications /
-    Med Log → *Medication-management record*). Implemented reproducibly in
-    `scripts/build_dataverse_inventory.py` (`SENSITIVE_GENERALIZATION`); the
-    source workbook is not altered. See `SECURITY.md`.
+  - **Clinical/behavioral-health name generalization:** **8 sensitive
+    structures** have their exact internal schema identifiers **withheld** from
+    the public catalog and summary; a generalized public domain label is published
+    instead. The published domains are *Behavioral-health assessment*, *Clinical
+    classification*, *Mental-status assessment*, *Counseling treatment goals*, and
+    *Medication-management record*. The private schema-name → label mapping is
+    **maintained locally in a git-ignored config
+    (`source-private/sensitive-generalizations.json`) and is not committed**; the
+    generator loads it at runtime and the original identifiers are never named in
+    any tracked file. The source workbook is not altered. See `SECURITY.md`.
 - **Unresolved questions:**
-  - 45 custom `tr_` tables have **no usable description** (blank or `N/A`) in
-    source → classified "unclear/manual review." Their function is unverified and
-    they are reported exactly, not force-classified to shrink the count.
-    `tr_ActionItem` in particular carries no description (`N/A`) in the revised
-    source and remains unverified.
+  - **1** custom `tr_` table has **no usable description** (`N/A`) in source →
+    classified "unclear/manual review": `tr_ActionItem`. It is reported exactly,
+    not force-classified.
   - 9 support-token classifications are name-based heuristics needing manual
     confirmation; 25 intersect classifications are structural and should each be
     confirmed as a true N:N intersect.
@@ -190,8 +190,8 @@ unverified.
   verification** is the count of `msnfp_indicator` / `msnfp_measurementitem`
   **records deployed in Dataverse** — no source in this build enumerates the live
   rows.
-- 45 custom `tr_` tables lack usable descriptions and need manual classification;
-  reported exactly, not force-classified.
+- 1 custom `tr_` table (`tr_ActionItem`) lacks a usable description and needs
+  manual classification; reported exactly, not force-classified.
 - The *awarded* grant amount (vs. the $100,000 requested) is unverified.
 - The resource-directory datasets (Sources 3 & 4) await a dedicated publication
   review.

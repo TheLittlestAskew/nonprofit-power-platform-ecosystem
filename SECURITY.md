@@ -43,35 +43,38 @@ Before committing any artifact, confirm:
 
 ## Generalized Clinical / Behavioral-Health Schema Names
 
-Some custom tables model **especially sensitive clinical or behavioral-health**
-domains. For those tables the exact internal schema identifier is **withheld**
-from every published artifact (the catalog CSV and the inventory summary) and a
-generalized domain label is published instead. This preserves the fact that the
-domain existed while avoiding publication of the precise instrument or record
-name.
+A small number of custom tables model **especially sensitive clinical or
+behavioral-health** domains. For those tables the exact internal schema
+identifier is **withheld** from every published artifact (the catalog CSV and the
+inventory summary) and a generalized **public domain label** is published
+instead. This preserves the fact that the domain existed while avoiding
+publication of the precise instrument or record name.
 
-| Generalized public label | Domain (internal schema name withheld) |
-|---|---|
-| Behavioral-health assessment | Validated behavioral-health screening instruments (e.g., PHQ-9, GAD-7) |
-| Clinical classification | Diagnosis / diagnostic-impression structures |
-| Mental-status assessment | Mental-status structure |
-| Counseling treatment goals | Treatment-goal structure |
-| Medication-management record | Medication record and medication-distribution log |
+**8 sensitive structures** are generalized, into these public domains:
+
+- Behavioral-health assessment
+- Clinical classification
+- Mental-status assessment
+- Counseling treatment goals
+- Medication-management record
 
 Rules applied:
 
-- The mapping is implemented in `scripts/build_dataverse_inventory.py`
-  (`SENSITIVE_GENERALIZATION`) so the sanitization is **reproducible** and covers
-  every generated public file, including the manual-review lists in the summary.
+- The private mapping (production schema name → generalized public label) is
+  **not stored in any tracked file.** It lives only in the git-ignored
+  `source-private/sensitive-generalizations.json` and is loaded by
+  `scripts/build_dataverse_inventory.py` **at runtime**. The exact identifiers
+  are never hard-coded in the generator, printed, logged, or committed.
+- If that config is missing the generator **fails with a clear error** rather
+  than publishing exact identifiers.
+- The sanitization is **reproducible** and covers every generated public file,
+  including the manual-review lists in the summary.
 - The public catalog CSV carries a `Public Identifier` column marking each row as
   `as-published` or `generalized`.
 - The **source workbook is never altered**; generalization happens only in the
   generated public outputs.
 - Exact schema names are retained for ordinary nonclinical tables unless a
   separate privacy concern is found.
-- GAD-7 was added alongside PHQ-9 because it is an equivalent validated
-  behavioral-health screening instrument; this extension is intentional and
-  recorded in the evidence register.
 
 ## Privacy Scan
 

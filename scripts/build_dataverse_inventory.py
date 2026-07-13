@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import csv
 import datetime as _dt
+import json
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -85,21 +86,60 @@ INTERSECT_INFIXES = ("_tr_", "_msnfp_", "_msiati_", "_cdm_", "_msdyn_")
 # Sensitive clinical / behavioral-health structures whose exact internal schema
 # identifier is NOT published. The public catalog shows a generalized domain
 # label instead, preserving the fact that the domain existed without exposing
-# the precise instrument or record name. Keyed by lowercased schema name.
-# This sanitization decision is documented in ``SECURITY.md`` and
-# ``docs/evidence-register.md``. GAD-7 is included alongside PHQ-9 because it is
-# an equivalent validated behavioral-health screening instrument.
-SENSITIVE_GENERALIZATION = {
-    "tr_phq9": "Behavioral-health assessment",
-    "tr_gad7": "Behavioral-health assessment",
-    "tr_diagnosis": "Clinical classification",
-    "tr_diagnosticimpressions": "Clinical classification (diagnostic impressions)",
-    "tr_mentalstatus": "Mental-status assessment",
-    "tr_treatmentgoals": "Counseling treatment goals",
-    "tr_medications": "Medication-management record",
-    "tr_medlog": "Medication-management record",
-}
+# the precise instrument or record name.
+#
+# The mapping (private schema name -> generalized public label) is NOT stored in
+# this tracked file. It lives ONLY in the git-ignored private config below and is
+# loaded at runtime. The exact identifiers are never hard-coded here, printed, or
+# logged. This sanitization *decision* (8 structures, the public domains) is
+# documented in ``SECURITY.md`` and ``docs/evidence-register.md`` without naming
+# the private identifiers.
+SENSITIVE_CONFIG_FILE = REPO_ROOT / "source-private" / "sensitive-generalizations.json"
 GENERALIZED_PLACEHOLDER = "(generalized — schema name withheld)"
+
+
+def load_sensitive_generalizations(config_file: Path = SENSITIVE_CONFIG_FILE) -> dict[str, str]:
+    """Load the private schema-name -> generalized-label map from an ignored file.
+
+    The map is validated and returned with keys lowercased/trimmed. Raises
+    ``FileNotFoundError`` if the config is absent and ``ValueError`` if its
+    structure is invalid. Error messages never include any private identifier —
+    only the config path and structural problem are surfaced.
+    """
+    if not config_file.exists():
+        raise FileNotFoundError(
+            f"sensitive-generalization config not found: {config_file}\n"
+            "This private mapping lives under source-private/ (git-ignored) and "
+            "is required to sanitize clinical/behavioral-health names. Create it "
+            "with a top-level 'generalizations' object mapping schema names to "
+            "public labels, then re-run."
+        )
+    try:
+        raw = json.loads(config_file.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"sensitive-generalization config is not valid JSON: {exc}")
+
+    if not isinstance(raw, dict) or "generalizations" not in raw:
+        raise ValueError(
+            "sensitive-generalization config must be a JSON object with a "
+            "top-level 'generalizations' key."
+        )
+    mapping = raw["generalizations"]
+    if not isinstance(mapping, dict) or not mapping:
+        raise ValueError(
+            "'generalizations' must be a non-empty object of "
+            "{schema name: public label}."
+        )
+
+    cleaned: dict[str, str] = {}
+    for key, value in mapping.items():
+        if not isinstance(key, str) or not key.strip():
+            raise ValueError("every generalization key must be a non-empty string.")
+        if not isinstance(value, str) or not value.strip():
+            # Do NOT echo the key (it is a private identifier).
+            raise ValueError("every generalization label must be a non-empty string.")
+        cleaned[key.strip().lower()] = value.strip()
+    return cleaned
 
 
 # --------------------------------------------------------------------------- #
@@ -218,14 +258,15 @@ def classify_custom_table(schema_name: str, description: str) -> tuple[str, str]
     return CLASS_UNCLEAR, "no usable description in source — needs manual review"
 
 
-def public_display(schema_name: str) -> tuple[str, bool]:
+def public_display(schema_name: str, generalizations: dict[str, str]) -> tuple[str, bool]:
     """Return ``(public_label, is_generalized)`` for a schema name.
 
-    Sensitive clinical/behavioral-health structures resolve to a generalized
-    domain label with the exact schema identifier withheld; every other table
-    returns its schema name unchanged.
+    Sensitive clinical/behavioral-health structures (per the runtime-loaded
+    ``generalizations`` map) resolve to a generalized domain label with the exact
+    schema identifier withheld; every other table returns its schema name
+    unchanged.
     """
-    label = SENSITIVE_GENERALIZATION.get((schema_name or "").strip().lower())
+    label = generalizations.get((schema_name or "").strip().lower())
     if label:
         return label, True
     return schema_name, False
@@ -318,7 +359,9 @@ def build_catalog(rows: Iterable[TableRow]) -> list[ClassifiedRow]:
     return classified
 
 
-def write_catalog_csv(classified: list[ClassifiedRow], path: Path) -> None:
+def write_catalog_csv(
+    classified: list[ClassifiedRow], path: Path, generalizations: dict[str, str]
+) -> None:
     """Write the sanitized public catalog CSV (UTF-8, Unicode preserved).
 
     For sensitive clinical/behavioral-health structures the exact schema and
@@ -342,7 +385,7 @@ def write_catalog_csv(classified: list[ClassifiedRow], path: Path) -> None:
         )
         for c in classified:
             t = c.table
-            label, generalized = public_display(t.schema_name)
+            label, generalized = public_display(t.schema_name, generalizations)
             if generalized:
                 writer.writerow(
                     [
@@ -383,6 +426,7 @@ def write_summary_md(
     source_file: Path,
     path: Path,
     generated: str,
+    generalizations: dict[str, str],
 ) -> None:
     """Write the validation summary Markdown."""
     counts = _counts(classified)
@@ -454,7 +498,7 @@ def write_summary_md(
     # Sensitive clinical/behavioral-health structures whose exact schema names
     # are withheld from this public summary.
     generalized_rows = [
-        c for c in classified if public_display(c.table.schema_name)[1]
+        c for c in classified if public_display(c.table.schema_name, generalizations)[1]
     ]
     lines.append("## Privacy Sanitization — Generalized Clinical Structures")
     lines.append("")
@@ -470,7 +514,7 @@ def write_summary_md(
     lines.append("")
     lines.append(f"**Generalized structures ({len(generalized_rows)}):**")
     lines.append("")
-    for label in sorted({public_display(c.table.schema_name)[0] for c in generalized_rows}):
+    for label in sorted({public_display(c.table.schema_name, generalizations)[0] for c in generalized_rows}):
         lines.append(f"- {label}")
     lines.append("")
 
@@ -482,7 +526,7 @@ def write_summary_md(
     )
     lines.append("")
     for c in intersect_rows:
-        label, generalized = public_display(c.table.schema_name)
+        label, generalized = public_display(c.table.schema_name, generalizations)
         lines.append(f"- {label}" if generalized else f"- `{c.table.schema_name}`")
     lines.append("")
     lines.append(
@@ -491,7 +535,7 @@ def write_summary_md(
     )
     lines.append("")
     for c in support_rows:
-        label, generalized = public_display(c.table.schema_name)
+        label, generalized = public_display(c.table.schema_name, generalizations)
         if generalized:
             lines.append(f"- {label} — process/support (schema name generalized for privacy)")
         else:
@@ -501,7 +545,7 @@ def write_summary_md(
     lines.append("")
     if unclear_rows:
         for c in unclear_rows:
-            label, generalized = public_display(c.table.schema_name)
+            label, generalized = public_display(c.table.schema_name, generalizations)
             lines.append(f"- {label}" if generalized else f"- `{c.table.schema_name}`")
     else:
         lines.append("- None. Every custom `tr_` table had a description in source.")
@@ -511,7 +555,7 @@ def write_summary_md(
     lines.append(
         "- Are all support-token matches truly utility tables, or are some "
         "primary business entities whose names happen to contain a token "
-        "(e.g. a medication log)?"
+        "(e.g. a business table whose name ends in 'log')?"
     )
     lines.append(
         "- Do any *core business* tables actually function as intersect tables "
@@ -544,6 +588,12 @@ def write_summary_md(
 
 def main() -> int:
     try:
+        generalizations = load_sensitive_generalizations()
+    except (FileNotFoundError, ValueError) as exc:
+        sys.stderr.write(f"ERROR: {exc}\n")
+        return 1
+
+    try:
         rows = read_rows(SOURCE_FILE)
     except FileNotFoundError as exc:
         sys.stderr.write(f"ERROR: {exc}\n")
@@ -555,8 +605,8 @@ def main() -> int:
     classified = build_catalog(rows)
     generated = _dt.date.today().isoformat()
 
-    write_catalog_csv(classified, CATALOG_CSV)
-    write_summary_md(classified, len(rows), SOURCE_FILE, SUMMARY_MD, generated)
+    write_catalog_csv(classified, CATALOG_CSV, generalizations)
+    write_summary_md(classified, len(rows), SOURCE_FILE, SUMMARY_MD, generated, generalizations)
 
     counts = _counts(classified)
     print(f"Scanned {len(rows)} entities; found {len(classified)} custom tr_ tables.")
@@ -568,6 +618,8 @@ def main() -> int:
             unclear=counts[CLASS_UNCLEAR],
         )
     )
+    # Report how many structures were generalized WITHOUT naming any of them.
+    print(f"  generalized (sensitive, names withheld)={len(generalizations)}")
     print(f"Wrote {CATALOG_CSV.relative_to(REPO_ROOT)}")
     print(f"Wrote {SUMMARY_MD.relative_to(REPO_ROOT)}")
     return 0

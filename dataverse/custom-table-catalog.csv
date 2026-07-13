@@ -1,8 +1,8 @@
 Entity,Schema Name,Logical Name,Classification,Classification Basis,Public Identifier,Description
 Action Item,tr_ActionItem,tr_actionitem,unclear/manual review,no usable description in source — needs manual review,as-published,
 Admin Communications,tr_AdminCommunications,tr_admincommunications,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Records of communications from admin sent out
-Admin Reporting,tr_AdminReporting,tr_adminreporting,unclear/manual review,no usable description in source — needs manual review,as-published,
-Attendee,tr_Attendee,tr_attendee,unclear/manual review,no usable description in source — needs manual review,as-published,
+Admin Reporting,tr_AdminReporting,tr_adminreporting,core business table,"primary business entity (has description, no support/intersect signal)",as-published,At a glance View of impact numbers
+Attendee,tr_Attendee,tr_attendee,core business table,"primary business entity (has description, no support/intersect signal)",as-published,clients/guests who attended sessions
 tr_Attendee_tr_Volunteer,tr_Attendee_tr_Volunteer,tr_attendee_tr_volunteer,relationship/intersect table,relationship/intersect by schema structure (embeds 'tr' entity reference),as-published,
 Bank Accounts,tr_BankAccounts,tr_bankaccounts,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Bank account information
 Beds/Rooms - Women,tr_BedsRooms,tr_bedsrooms,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Record of rooms in the Women's House
@@ -11,120 +11,120 @@ Benefits/Income,tr_BenefitsIncome,tr_benefitsincome,core business table,"primary
 Bills,tr_Bills,tr_bills,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Records of invoices
 tr_Bills_tr_DaviesLocations,tr_Bills_tr_DaviesLocations,tr_bills_tr_davieslocations,relationship/intersect table,relationship/intersect by schema structure (embeds 'tr' entity reference),as-published,
 Board of Directors,tr_BoardofDirectors,tr_boardofdirectors,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Individual records of Board Members
-Bus Fare,tr_BusFare,tr_busfare,unclear/manual review,no usable description in source — needs manual review,as-published,
+Bus Fare,tr_BusFare,tr_busfare,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Tracking imp[act numbers specifically for the bus fare program
 Case Meeting,tr_CaseMeeting,tr_casemeeting,core business table,"primary business entity (has description, no support/intersect signal)",as-published,"Records each case management interaction with a guest. Includes meeting date/time, associated guest (lookup), status (active/canceled), and related staff. Used to track engagement, compliance with program requirements, and case management activity over time."
 Case Meeting Collection,tr_CaseMeetings,tr_casemeetings,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Each record holds a collection of case meetings per guest
 tr_CaseMeetings_tr_ResourceCollection,tr_CaseMeetings_tr_ResourceCollection,tr_casemeetings_tr_resourcecollection,relationship/intersect table,relationship/intersect by schema structure (embeds 'tr' entity reference),as-published,Relationship between case meetings and resources
 Case Meeting Surveys,tr_CaseMeetingSurveys,tr_casemeetingsurveys,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Collection of survey results associated with case meetings from guests
 Child Info,tr_ChildInfo,tr_childinfo,core business table,"primary business entity (has description, no support/intersect signal)",as-published,records or information for children of guests
-Children,tr_Children,tr_children,unclear/manual review,no usable description in source — needs manual review,as-published,
+Children,tr_Children,tr_children,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Info on children who are housed in the shelter with their mothers
 Client,tr_Client,tr_client,core business table,"primary business entity (has description, no support/intersect signal)",as-published,records of counseling clients for davies counseling services
 Common Goals,tr_CommonGoals,tr_commongoals,core business table,"primary business entity (has description, no support/intersect signal)",as-published,a collection of goals and information associated to the goal
 Counseling Calendar,tr_CounselingCalendar,tr_counselingcalendar,core business table,"primary business entity (has description, no support/intersect signal)",as-published,records of counseling events
 Counseling Intake,tr_CounselingIntake,tr_counselingintake,core business table,"primary business entity (has description, no support/intersect signal)",as-published,intake records for counseling clients
 Counseling Reporting,tr_CounselingReporting,tr_counselingreporting,core business table,"primary business entity (has description, no support/intersect signal)",as-published,reporting information for counseling services
-Credit/Debit,tr_CreditDebit,tr_creditdebit,unclear/manual review,no usable description in source — needs manual review,as-published,
-Date,tr_Date,tr_date,unclear/manual review,no usable description in source — needs manual review,as-published,
+Credit/Debit,tr_CreditDebit,tr_creditdebit,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Income and expense records
+Date,tr_Date,tr_date,core business table,"primary business entity (has description, no support/intersect signal)",as-published,date dimension table
 Davies Locations,tr_DaviesLocations,tr_davieslocations,core business table,"primary business entity (has description, no support/intersect signal)",as-published,"Defines physical or program locations within the organization (e.g., Men’s Shelter, Women’s Shelter). Referenced by guest records to indicate where a guest is assigned or housed. Used for filtering, reporting, and operational segmentation."
-tr_DaviesLocations_msnfp_engagementoppo,tr_DaviesLocations_msnfp_engagementoppo,tr_davieslocations_msnfp_engagementoppo,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,
+tr_DaviesLocations_msnfp_engagementoppo,tr_DaviesLocations_msnfp_engagementoppo,tr_davieslocations_msnfp_engagementoppo,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,N/A -- relationship table
 Deposit,tr_Deposit,tr_deposit,core business table,"primary business entity (has description, no support/intersect signal)",as-published,collection of deposit records
-Deposit Ledger,tr_DepositLedger,tr_depositledger,unclear/manual review,no usable description in source — needs manual review,as-published,
-Clinical classification,(generalized — schema name withheld),(generalized — schema name withheld),unclear/manual review,public identifier generalized for privacy (sensitive clinical/behavioral-health structure),generalized,
-Clinical classification (diagnostic impressions),(generalized — schema name withheld),(generalized — schema name withheld),unclear/manual review,public identifier generalized for privacy (sensitive clinical/behavioral-health structure),generalized,
+Deposit Ledger,tr_DepositLedger,tr_depositledger,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Calendar that arranges income and outcome by date
+Clinical classification,(generalized — schema name withheld),(generalized — schema name withheld),core business table,public identifier generalized for privacy (sensitive clinical/behavioral-health structure),generalized,
+Clinical classification,(generalized — schema name withheld),(generalized — schema name withheld),core business table,public identifier generalized for privacy (sensitive clinical/behavioral-health structure),generalized,
 Discharge,tr_Discharge,tr_discharge,core business table,"primary business entity (has description, no support/intersect signal)",as-published,discharge records of guests
-Documents,tr_Documents,tr_documents,unclear/manual review,no usable description in source — needs manual review,as-published,
-Email to SMS,tr_EmailtoSMS,tr_emailtosms,unclear/manual review,no usable description in source — needs manual review,as-published,
+Documents,tr_Documents,tr_documents,core business table,"primary business entity (has description, no support/intersect signal)",as-published,collection of documents
+Email to SMS,tr_EmailtoSMS,tr_emailtosms,core business table,"primary business entity (has description, no support/intersect signal)",as-published,translates phone numbers to allow sending of texts through emails
 Employees,tr_Employees,tr_employees,core business table,"primary business entity (has description, no support/intersect signal)",as-published,records of employees of the davies shelter and their information
-Employee Types,tr_EmployeeTypes,tr_employeetypes,unclear/manual review,no usable description in source — needs manual review,as-published,
+Employee Types,tr_EmployeeTypes,tr_employeetypes,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Job Titles
 Employment/Income,tr_EmploymentIncome,tr_employmentincome,core business table,"primary business entity (has description, no support/intersect signal)",as-published,records of guest employment and income information per case meeting
-Employment Verification,tr_EmploymentVerification,tr_employmentverification,unclear/manual review,no usable description in source — needs manual review,as-published,
+Employment Verification,tr_EmploymentVerification,tr_employmentverification,core business table,"primary business entity (has description, no support/intersect signal)",as-published,table for case managers to note if the guest has been following employment search rules
 Exit Survey,tr_ExitSurvey,tr_exitsurvey,core business table,"primary business entity (has description, no support/intersect signal)",as-published,exit survey results
-Family History,tr_FamilyHistory,tr_familyhistory,process/support table,support-token heuristic: 'history' in name (confirm manually),as-published,
-Farm Bus,tr_FarmBus,tr_farmbus,unclear/manual review,no usable description in source — needs manual review,as-published,
-Followup,tr_Followup,tr_followup,unclear/manual review,no usable description in source — needs manual review,as-published,
+Family History,tr_FamilyHistory,tr_familyhistory,process/support table,support-token heuristic: 'history' in name (confirm manually),as-published,family questions asked of guests by counselors
+Farm Bus,tr_FarmBus,tr_farmbus,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Tracking specficially for the Farm Bus program
+Followup,tr_Followup,tr_followup,core business table,"primary business entity (has description, no support/intersect signal)",as-published,records of follow up surveys sent and received
 Follow-up Survey,tr_FollowupSurvey,tr_followupsurvey,core business table,"primary business entity (has description, no support/intersect signal)",as-published,post-discharge survey results
 Forms/Policies,tr_FormsPolicies,tr_formspolicies,core business table,"primary business entity (has description, no support/intersect signal)",as-published,collection of davies forms and policies
 Behavioral-health assessment,(generalized — schema name withheld),(generalized — schema name withheld),core business table,public identifier generalized for privacy (sensitive clinical/behavioral-health structure),generalized,
-Goals,tr_Goals,tr_goals,unclear/manual review,no usable description in source — needs manual review,as-published,
-Group Attendee,tr_GroupAttendee,tr_groupattendee,unclear/manual review,no usable description in source — needs manual review,as-published,
+Goals,tr_Goals,tr_goals,core business table,"primary business entity (has description, no support/intersect signal)",as-published,goals assigned to guests
+Group Attendee,tr_GroupAttendee,tr_groupattendee,core business table,"primary business entity (has description, no support/intersect signal)",as-published,guests/clients that attend shceduled group counseling sessions
 Guest,tr_Guest,tr_guest,core business table,"primary business entity (has description, no support/intersect signal)",as-published,"Core entity representing individuals in the shelter system, including program status, phase progression, case manager assignment, and location."
 Guest Budget,tr_GuestBudget,tr_guestbudget,core business table,"primary business entity (has description, no support/intersect signal)",as-published,records of budget information for guests
 Guest Communication,tr_GuestCommunication,tr_guestcommunication,core business table,"primary business entity (has description, no support/intersect signal)",as-published,records of communication to guests
 Guests/Resources,tr_GuestsResources,tr_guestsresources,core business table,"primary business entity (has description, no support/intersect signal)",as-published,collection of resource items connected to guests
 Guest Wins,tr_GuestWins,tr_guestwins,core business table,"primary business entity (has description, no support/intersect signal)",as-published,celebratory acheivements of guests
 Health Info,tr_HealthInfo,tr_healthinfo,core business table,"primary business entity (has description, no support/intersect signal)",as-published,health info of related guests
-Income/Benefits,tr_IncomeBenefits,tr_incomebenefits,unclear/manual review,no usable description in source — needs manual review,as-published,
+Income/Benefits,tr_IncomeBenefits,tr_incomebenefits,core business table,"primary business entity (has description, no support/intersect signal)",as-published,part of the case meeting to document how much income and what benefits a guest is receiving at the time
 In/Ex,tr_InEx,tr_inex,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Income and expense records
 Infraction,tr_Infraction,tr_infraction,core business table,"primary business entity (has description, no support/intersect signal)",as-published,records of infractions from guests
 Infractions,tr_Infractions,tr_infractions,core business table,"primary business entity (has description, no support/intersect signal)",as-published,records of infractions from guests
 Intake Survey,tr_IntakeSurvey,tr_intakesurvey,core business table,"primary business entity (has description, no support/intersect signal)",as-published,results of guest intake surveys
-Inventory Tracking,tr_InventoryTracking,tr_inventorytracking,unclear/manual review,no usable description in source — needs manual review,as-published,
-Job History,tr_JobHistory,tr_jobhistory,process/support table,support-token heuristic: 'history' in name (confirm manually),as-published,
-LGL Mirgration Tracker,tr_LGLMirgrationTracker,tr_lglmirgrationtracker,process/support table,support-token heuristic: 'tracker' in name (confirm manually),as-published,
+Inventory Tracking,tr_InventoryTracking,tr_inventorytracking,core business table,"primary business entity (has description, no support/intersect signal)",as-published,For tracking shelter supplies
+Job History,tr_JobHistory,tr_jobhistory,process/support table,support-token heuristic: 'history' in name (confirm manually),as-published,guest/client job history for counseling
+LGL Mirgration Tracker,tr_LGLMirgrationTracker,tr_lglmirgrationtracker,process/support table,support-token heuristic: 'tracker' in name (confirm manually),as-published,Tracker for the migration of donor information from old system to new system
 Log Reference,tr_LogReference,tr_logreference,process/support table,support-token heuristic: 'log' in name (confirm manually),as-published,Logs of nightwatch records
-Manual Audit,tr_ManualAudit,tr_manualaudit,process/support table,support-token heuristic: 'audit' in name (confirm manually),as-published,
-Manual View,tr_ManualView,tr_manualview,unclear/manual review,no usable description in source — needs manual review,as-published,
-ManualxRef,tr_ManualxRef,tr_manualxref,unclear/manual review,no usable description in source — needs manual review,as-published,
-Measurement Snapshot,tr_MeasurementSnapshot,tr_measurementsnapshot,unclear/manual review,no usable description in source — needs manual review,as-published,
+Manual Audit,tr_ManualAudit,tr_manualaudit,process/support table,support-token heuristic: 'audit' in name (confirm manually),as-published,Tracker for Ops manual changes
+Manual View,tr_ManualView,tr_manualview,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Ops Manual View
+ManualxRef,tr_ManualxRef,tr_manualxref,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Ops Manual Reference table
+Measurement Snapshot,tr_MeasurementSnapshot,tr_measurementsnapshot,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Table that arranges KPIs by predetermined time intervals
 Medication-management record,(generalized — schema name withheld),(generalized — schema name withheld),core business table,public identifier generalized for privacy (sensitive clinical/behavioral-health structure),generalized,
 Medication-management record,(generalized — schema name withheld),(generalized — schema name withheld),process/support table,public identifier generalized for privacy (sensitive clinical/behavioral-health structure),generalized,
-Mental-status assessment,(generalized — schema name withheld),(generalized — schema name withheld),unclear/manual review,public identifier generalized for privacy (sensitive clinical/behavioral-health structure),generalized,
+Mental-status assessment,(generalized — schema name withheld),(generalized — schema name withheld),core business table,public identifier generalized for privacy (sensitive clinical/behavioral-health structure),generalized,
 Merge Tag,tr_MergeTag,tr_mergetag,core business table,"primary business entity (has description, no support/intersect signal)",as-published,mail merge tags
-tr_msnfp_award_msnfp_indicator,tr_msnfp_award_msnfp_indicator,tr_msnfp_award_msnfp_indicator,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,
-tr_msnfp_award_msnfp_programitem,tr_msnfp_award_msnfp_programitem,tr_msnfp_award_msnfp_programitem,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,
-tr_msnfp_Budget_msnfp_award,tr_msnfp_Budget_msnfp_award,tr_msnfp_budget_msnfp_award,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,
-tr_msnfp_deliveryframework_cdm_company,tr_msnfp_deliveryframework_cdm_company,tr_msnfp_deliveryframework_cdm_company,relationship/intersect table,relationship/intersect by schema structure (embeds 'cdm' entity reference),as-published,
-tr_msnfp_deliveryframework_msnfp_award,tr_msnfp_deliveryframework_msnfp_award,tr_msnfp_deliveryframework_msnfp_award,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,
-tr_msnfp_deliveryframework_msnfp_Objective,tr_msnfp_deliveryframework_msnfp_Objective,tr_msnfp_deliveryframework_msnfp_objective,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,
-tr_msnfp_deliveryframework_tr_DaviesLocati,tr_msnfp_deliveryframework_tr_DaviesLocati,tr_msnfp_deliveryframework_tr_davieslocati,relationship/intersect table,relationship/intersect by schema structure (embeds 'tr' entity reference),as-published,
-tr_msnfp_deliveryframework_tr_Employees,tr_msnfp_deliveryframework_tr_Employees,tr_msnfp_deliveryframework_tr_employees,relationship/intersect table,relationship/intersect by schema structure (embeds 'tr' entity reference),as-published,
-tr_msnfp_engagementopportunity_tr_Voluntee,tr_msnfp_engagementopportunity_tr_Voluntee,tr_msnfp_engagementopportunity_tr_voluntee,relationship/intersect table,relationship/intersect by schema structure (embeds 'tr' entity reference),as-published,
-tr_msnfp_Group_tr_Volunteer,tr_msnfp_Group_tr_Volunteer,tr_msnfp_group_tr_volunteer,relationship/intersect table,relationship/intersect by schema structure (embeds 'tr' entity reference),as-published,
-tr_msnfp_indicator_msnfp_deliveryframework,tr_msnfp_indicator_msnfp_deliveryframework,tr_msnfp_indicator_msnfp_deliveryframework,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,
-tr_msnfp_indicatorvalue_msnfp_deliveryfram,tr_msnfp_indicatorvalue_msnfp_deliveryfram,tr_msnfp_indicatorvalue_msnfp_deliveryfram,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,
-tr_msnfp_programitem_msnfp_award,tr_msnfp_programitem_msnfp_award,tr_msnfp_programitem_msnfp_award,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,
-tr_msnfp_theoryofchange_msnfp_deliveryfram,tr_msnfp_theoryofchange_msnfp_deliveryfram,tr_msnfp_theoryofchange_msnfp_deliveryfram,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,
-tr_msnfp_theoryofchange_msnfp_indicator,tr_msnfp_theoryofchange_msnfp_indicator,tr_msnfp_theoryofchange_msnfp_indicator,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,
-tr_msnfp_theoryofchange_msnfp_Objective,tr_msnfp_theoryofchange_msnfp_Objective,tr_msnfp_theoryofchange_msnfp_objective,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,
-tr_msnfp_theoryofchange_msnfp_result,tr_msnfp_theoryofchange_msnfp_result,tr_msnfp_theoryofchange_msnfp_result,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,
-tr_msnfp_workitem_msnfp_award,tr_msnfp_workitem_msnfp_award,tr_msnfp_workitem_msnfp_award,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,
-tr_msnfp_workitem_msnfp_engagementopportun,tr_msnfp_workitem_msnfp_engagementopportun,tr_msnfp_workitem_msnfp_engagementopportun,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,
-tr_msnfp_workitem_tr_DaviesLocations,tr_msnfp_workitem_tr_DaviesLocations,tr_msnfp_workitem_tr_davieslocations,relationship/intersect table,relationship/intersect by schema structure (embeds 'tr' entity reference),as-published,
+tr_msnfp_award_msnfp_indicator,tr_msnfp_award_msnfp_indicator,tr_msnfp_award_msnfp_indicator,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,N/A -- Relationship Table
+tr_msnfp_award_msnfp_programitem,tr_msnfp_award_msnfp_programitem,tr_msnfp_award_msnfp_programitem,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,N/A -- Relationship Table
+tr_msnfp_Budget_msnfp_award,tr_msnfp_Budget_msnfp_award,tr_msnfp_budget_msnfp_award,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,N/A -- Relationship Table
+tr_msnfp_deliveryframework_cdm_company,tr_msnfp_deliveryframework_cdm_company,tr_msnfp_deliveryframework_cdm_company,relationship/intersect table,relationship/intersect by schema structure (embeds 'cdm' entity reference),as-published,N/A -- Relationship Table
+tr_msnfp_deliveryframework_msnfp_award,tr_msnfp_deliveryframework_msnfp_award,tr_msnfp_deliveryframework_msnfp_award,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,N/A -- Relationship Table
+tr_msnfp_deliveryframework_msnfp_Objective,tr_msnfp_deliveryframework_msnfp_Objective,tr_msnfp_deliveryframework_msnfp_objective,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,N/A -- Relationship Table
+tr_msnfp_deliveryframework_tr_DaviesLocati,tr_msnfp_deliveryframework_tr_DaviesLocati,tr_msnfp_deliveryframework_tr_davieslocati,relationship/intersect table,relationship/intersect by schema structure (embeds 'tr' entity reference),as-published,N/A -- Relationship Table
+tr_msnfp_deliveryframework_tr_Employees,tr_msnfp_deliveryframework_tr_Employees,tr_msnfp_deliveryframework_tr_employees,relationship/intersect table,relationship/intersect by schema structure (embeds 'tr' entity reference),as-published,N/A -- Relationship Table
+tr_msnfp_engagementopportunity_tr_Voluntee,tr_msnfp_engagementopportunity_tr_Voluntee,tr_msnfp_engagementopportunity_tr_voluntee,relationship/intersect table,relationship/intersect by schema structure (embeds 'tr' entity reference),as-published,N/A -- Relationship Table
+tr_msnfp_Group_tr_Volunteer,tr_msnfp_Group_tr_Volunteer,tr_msnfp_group_tr_volunteer,relationship/intersect table,relationship/intersect by schema structure (embeds 'tr' entity reference),as-published,N/A -- Relationship Table
+tr_msnfp_indicator_msnfp_deliveryframework,tr_msnfp_indicator_msnfp_deliveryframework,tr_msnfp_indicator_msnfp_deliveryframework,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,N/A -- Relationship Table
+tr_msnfp_indicatorvalue_msnfp_deliveryfram,tr_msnfp_indicatorvalue_msnfp_deliveryfram,tr_msnfp_indicatorvalue_msnfp_deliveryfram,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,N/A -- Relationship Table
+tr_msnfp_programitem_msnfp_award,tr_msnfp_programitem_msnfp_award,tr_msnfp_programitem_msnfp_award,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,N/A -- Relationship Table
+tr_msnfp_theoryofchange_msnfp_deliveryfram,tr_msnfp_theoryofchange_msnfp_deliveryfram,tr_msnfp_theoryofchange_msnfp_deliveryfram,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,N/A -- Relationship Table
+tr_msnfp_theoryofchange_msnfp_indicator,tr_msnfp_theoryofchange_msnfp_indicator,tr_msnfp_theoryofchange_msnfp_indicator,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,N/A -- Relationship Table
+tr_msnfp_theoryofchange_msnfp_Objective,tr_msnfp_theoryofchange_msnfp_Objective,tr_msnfp_theoryofchange_msnfp_objective,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,N/A -- Relationship Table
+tr_msnfp_theoryofchange_msnfp_result,tr_msnfp_theoryofchange_msnfp_result,tr_msnfp_theoryofchange_msnfp_result,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,N/A -- Relationship Table
+tr_msnfp_workitem_msnfp_award,tr_msnfp_workitem_msnfp_award,tr_msnfp_workitem_msnfp_award,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,N/A -- Relationship Table
+tr_msnfp_workitem_msnfp_engagementopportun,tr_msnfp_workitem_msnfp_engagementopportun,tr_msnfp_workitem_msnfp_engagementopportun,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,N/A -- Relationship Table
+tr_msnfp_workitem_tr_DaviesLocations,tr_msnfp_workitem_tr_DaviesLocations,tr_msnfp_workitem_tr_davieslocations,relationship/intersect table,relationship/intersect by schema structure (embeds 'tr' entity reference),as-published,N/A -- Relationship Table
 Night Watch,tr_NightWatch,tr_nightwatch,core business table,"primary business entity (has description, no support/intersect signal)",as-published,daily log of shelter activities by staff
-Part/Full Time,tr_PartFullTime,tr_partfulltime,unclear/manual review,no usable description in source — needs manual review,as-published,
-Partner History,tr_PartnerHistory,tr_partnerhistory,process/support table,support-token heuristic: 'history' in name (confirm manually),as-published,
-Payment Failures,tr_PaymentFailures,tr_paymentfailures,unclear/manual review,no usable description in source — needs manual review,as-published,
-Payments,tr_Payments,tr_payments,unclear/manual review,no usable description in source — needs manual review,as-published,
+Part/Full Time,tr_PartFullTime,tr_partfulltime,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Literally just part-time and full time for employee table
+Partner History,tr_PartnerHistory,tr_partnerhistory,process/support table,support-token heuristic: 'history' in name (confirm manually),as-published,Hisoty of client/guest's partner
+Payment Failures,tr_PaymentFailures,tr_paymentfailures,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Collection of failed payment information for revieing
+Payments,tr_Payments,tr_payments,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Payments made for scheduled recurring donations….Builder's society
 Pay Periods,tr_PayPeriods,tr_payperiods,core business table,"primary business entity (has description, no support/intersect signal)",as-published,collection of information related to the payroll periods
-Payroll,tr_Payroll,tr_payroll,unclear/manual review,no usable description in source — needs manual review,as-published,
+Payroll,tr_Payroll,tr_payroll,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Employee pay by pay period
 Phase1,tr_Phase1,tr_phase1,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Phase 1 requirements and completion records per guest
 Phase2,tr_Phase2,tr_phase2,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Phase 2 requirements and completion records per guest
 Phase3,tr_Phase3,tr_phase3,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Phase 3 requirements and completion records per guest
-Behavioral-health assessment,(generalized — schema name withheld),(generalized — schema name withheld),unclear/manual review,public identifier generalized for privacy (sensitive clinical/behavioral-health structure),generalized,
-Policy,tr_Policy,tr_policy,unclear/manual review,no usable description in source — needs manual review,as-published,
-Potential Guest,tr_PotentialGuest,tr_potentialguest,unclear/manual review,no usable description in source — needs manual review,as-published,
+Behavioral-health assessment,(generalized — schema name withheld),(generalized — schema name withheld),core business table,public identifier generalized for privacy (sensitive clinical/behavioral-health structure),generalized,
+Policy,tr_Policy,tr_policy,core business table,"primary business entity (has description, no support/intersect signal)",as-published,collection of guest policies - for use in infractions
+Potential Guest,tr_PotentialGuest,tr_potentialguest,core business table,"primary business entity (has description, no support/intersect signal)",as-published,a waitlist table for guests
 Processor Customers,tr_ProcessorCustomers,tr_processorcustomers,core business table,"primary business entity (has description, no support/intersect signal)",as-published,collection of online payment processor customer information related to contacts
-Recurring Billing,tr_RecurringBilling,tr_recurringbilling,unclear/manual review,no usable description in source — needs manual review,as-published,
-Recurring Payments,tr_RecurringPayments,tr_recurringpayments,unclear/manual review,no usable description in source — needs manual review,as-published,
-Reimbursements,tr_Reimbursements,tr_reimbursements,unclear/manual review,no usable description in source — needs manual review,as-published,
-Reporting by Date,tr_ReportingbyDate,tr_reportingbydate,unclear/manual review,no usable description in source — needs manual review,as-published,
+Recurring Billing,tr_RecurringBilling,tr_recurringbilling,core business table,"primary business entity (has description, no support/intersect signal)",as-published,records of recurring pledges - not necessarily builder's society
+Recurring Payments,tr_RecurringPayments,tr_recurringpayments,core business table,"primary business entity (has description, no support/intersect signal)",as-published,records of recurring payments - not necessarily Builder's society
+Reimbursements,tr_Reimbursements,tr_reimbursements,core business table,"primary business entity (has description, no support/intersect signal)",as-published,reimbursements related to employees and paychecks
+Reporting by Date,tr_ReportingbyDate,tr_reportingbydate,core business table,"primary business entity (has description, no support/intersect signal)",as-published,regularly scheduled reports
 Resource Collection,tr_ResourceCollection,tr_resourcecollection,core business table,"primary business entity (has description, no support/intersect signal)",as-published,collection of contact information for resources to be used by case managers for guests
-Scheduler,tr_Scheduler,tr_scheduler,unclear/manual review,no usable description in source — needs manual review,as-published,
-Session,tr_Session,tr_session,unclear/manual review,no usable description in source — needs manual review,as-published,
-Session Groups,tr_SessionGroups,tr_sessiongroups,unclear/manual review,no usable description in source — needs manual review,as-published,
+Scheduler,tr_Scheduler,tr_scheduler,core business table,"primary business entity (has description, no support/intersect signal)",as-published,employee scheduling
+Session,tr_Session,tr_session,core business table,"primary business entity (has description, no support/intersect signal)",as-published,"counseling session details, individual"
+Session Groups,tr_SessionGroups,tr_sessiongroups,core business table,"primary business entity (has description, no support/intersect signal)",as-published,"counseling session details, group"
 Shelter Calendar,tr_ShelterCalendar,tr_sheltercalendar,core business table,"primary business entity (has description, no support/intersect signal)",as-published,shelter event records
-Stripe/Propay,tr_StripePropay,tr_stripepropay,unclear/manual review,no usable description in source — needs manual review,as-published,
+Stripe/Propay,tr_StripePropay,tr_stripepropay,core business table,"primary business entity (has description, no support/intersect signal)",as-published,payout records for online donations
 Survey Links,tr_SurveyLinks,tr_surveylinks,core business table,"primary business entity (has description, no support/intersect signal)",as-published,"originally intended for only surveys, this entity contains a lot of different kinds of links"
-Tables,tr_Tables,tr_tables,unclear/manual review,no usable description in source — needs manual review,as-published,
-Tax Statement Log,tr_TaxStatementLog,tr_taxstatementlog,process/support table,support-token heuristic: 'log' in name (confirm manually),as-published,
-Tax Withholding,tr_TaxWithholding,tr_taxwithholding,unclear/manual review,no usable description in source — needs manual review,as-published,
-Time Clock,tr_TimeClock,tr_timeclock,unclear/manual review,no usable description in source — needs manual review,as-published,
-Time Entries,tr_TimeEntries,tr_timeentries,unclear/manual review,no usable description in source — needs manual review,as-published,
-Time Punch,tr_TimePunch,tr_timepunch,unclear/manual review,no usable description in source — needs manual review,as-published,
+Tables,tr_Tables,tr_tables,core business table,"primary business entity (has description, no support/intersect signal)",as-published,A record of all the tables that are use and what they are for and their schema info
+Tax Statement Log,tr_TaxStatementLog,tr_taxstatementlog,process/support table,support-token heuristic: 'log' in name (confirm manually),as-published,Log for tracking the sending of annual donor tax statements
+Tax Withholding,tr_TaxWithholding,tr_taxwithholding,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Table that calculates tax withholding for employee paychecks
+Time Clock,tr_TimeClock,tr_timeclock,core business table,"primary business entity (has description, no support/intersect signal)",as-published,"employee clock-in, clock out form"
+Time Entries,tr_TimeEntries,tr_timeentries,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Time clock records by employee
+Time Punch,tr_TimePunch,tr_timepunch,core business table,"primary business entity (has description, no support/intersect signal)",as-published,where time cliock records for admin use
 Timesheet,tr_Timesheet,tr_timesheet,core business table,"primary business entity (has description, no support/intersect signal)",as-published,timesheet information
-Counseling treatment goals,(generalized — schema name withheld),(generalized — schema name withheld),unclear/manual review,public identifier generalized for privacy (sensitive clinical/behavioral-health structure),generalized,
-View History,tr_ViewHistory,tr_viewhistory,process/support table,support-token heuristic: 'history' in name (confirm manually),as-published,
+Counseling treatment goals,(generalized — schema name withheld),(generalized — schema name withheld),core business table,public identifier generalized for privacy (sensitive clinical/behavioral-health structure),generalized,
+View History,tr_ViewHistory,tr_viewhistory,process/support table,support-token heuristic: 'history' in name (confirm manually),as-published,Tracker to confirm that employees were monitoring and signing off on nightwatch logs
 Volunteer,tr_Volunteer,tr_volunteer,core business table,"primary business entity (has description, no support/intersect signal)",as-published,volunteer information
-tr_Volunteer_msnfp_participation,tr_Volunteer_msnfp_participation,tr_volunteer_msnfp_participation,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,
+tr_Volunteer_msnfp_participation,tr_Volunteer_msnfp_participation,tr_volunteer_msnfp_participation,relationship/intersect table,relationship/intersect by schema structure (embeds 'msnfp' entity reference),as-published,N/A--Relationship table
 Volunteer Flow,tr_volunteerflow,tr_volunteerflow,core business table,"primary business entity (has description, no support/intersect signal)",as-published,Base entity for process Volunteer Flow
 Waitlist,tr_Waitlist,tr_waitlist,core business table,"primary business entity (has description, no support/intersect signal)",as-published,collection of information for people who are interested in coming to the shelter
