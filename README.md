@@ -27,6 +27,18 @@ As sole systems developer and development operations administrator, I architecte
 
 This repository translates a large production Power Platform environment into a public, recruiter-friendly technical case study. It documents the architecture, design decisions, data models, automations, and reporting workflows without publishing confidential production records or raw employer exports.
 
+## Start Here
+
+New to this repository? Read in this order:
+
+1. **[Outcomes, Grants & Compliance](grants-outcomes/README.md)** — the flagship module: how funder requirements become measured, audit-ready impact.
+2. **[System Overview](architecture/system-overview.md)** — how the six operational areas connect through one Dataverse environment.
+3. **[Dataverse Inventory Summary](dataverse/inventory-summary.md)** — how the 129 custom `tr_` tables were counted and classified (reproducible).
+4. **[Application Sitemap & Entity Map](dataverse/application-sitemap.md)** — the 94 entities surfaced in the primary app, by area.
+5. **[Source Evidence Register](docs/evidence-register.md)** — what every claim traces back to, and what remains unverified.
+
+Governance: **[AGENTS.md](AGENTS.md)** (authoritative instructions) · **[SECURITY.md](SECURITY.md)** (publication policy) · **[RIGHTS.md](RIGHTS.md)** (no reuse license granted yet).
+
 The central grant-management workflow is:
 
 ```text
@@ -45,17 +57,19 @@ COMPLIANCE REPORTING
 
 ## Repository Modules
 
-| Module | Purpose |
-|---|---|
-| [`docs/`](docs/) | Business context, scope, governance, and implementation notes |
-| [`architecture/`](architecture/) | Simplified application and data-model diagrams |
-| [`dataverse/`](dataverse/) | Table catalog, domain groupings, naming conventions, and relationships |
-| [`grants-outcomes/`](grants-outcomes/) | KPI framework, measure dictionary, reporting workflow, and sample records |
-| [`development-finance/`](development-finance/) | Donor operations, payment reconciliation, and revenue workflows |
-| [`service-navigation/`](service-navigation/) | Community-resource taxonomy and goal-pathway model |
-| [`power-automate/`](power-automate/) | Sanitized flow documentation, expressions, and implementation patterns |
-| [`web-resources/`](web-resources/) | Selected JavaScript, HTML, and SVG resources |
-| [`portfolio/`](portfolio/) | Recruiter-facing case-study copy and selected visuals |
+| Module | Purpose | Status |
+|---|---|---|
+| [`grants-outcomes/`](grants-outcomes/) | Lifecycle, measurement model, reporting workflow, data dictionary, sample records | **Initial module complete** |
+| [`architecture/`](architecture/) | Simplified system + grant-reporting Mermaid diagrams | **Initial diagrams complete** |
+| [`dataverse/`](dataverse/) | Custom-table catalog + inventory summary; application sitemap + entity catalog | **Inventory + sitemap complete** |
+| [`scripts/`](scripts/) | Reproducible generators for the sanitized catalogs | **Complete + tested** |
+| [`tests/`](tests/) | Unit tests for inventory classification/prefix logic | **Complete** |
+| [`docs/`](docs/) | Governance context and the source evidence register | Evidence register complete; more planned |
+| [`development-finance/`](development-finance/) | Donor operations, payment reconciliation, revenue workflows | Placeholder — not started |
+| [`service-navigation/`](service-navigation/) | Community-resource taxonomy and goal-pathway model | Placeholder — pending resource-directory review |
+| [`power-automate/`](power-automate/) | Sanitized flow documentation and patterns | Placeholder — not started |
+| [`web-resources/`](web-resources/) | Selected JavaScript, HTML, and SVG resources | Placeholder — not started |
+| [`portfolio/`](portfolio/) | Recruiter-facing case-study copy and visuals | Placeholder — not started |
 
 ## Publication and Sanitization Standard
 
@@ -71,7 +85,28 @@ See [`SECURITY.md`](SECURITY.md) for the repository's publication rules.
 
 ## Current Status
 
-This repository is under active construction. The first complete module will be **Outcomes, Grants & Compliance**, followed by Dataverse architecture, service navigation, and development-finance automation.
+This repository is under active construction. **Complete so far:** the
+**Outcomes, Grants & Compliance** module, the Dataverse inventory and
+application-sitemap documentation (with reproducible generator scripts and
+tests), the initial architecture diagrams, and the source evidence register.
+**Next:** development-finance automation, service navigation (pending a separate
+resource-directory review), Power Automate documentation, and web resources.
+
+Placeholder modules above are labeled as such and should not be read as
+completed work.
+
+### Metric note
+
+The two headline counts measure different things and are both verified:
+
+- **129 custom `tr_` tables** — custom tables that *exist* in the environment
+  (from the entity inventory).
+- **94 entities** — entities *surfaced in the primary app's sitemap*, of which
+  57 are custom `tr_` tables and 37 are Nonprofit Accelerator / standard /
+  other-publisher entities.
+
+See [`dataverse/inventory-summary.md`](dataverse/inventory-summary.md) and
+[`dataverse/application-sitemap.md`](dataverse/application-sitemap.md).
 
 ## Author
 
