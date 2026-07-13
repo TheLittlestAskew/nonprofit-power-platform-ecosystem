@@ -1,0 +1,152 @@
+{
+  "sample_data": true,
+  "_notice": "ALL RECORDS BELOW ARE FICTIONAL. This file illustrates the STRUCTURE and RELATIONSHIPS of the grants/outcomes model. It contains no production data. Every name, number, date, identifier, and value was invented for demonstration and must not be interpreted as real. No record resembles a real guest, client, employee, donor, or funder.",
+  "_evidence_tier": "Invented sample. Entity and field names reconstruct the verified model; values are fictional.",
+  "_model_reference": "See measurement-model.md and data-dictionary.csv for the entities used here.",
+  "_demonstrates": [
+    "KPI definition (indicators)",
+    "measure definition (measurement_items)",
+    "program activity (program_activities)",
+    "reporting period (period fields)",
+    "target (indicator target)",
+    "result (results)",
+    "evidence type (evidence)"
+  ],
+  "theory_of_change": {
+    "entity": "msnfp_theoryofchange",
+    "id": "SAMPLE-TOC-001",
+    "name": "Pathways to Stable Housing (SAMPLE)",
+    "summary": "Fictional theory of change: coordinated shelter, case management, and employment support reduce return-to-homelessness."
+  },
+  "objectives": [
+    {
+      "entity": "msnfp_objective",
+      "id": "SAMPLE-OBJ-001",
+      "name": "Increase exits to permanent housing (SAMPLE)",
+      "theory_of_change_id": "SAMPLE-TOC-001"
+    }
+  ],
+  "award": {
+    "entity": "msnfp_award",
+    "id": "SAMPLE-AWARD-001",
+    "funder_account": "Evergreen Community Foundation (SAMPLE FUNDER)",
+    "program_period": "2027-01-01 to 2027-12-31",
+    "amount_requested": 125000,
+    "amount_awarded": 90000,
+    "currency": "USD",
+    "note": "Fictional figures. 'requested' and 'awarded' are shown separately on purpose: a request is not an award, and dollar figures are grant-specific and never interchangeable between grants."
+  },
+  "disbursements": [
+    {
+      "entity": "msnfp_disbursement",
+      "id": "SAMPLE-DISB-001",
+      "award_id": "SAMPLE-AWARD-001",
+      "period": "2027-H1",
+      "amount": 45000,
+      "currency": "USD"
+    }
+  ],
+  "indicators": [
+    {
+      "entity": "msnfp_indicator",
+      "id": "SAMPLE-KPI-001",
+      "name": "Percent of exits to permanent housing (SAMPLE)",
+      "type": "outcome",
+      "unit": "percent",
+      "target": 60,
+      "objective_id": "SAMPLE-OBJ-001",
+      "_note": "Illustrative KPI only. The count of deployed msnfp_indicator records is pending verification; this is not a stated total."
+    },
+    {
+      "entity": "msnfp_indicator",
+      "id": "SAMPLE-KPI-002",
+      "name": "Unduplicated individuals served (SAMPLE)",
+      "type": "output",
+      "unit": "count",
+      "target": 175,
+      "objective_id": "SAMPLE-OBJ-001"
+    }
+  ],
+  "measurement_items": [
+    {
+      "entity": "msnfp_measurementitem",
+      "id": "SAMPLE-MEAS-001",
+      "indicator_id": "SAMPLE-KPI-001",
+      "definition": "Exits to permanent housing / total exits, per reporting period (SAMPLE)"
+    }
+  ],
+  "program_activities": [
+    {
+      "entity": "msnfp_workitem",
+      "id": "SAMPLE-ACT-001",
+      "name": "Weekly case-management sessions delivered (SAMPLE)",
+      "period": "2027-H1",
+      "count": 26,
+      "feeds_indicator_ids": ["SAMPLE-KPI-002"],
+      "note": "Fictional program-activity record showing how delivered activity feeds a measure."
+    },
+    {
+      "entity": "msnfp_workitem",
+      "id": "SAMPLE-ACT-002",
+      "name": "Behavioral-health assessment completed (SAMPLE, generalized)",
+      "period": "2027-H1",
+      "count": 40,
+      "_privacy_note": "Behavioral-health example is intentionally GENERALIZED. The exact clinical instrument/schema name is withheld, consistent with the public catalog's clinical-name sanitization."
+    }
+  ],
+  "indicator_values": [
+    {
+      "entity": "msnfp_indicatorvalue",
+      "id": "SAMPLE-VAL-001",
+      "indicator_id": "SAMPLE-KPI-001",
+      "period": "2027-H1",
+      "value": 58,
+      "unit": "percent"
+    },
+    {
+      "entity": "msnfp_indicatorvalue",
+      "id": "SAMPLE-VAL-002",
+      "indicator_id": "SAMPLE-KPI-002",
+      "period": "2027-H1",
+      "value": 96,
+      "unit": "count"
+    }
+  ],
+  "results": [
+    {
+      "entity": "msnfp_result",
+      "id": "SAMPLE-RES-001",
+      "objective_id": "SAMPLE-OBJ-001",
+      "period": "2027-H1",
+      "narrative": "Fictional interim result: 58% of exits were to permanent housing against a 60% target; 96 of 175 targeted individuals served.",
+      "on_track": true
+    }
+  ],
+  "evidence": [
+    {
+      "entity": "msnfp_report",
+      "id": "SAMPLE-EVID-001",
+      "result_id": "SAMPLE-RES-001",
+      "evidence_type": "survey",
+      "source_reference": "SAMPLE-SURVEY-001",
+      "note": "Fictional evidence pointer. Demonstrates audit-ready lineage: a reported result cites the supporting evidence type and record."
+    }
+  ],
+  "survey_instrument_example": {
+    "entity": "tr_intakesurvey",
+    "id": "SAMPLE-SURVEY-001",
+    "captured_at": "intake",
+    "feeds_indicator_ids": ["SAMPLE-KPI-001"],
+    "note": "Fictional intake survey record used only to show survey-to-measure linkage."
+  },
+  "report": {
+    "entity": "msnfp_report",
+    "id": "SAMPLE-REPORT-001",
+    "award_id": "SAMPLE-AWARD-001",
+    "type": "interim",
+    "period": "2027-H1",
+    "due_date": "2027-12-31",
+    "status": "draft",
+    "traceable_to": ["SAMPLE-RES-001", "SAMPLE-VAL-001", "SAMPLE-VAL-002", "SAMPLE-EVID-001"]
+  }
+}

@@ -1,0 +1,38 @@
+Entity,Field,Type,Description,Notes
+msnfp_theoryofchange,name,text,Name of the theory of change,Accelerator entity
+msnfp_theoryofchange,summary,multiline text,Narrative of the intended change,Reconstructed field
+msnfp_objective,name,text,Specific objective within a theory of change,Accelerator entity
+msnfp_objective,theory_of_change_id,lookup,Link to parent theory of change,Relationship
+msnfp_award,funder_account,lookup,Funder (account) making the award,Links to account
+msnfp_award,program_period,date range,Grant period start and end,Reconstructed field
+msnfp_award,amount_requested,currency,Amount requested in the proposal (distinct from amount awarded),Financial; grant-specific — do not conflate across grants
+msnfp_award,amount_awarded,currency,Total amount awarded (may differ from amount requested),Financial; grant-specific — do not conflate across grants
+msnfp_disbursement,award_id,lookup,Parent award,Relationship
+msnfp_disbursement,amount,currency,Amount disbursed in a period,Financial
+msnfp_indicator,name,text,KPI / indicator name,Accelerator entity
+msnfp_indicator,type,choice,Output or outcome indicator,Working interpretation
+msnfp_indicator,unit,choice,Unit of measure (count / percent / etc.),Reconstructed field
+msnfp_indicator,target,number,Target value for the period,Reconstructed field
+msnfp_indicator,objective_id,lookup,Objective the indicator measures,Relationship
+msnfp_measurementitem,indicator_id,lookup,Indicator this measure defines,Relationship
+msnfp_measurementitem,definition,multiline text,How the measure is calculated,Reconstructed field
+msnfp_indicatorvalue,indicator_id,lookup,Indicator this value belongs to,Relationship
+msnfp_indicatorvalue,period,text,Reporting period of the value,Reconstructed field
+msnfp_indicatorvalue,value,number,Recorded value,Data point
+msnfp_result,objective_id,lookup,Objective this result rolls up to,Relationship
+msnfp_result,narrative,multiline text,Analyzed result narrative,Reconstructed field
+msnfp_result,on_track,boolean,Whether the result meets target,Working interpretation
+msnfp_assessment,name,text,Structured assessment instrument,Accelerator entity
+msnfp_workitem,name,text,A tracked unit of work,Accelerator entity; generates measurable records
+msnfp_report,award_id,lookup,Award this report covers,Relationship
+msnfp_report,type,choice,Interim or final report,Reconstructed field
+msnfp_report,period,text,Reporting period,Reconstructed field
+msnfp_report,due_date,date,"Reporting deadline (e.g., interim due 2026-12-31; final within 30 days of the 12-month period)",Reconstructed field; grant-specific
+msnfp_report,evidence_type,choice,"Type of audit-ready supporting evidence retained (e.g., survey, case note, assessment)",Reconstructed field
+tr_goals,name,text,Custom goal record feeding outcome measures,Custom tr_ table
+tr_intakesurvey,captured_at,choice,Point of capture (intake),Custom tr_ table
+tr_exitsurvey,captured_at,choice,Point of capture (exit),Custom tr_ table
+tr_followupsurvey,captured_at,choice,Point of capture (post-exit follow-up),Custom tr_ table
+tr_casemeetingsurveys,captured_at,choice,Point of capture (case meeting),Custom tr_ table
+tr_adminreporting,name,text,Administrative / cross-program reporting record,Custom tr_ table
+tr_counselingreporting,name,text,Counseling-program reporting record,Custom tr_ table

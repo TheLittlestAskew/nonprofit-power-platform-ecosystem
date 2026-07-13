@@ -32,6 +32,58 @@ Before committing any artifact, confirm:
 - [ ] The artifact supports a specific technical claim made in the case study.
 - [ ] The artifact is understandable without access to the original environment.
 
+## The `source-private/` Directory
+
+- `source-private/` contains production-derived exports and reference materials.
+- It is listed in `.gitignore` and **must never** be committed, copied into a
+  public path, or exposed in Git history.
+- Scripts in `scripts/` may **read** from it locally to generate sanitized
+  public outputs; they must never write raw source contents to a tracked path.
+- Confirm it is ignored before working with it: `git check-ignore source-private/`.
+
+## Generalized Clinical / Behavioral-Health Schema Names
+
+A small number of custom tables model **especially sensitive clinical or
+behavioral-health** domains. For those tables the exact internal schema
+identifier is **withheld** from every published artifact (the catalog CSV and the
+inventory summary) and a generalized **public domain label** is published
+instead. This preserves the fact that the domain existed while avoiding
+publication of the precise instrument or record name.
+
+**8 sensitive structures** are generalized, into these public domains:
+
+- Behavioral-health assessment
+- Clinical classification
+- Mental-status assessment
+- Counseling treatment goals
+- Medication-management record
+
+Rules applied:
+
+- The private mapping (production schema name → generalized public label) is
+  **not stored in any tracked file.** It lives only in the git-ignored
+  `source-private/sensitive-generalizations.json` and is loaded by
+  `scripts/build_dataverse_inventory.py` **at runtime**. The exact identifiers
+  are never hard-coded in the generator, printed, logged, or committed.
+- If that config is missing the generator **fails with a clear error** rather
+  than publishing exact identifiers.
+- The sanitization is **reproducible** and covers every generated public file,
+  including the manual-review lists in the summary.
+- The public catalog CSV carries a `Public Identifier` column marking each row as
+  `as-published` or `generalized`.
+- The **source workbook is never altered**; generalization happens only in the
+  generated public outputs.
+- Exact schema names are retained for ordinary nonclinical tables unless a
+  separate privacy concern is found.
+
+## Privacy Scan
+
+Before a release, tracked files are scanned for common leakage patterns:
+email addresses, phone numbers, street addresses, personal names, raw payment
+identifiers, Stripe charge IDs, tokens, and secrets. A clean scan **reduces**
+risk but does not guarantee privacy — it is one control among the review
+checklist above, not a substitute for human judgment.
+
 ## Reporting a Concern
 
 Open a repository issue describing the file and concern without reposting any sensitive content.

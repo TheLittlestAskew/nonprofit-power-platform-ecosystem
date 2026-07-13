@@ -1,0 +1,24 @@
+# Private source materials — never commit
+source-private/
+raw-source/
+private/
+
+# Temporary files
+temp/
+tmp/
+*.log
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+.pytest_cache/
+.venv/
+venv/
+
+# Operating system
+.DS_Store
+Thumbs.db
