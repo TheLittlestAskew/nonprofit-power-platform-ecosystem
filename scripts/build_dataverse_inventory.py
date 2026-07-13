@@ -68,6 +68,39 @@ CLASS_UNCLEAR = "unclear/manual review"
 # heuristic and every match is flagged for human confirmation.
 SUPPORT_TOKENS = ("log", "audit", "history", "mapping", "tracker", "migration", "mirgration")
 
+# Values that carry no usable description. A literal ``N/A`` (common in the
+# source export for auto-generated join tables) is treated the same as a blank
+# cell so it can never masquerade as a real business description.
+NO_DESCRIPTION_VALUES = frozenset({"", "n/a", "na", "none", "-"})
+
+# Second-entity infixes that mark a **relationship/intersect (join)** table: a
+# ``tr_`` table whose name embeds a reference to a *second* entity or publisher
+# (``tr_<A>_<B>``). This is the Dataverse convention for many-to-many intersect
+# entities. Detecting these by schema *structure* — not merely a bare ``_tr_`` —
+# correctly classifies ``tr_``-published joins onto managed ``msnfp_``/``cdm_``
+# entities (e.g. ``tr_msnfp_award_msnfp_indicator``) that a description-only rule
+# would otherwise mislabel as core business tables.
+INTERSECT_INFIXES = ("_tr_", "_msnfp_", "_msiati_", "_cdm_", "_msdyn_")
+
+# Sensitive clinical / behavioral-health structures whose exact internal schema
+# identifier is NOT published. The public catalog shows a generalized domain
+# label instead, preserving the fact that the domain existed without exposing
+# the precise instrument or record name. Keyed by lowercased schema name.
+# This sanitization decision is documented in ``SECURITY.md`` and
+# ``docs/evidence-register.md``. GAD-7 is included alongside PHQ-9 because it is
+# an equivalent validated behavioral-health screening instrument.
+SENSITIVE_GENERALIZATION = {
+    "tr_phq9": "Behavioral-health assessment",
+    "tr_gad7": "Behavioral-health assessment",
+    "tr_diagnosis": "Clinical classification",
+    "tr_diagnosticimpressions": "Clinical classification (diagnostic impressions)",
+    "tr_mentalstatus": "Mental-status assessment",
+    "tr_treatmentgoals": "Counseling treatment goals",
+    "tr_medications": "Medication-management record",
+    "tr_medlog": "Medication-management record",
+}
+GENERALIZED_PLACEHOLDER = "(generalized — schema name withheld)"
+
 
 # --------------------------------------------------------------------------- #
 # Data model
@@ -121,29 +154,56 @@ def has_custom_prefix(schema_name: str, logical_name: str) -> bool:
     return False
 
 
+def has_usable_description(description: str) -> bool:
+    """True when ``description`` is a real description (not blank / ``N/A``)."""
+    return (description or "").strip().lower() not in NO_DESCRIPTION_VALUES
+
+
+def is_intersect_by_structure(schema_name: str) -> bool:
+    """True when the ``tr_`` schema name embeds a *second* entity reference.
+
+    The core segment (schema minus the leading ``tr_``) is scanned for any
+    :data:`INTERSECT_INFIXES` marker. A lone business entity such as
+    ``tr_casemeeting`` has no such infix and is NOT an intersect; a join such as
+    ``tr_bills_tr_davieslocations`` or ``tr_msnfp_award_msnfp_indicator`` does.
+    Stripping the leading prefix first prevents the entity's *own* prefix from
+    being mistaken for an embedded second reference.
+    """
+    schema = (schema_name or "").strip().lower()
+    core = schema[len(CUSTOM_PREFIX):] if schema.startswith(CUSTOM_PREFIX) else schema
+    return any(infix in core for infix in INTERSECT_INFIXES)
+
+
 def classify_custom_table(schema_name: str, description: str) -> tuple[str, str]:
     """Classify a custom ``tr_`` table.
 
     Returns ``(classification, basis)``. Decision order, most-confident first:
 
-    1. **relationship/intersect** — the schema name contains ``_tr_``. This is
-       the Dataverse convention for many-to-many *intersect* entities
-       (``tr_<a>_tr_<b>``). We do NOT treat every underscored or
-       "relational-looking" name as an intersect table — only this explicit
-       double-publisher pattern.
+    1. **relationship/intersect** — the schema name embeds a *second* entity
+       reference (:data:`INTERSECT_INFIXES`: ``_tr_``, ``_msnfp_``, ``_msiati_``,
+       ``_cdm_``, ``_msdyn_``). This is the Dataverse convention for
+       many-to-many *intersect* entities (``tr_<A>_<B>``). A merely underscored
+       or "relational-looking" single-entity name is **not** an intersect —
+       only an embedded second-entity reference is. This is a schema-*structure*
+       signal and is independent of the (often ``N/A``) description.
     2. **process/support** — the core segment (schema minus the leading
        ``tr_``) contains a documented support token (log/audit/mapping/etc.).
        Name-based heuristic; flagged for confirmation.
-    3. **core business** — has a non-empty description and no support signal.
-    4. **unclear/manual review** — no description available, so the function
-       cannot be verified from source.
+    3. **core business** — has a usable description and no support/intersect
+       signal.
+    4. **unclear/manual review** — no usable description (blank or ``N/A``), so
+       the function cannot be verified from source.
     """
     schema = (schema_name or "").strip().lower()
-    desc = (description or "").strip()
 
-    # 1. Intersect: explicit N:N double-prefix pattern only.
-    if "_tr_" in schema:
-        return CLASS_INTERSECT, "N:N intersect naming pattern (contains '_tr_')"
+    # 1. Intersect: schema structure embeds a second entity reference.
+    if is_intersect_by_structure(schema):
+        core = schema[len(CUSTOM_PREFIX):] if schema.startswith(CUSTOM_PREFIX) else schema
+        marker = next(inf for inf in INTERSECT_INFIXES if inf in core)
+        return (
+            CLASS_INTERSECT,
+            f"relationship/intersect by schema structure (embeds '{marker.strip('_')}' entity reference)",
+        )
 
     core = schema[len(CUSTOM_PREFIX):] if schema.startswith(CUSTOM_PREFIX) else schema
 
@@ -152,10 +212,23 @@ def classify_custom_table(schema_name: str, description: str) -> tuple[str, str]
         if token in core:
             return CLASS_SUPPORT, f"support-token heuristic: '{token}' in name (confirm manually)"
 
-    # 3 / 4. Core business vs unclear, decided by whether we have a description.
-    if desc:
+    # 3 / 4. Core business vs unclear, decided by whether we have a usable description.
+    if has_usable_description(description):
         return CLASS_CORE, "primary business entity (has description, no support/intersect signal)"
-    return CLASS_UNCLEAR, "no description in source — needs manual review"
+    return CLASS_UNCLEAR, "no usable description in source — needs manual review"
+
+
+def public_display(schema_name: str) -> tuple[str, bool]:
+    """Return ``(public_label, is_generalized)`` for a schema name.
+
+    Sensitive clinical/behavioral-health structures resolve to a generalized
+    domain label with the exact schema identifier withheld; every other table
+    returns its schema name unchanged.
+    """
+    label = SENSITIVE_GENERALIZATION.get((schema_name or "").strip().lower())
+    if label:
+        return label, True
+    return schema_name, False
 
 
 # --------------------------------------------------------------------------- #
@@ -246,18 +319,55 @@ def build_catalog(rows: Iterable[TableRow]) -> list[ClassifiedRow]:
 
 
 def write_catalog_csv(classified: list[ClassifiedRow], path: Path) -> None:
-    """Write the sanitized public catalog CSV (UTF-8, Unicode preserved)."""
+    """Write the sanitized public catalog CSV (UTF-8, Unicode preserved).
+
+    For sensitive clinical/behavioral-health structures the exact schema and
+    logical names are withheld and replaced with a generalized domain label; the
+    ``Public Identifier`` column records whether a row was published as-is or
+    generalized. Ordinary tables publish their exact schema names unchanged.
+    """
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as fh:
         writer = csv.writer(fh)
         writer.writerow(
-            ["Entity", "Schema Name", "Logical Name", "Classification", "Classification Basis", "Description"]
+            [
+                "Entity",
+                "Schema Name",
+                "Logical Name",
+                "Classification",
+                "Classification Basis",
+                "Public Identifier",
+                "Description",
+            ]
         )
         for c in classified:
             t = c.table
-            writer.writerow(
-                [t.entity, t.schema_name, t.logical_name, c.classification, c.basis, t.description]
-            )
+            label, generalized = public_display(t.schema_name)
+            if generalized:
+                writer.writerow(
+                    [
+                        label,
+                        GENERALIZED_PLACEHOLDER,
+                        GENERALIZED_PLACEHOLDER,
+                        c.classification,
+                        "public identifier generalized for privacy (sensitive clinical/behavioral-health structure)",
+                        "generalized",
+                        "",
+                    ]
+                )
+            else:
+                description = t.description if has_usable_description(t.description) else ""
+                writer.writerow(
+                    [
+                        t.entity,
+                        t.schema_name,
+                        t.logical_name,
+                        c.classification,
+                        c.basis,
+                        "as-published",
+                        description,
+                    ]
+                )
 
 
 def _counts(classified: list[ClassifiedRow]) -> dict[str, int]:
@@ -316,11 +426,14 @@ def write_summary_md(
     lines.append("Applied in order, most-confident first:")
     lines.append("")
     lines.append(
-        "1. **Relationship/intersect** — the schema name contains `_tr_`, the "
-        "Dataverse convention for many-to-many *intersect* entities "
-        "(`tr_<a>_tr_<b>`). Underscores or a \"relational-looking\" name alone "
-        "are **not** treated as intersect evidence — only this explicit "
-        "double-publisher pattern."
+        "1. **Relationship/intersect** — the schema name embeds a *second* "
+        "entity reference (`_tr_`, `_msnfp_`, `_msiati_`, `_cdm_`, `_msdyn_`), "
+        "the Dataverse convention for many-to-many *intersect* entities "
+        "(`tr_<A>_<B>`). This is a schema-**structure** signal, independent of "
+        "the description (these join tables usually carry an `N/A` description "
+        "in source). A merely underscored or \"relational-looking\" "
+        "single-entity name is **not** treated as intersect evidence — only an "
+        "embedded second-entity reference is."
     )
     lines.append(
         "2. **Process/support** — the core segment (schema minus the leading "
@@ -333,19 +446,44 @@ def write_summary_md(
         "support or intersect signal."
     )
     lines.append(
-        "4. **Unclear / manual review** — no description available in source, "
-        "so the table's function cannot be verified here."
+        "4. **Unclear / manual review** — no usable description (blank or `N/A`) "
+        "in source, so the table's function cannot be verified here."
     )
     lines.append("")
+
+    # Sensitive clinical/behavioral-health structures whose exact schema names
+    # are withheld from this public summary.
+    generalized_rows = [
+        c for c in classified if public_display(c.table.schema_name)[1]
+    ]
+    lines.append("## Privacy Sanitization — Generalized Clinical Structures")
+    lines.append("")
+    lines.append(
+        "The following custom tables model especially sensitive clinical or "
+        "behavioral-health domains. Their exact internal schema identifiers are "
+        "**withheld** from this public summary and the catalog CSV; a "
+        "generalized domain label is published instead so the case study can "
+        "document that the domain existed without exposing the precise "
+        "instrument or record name. This decision is recorded in `SECURITY.md` "
+        "and `docs/evidence-register.md`."
+    )
+    lines.append("")
+    lines.append(f"**Generalized structures ({len(generalized_rows)}):**")
+    lines.append("")
+    for label in sorted({public_display(c.table.schema_name)[0] for c in generalized_rows}):
+        lines.append(f"- {label}")
+    lines.append("")
+
     lines.append("## Rows Flagged for Manual Review")
     lines.append("")
     lines.append(
         f"**Relationship/intersect candidates ({len(intersect_rows)})** — "
-        "confident by naming pattern, but confirm each is a true N:N intersect:"
+        "confident by schema structure, but confirm each is a true N:N intersect:"
     )
     lines.append("")
     for c in intersect_rows:
-        lines.append(f"- `{c.table.schema_name}`")
+        label, generalized = public_display(c.table.schema_name)
+        lines.append(f"- {label}" if generalized else f"- `{c.table.schema_name}`")
     lines.append("")
     lines.append(
         f"**Support-token heuristic matches ({len(support_rows)})** — confirm "
@@ -353,13 +491,18 @@ def write_summary_md(
     )
     lines.append("")
     for c in support_rows:
-        lines.append(f"- `{c.table.schema_name}` — {c.basis}")
+        label, generalized = public_display(c.table.schema_name)
+        if generalized:
+            lines.append(f"- {label} — process/support (schema name generalized for privacy)")
+        else:
+            lines.append(f"- `{c.table.schema_name}` — {c.basis}")
     lines.append("")
     lines.append(f"**Unclear / no description ({len(unclear_rows)})**:")
     lines.append("")
     if unclear_rows:
         for c in unclear_rows:
-            lines.append(f"- `{c.table.schema_name}`")
+            label, generalized = public_display(c.table.schema_name)
+            lines.append(f"- {label}" if generalized else f"- `{c.table.schema_name}`")
     else:
         lines.append("- None. Every custom `tr_` table had a description in source.")
     lines.append("")
@@ -372,7 +515,13 @@ def write_summary_md(
     )
     lines.append(
         "- Do any *core business* tables actually function as intersect tables "
-        "without following the `_tr_` naming pattern?"
+        "without embedding a second-entity reference in their schema name?"
+    )
+    lines.append(
+        "- The unclear rows have no usable source description; `tr_ActionItem` "
+        "in particular carries no description (`N/A`) in the revised source and "
+        "remains unverified. They are reported here exactly and not "
+        "force-classified to shrink the count."
     )
     lines.append(
         "- This inventory reflects the source workbook only; it is not a live "

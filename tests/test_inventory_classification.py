@@ -70,6 +70,39 @@ def test_intersect_wins_even_with_description():
     assert classification == inv.CLASS_INTERSECT
 
 
+def test_intersect_by_embedded_managed_entity():
+    # A tr_-published join onto managed msnfp_ entities is an intersect, even
+    # though it contains no bare '_tr_' pattern and carries an 'N/A' description.
+    classification, basis = inv.classify_custom_table("tr_msnfp_award_msnfp_indicator", "N/A")
+    assert classification == inv.CLASS_INTERSECT
+    assert "intersect" in basis.lower()
+
+
+def test_intersect_by_embedded_cdm_entity():
+    classification, _ = inv.classify_custom_table("tr_msnfp_deliveryframework_cdm_company", "N/A")
+    assert classification == inv.CLASS_INTERSECT
+
+
+def test_intersect_structure_helper():
+    assert inv.is_intersect_by_structure("tr_volunteer_msnfp_participation") is True
+    assert inv.is_intersect_by_structure("tr_guest") is False
+    # The entity's own leading prefix must not be mistaken for a second entity.
+    assert inv.is_intersect_by_structure("tr_msnfp_award") is False
+
+
+def test_na_description_is_not_usable():
+    assert inv.has_usable_description("N/A") is False
+    assert inv.has_usable_description("n/a") is False
+    assert inv.has_usable_description("") is False
+    assert inv.has_usable_description("Records of guest budgets") is True
+
+
+def test_na_description_single_entity_is_unclear():
+    # A lone entity whose only description is 'N/A' cannot be verified.
+    classification, _ = inv.classify_custom_table("tr_actionitem", "N/A")
+    assert classification == inv.CLASS_UNCLEAR
+
+
 def test_support_token_log():
     classification, basis = inv.classify_custom_table("tr_medlog", "medication log")
     assert classification == inv.CLASS_SUPPORT
@@ -157,3 +190,34 @@ def test_resolve_columns_raises_on_missing():
         assert "Schema Name" in str(exc) and "Logical Name" in str(exc)
     else:  # pragma: no cover
         raise AssertionError("expected KeyError for missing required columns")
+
+
+# --------------------------------------------------------------------------- #
+# Sensitive-name generalization
+# --------------------------------------------------------------------------- #
+
+def test_sensitive_schema_is_generalized():
+    label, generalized = inv.public_display("tr_PHQ9")
+    assert generalized is True
+    assert label == "Behavioral-health assessment"
+    # exact identifier is not echoed back
+    assert "phq" not in label.lower()
+
+
+def test_sensitive_generalization_is_case_insensitive():
+    label, generalized = inv.public_display("TR_MENTALSTATUS")
+    assert generalized is True
+    assert label == "Mental-status assessment"
+
+
+def test_ordinary_schema_is_not_generalized():
+    label, generalized = inv.public_display("tr_guest")
+    assert generalized is False
+    assert label == "tr_guest"
+
+
+def test_medication_tables_generalized_to_same_domain():
+    # Both the medication record table and its distribution log generalize to
+    # the same public domain label.
+    assert inv.public_display("tr_medications")[0] == "Medication-management record"
+    assert inv.public_display("tr_medlog")[0] == "Medication-management record"
