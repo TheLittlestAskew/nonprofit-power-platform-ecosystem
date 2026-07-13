@@ -11,11 +11,18 @@ records" and "the report is submitted."
 
 ## Reporting Cadence
 
-- **Mid-year reports** — progress against targets partway through the grant
-  period.
-- **Final / closeout reports** — full-period results at grant end.
+- **Interim reports** — progress against targets partway through the grant
+  period. In the verified 2026 proposal, the interim report was due
+  **December 31, 2026**.
+- **Final / closeout reports** — full-period results at grant end. In the same
+  proposal, the final report was due **within 30 days after the 12-month grant
+  period**.
 - **Ad hoc / internal** — leadership dashboards and learning reviews between
   formal reports.
+
+> Reporting-requirement dates above are verified from the 2026 grant proposal
+> (see [`../docs/evidence-register.md`](../docs/evidence-register.md), Source 7).
+> They are specific to that grant; other grants carry their own cadence.
 
 ## The Workflow
 
@@ -77,6 +84,8 @@ number in a submitted report and trace it to the records that produced it.
 
 - The exact production automation (Power Automate flows, scheduled rollups) is
   **not** documented here yet; this is a structural reconstruction.
-- KPI and measure counts remain **pending verification** (see
-  [`measurement-model.md`](measurement-model.md)).
+- The grant measurement **design counts** (9 KPI targets, 19 supporting items,
+  20 curated measures, 23 proposal objectives) are now **verified**; the count of
+  `msnfp_indicator` / `msnfp_measurementitem` **records deployed in Dataverse**
+  remains **pending verification** (see [`measurement-model.md`](measurement-model.md)).
 - Report templates and funder-specific formats are not included in this build.

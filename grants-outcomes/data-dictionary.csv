@@ -5,7 +5,8 @@ msnfp_objective,name,text,Specific objective within a theory of change,Accelerat
 msnfp_objective,theory_of_change_id,lookup,Link to parent theory of change,Relationship
 msnfp_award,funder_account,lookup,Funder (account) making the award,Links to account
 msnfp_award,program_period,date range,Grant period start and end,Reconstructed field
-msnfp_award,amount_awarded,currency,Total amount awarded,Financial
+msnfp_award,amount_requested,currency,Amount requested in the proposal (distinct from amount awarded),Financial; grant-specific — do not conflate across grants
+msnfp_award,amount_awarded,currency,Total amount awarded (may differ from amount requested),Financial; grant-specific — do not conflate across grants
 msnfp_disbursement,award_id,lookup,Parent award,Relationship
 msnfp_disbursement,amount,currency,Amount disbursed in a period,Financial
 msnfp_indicator,name,text,KPI / indicator name,Accelerator entity
@@ -24,8 +25,10 @@ msnfp_result,on_track,boolean,Whether the result meets target,Working interpreta
 msnfp_assessment,name,text,Structured assessment instrument,Accelerator entity
 msnfp_workitem,name,text,A tracked unit of work,Accelerator entity; generates measurable records
 msnfp_report,award_id,lookup,Award this report covers,Relationship
-msnfp_report,type,choice,Mid-year or final report,Reconstructed field
+msnfp_report,type,choice,Interim or final report,Reconstructed field
 msnfp_report,period,text,Reporting period,Reconstructed field
+msnfp_report,due_date,date,"Reporting deadline (e.g., interim due 2026-12-31; final within 30 days of the 12-month period)",Reconstructed field; grant-specific
+msnfp_report,evidence_type,choice,"Type of audit-ready supporting evidence retained (e.g., survey, case note, assessment)",Reconstructed field
 tr_goals,name,text,Custom goal record feeding outcome measures,Custom tr_ table
 tr_intakesurvey,captured_at,choice,Point of capture (intake),Custom tr_ table
 tr_exitsurvey,captured_at,choice,Point of capture (exit),Custom tr_ table

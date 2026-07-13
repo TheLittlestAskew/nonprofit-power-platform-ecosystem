@@ -6,7 +6,10 @@ readers: it shows the flow, not every table.
 
 > **Evidence tier:** Reconstructed. The stages and the entities named are
 > **verified** as present in the Tracking area; the end-to-end flow is a
-> structural reconstruction. KPI/measure counts are **pending verification.**
+> structural reconstruction. The grant measurement **design counts** (9 KPI
+> targets, 19 supporting items, 20 curated measures, 23 proposal objectives) are
+> **verified** from grant sources; deployed Dataverse indicator/measure record
+> counts remain **pending verification.**
 
 ## The Lifecycle
 
@@ -46,7 +49,17 @@ system: any number in a submitted report can be traced back to the program
 activity records that produced it. Full detail in
 [`../grants-outcomes/grant-lifecycle.md`](../grants-outcomes/grant-lifecycle.md).
 
+## Verified Grant Counts
+
+- The grant measurement matrix defined **9 headline KPI targets** and **19
+  supporting measurement and implementation items** across case management and
+  counseling. A curated reporting framework translated that work into **20
+  tracked measures**. The related 2026 proposal identified **23 measurable
+  objectives** and established interim and final reporting requirements. These
+  figures count different things and are **not** additive.
+
 ## Pending Verification
 
-- Exact counts of KPIs (`msnfp_indicator`) and measures
-  (`msnfp_measurementitem`) are **not** confirmed by any available source.
+- The count of `msnfp_indicator` and `msnfp_measurementitem` **records deployed
+  in Dataverse** is **not** confirmed by any available source. The verified
+  figures above describe the measurement *design*, not live record totals.

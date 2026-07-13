@@ -9,7 +9,10 @@ As sole systems developer and development operations administrator, I architecte
 - **129 custom Dataverse tables** using the `tr_` publisher prefix
 - **94 entities** organized within the primary model-driven application
 - **6 operational areas** connected through one environment
-- Custom grant KPI, outcomes, compliance, and reporting infrastructure
+- Custom grant KPI, outcomes, compliance, and reporting infrastructure —
+  measurement design verified at **9 headline KPI targets**, **19 supporting
+  measurement/implementation items**, a **20-measure** curated reporting
+  framework, and **23** proposal objectives
 - Structured community-resource and service-navigation data
 - Donation and payment reconciliation workflows
 - Power Automate flows, JavaScript web resources, and supporting documentation
@@ -107,6 +110,19 @@ The two headline counts measure different things and are both verified:
 
 See [`dataverse/inventory-summary.md`](dataverse/inventory-summary.md) and
 [`dataverse/application-sitemap.md`](dataverse/application-sitemap.md).
+
+### Grant measurement note
+
+The grant measurement matrix defined **nine headline KPI targets** and **19
+supporting measurement and implementation items** across case management and
+counseling. A curated reporting framework translated that work into **20 tracked
+measures**. The related 2026 proposal identified **23 measurable objectives** and
+established interim and final reporting requirements. These four figures count
+different things and are **not** additive. The 2026 proposal **requested
+$100,000** (a request, not an award); dollar figures are grant-specific and are
+not interchangeable between grants. See
+[`grants-outcomes/measurement-model.md`](grants-outcomes/measurement-model.md)
+and [`docs/evidence-register.md`](docs/evidence-register.md).
 
 ## Author
 

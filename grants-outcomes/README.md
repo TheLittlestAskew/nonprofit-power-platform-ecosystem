@@ -12,19 +12,21 @@ entities and custom `tr_` tables.
 
 ## What This Area Supported
 
-The Tracking area was built to support the full grant-outcomes cycle:
+The internal application area called **Tracking** was built to support the full
+grant-outcomes cycle:
 
 - **Impact-number collection** — capturing the counts and values that describe
   what programs delivered.
 - **Grant KPI tracking** — recording performance against funder-defined key
   performance indicators.
 - **Outcome measurement** — measuring change, not just activity.
-- **Grant compliance** — keeping deliverables, awards, and disbursements
+- **Compliance monitoring** — keeping deliverables, awards, and disbursements
   aligned with funder terms.
 - **Reporting preparation** — assembling the data behind each report.
-- **Mid-year and final reporting** — producing periodic and closeout reports.
-- **Audit-ready documentation** — retaining a traceable record from funder
-  requirement through to reported result.
+- **Interim and final reports** — producing periodic and closeout reports on the
+  funder's required cadence.
+- **Audit-ready supporting documentation** — retaining a traceable record from
+  funder requirement through to reported result.
 
 ## The Lifecycle
 
@@ -74,15 +76,31 @@ source):
 The `msnfp_*` entities are Microsoft **Nonprofit Accelerator** tables; the
 `tr_*` entities are **custom** tables built for this environment.
 
-## ⚠️ Pending Verification
+## Verified Grant Measurement Counts
 
-Specific counts of **KPIs** and **measures** (for example a "nine KPIs" or
-"twenty measures" figure) are **not verified**. No source file available to this
-build enumerates them; the indicator and measure definitions live in
-`msnfp_indicator` / `msnfp_measurementitem`, for which no data export was
-available. These counts are **pending verification** and must not be stated as
-fact until grounded in a source. See
-[`../docs/evidence-register.md`](../docs/evidence-register.md).
+Grounded in two private grant sources (see
+[`../docs/evidence-register.md`](../docs/evidence-register.md), Sources 6 and 7):
+
+> The grant measurement matrix defined nine headline KPI targets and 19
+> supporting measurement and implementation items across case management and
+> counseling. A curated reporting framework translated that work into 20 tracked
+> measures. The related 2026 proposal identified 23 measurable objectives and
+> established interim and final reporting requirements.
+
+Keep these three figures **distinct** — they describe different things and are
+**not** additive:
+
+| Figure | What it counts | Source |
+|---|---|---|
+| **9** headline KPI targets | Target-based KPIs (e.g., 70% to permanent housing, 28 weekly CM sessions) | Grant KPIs & Metrics matrix (verified) |
+| **19** supporting items | Additional outcome concepts, implementation notes, and open measurement-design questions | Grant KPIs & Metrics matrix (verified) |
+| **20** tracked measures | A curated reporting framework derived from the nine KPIs — *not* the raw matrix row count | Portfolio reporting framework (curated) |
+| **23** measurable objectives | Objectives listed in the 2026 grant proposal | Grantee Portal proposal (verified) |
+
+Still **pending verification:** the live record-level counts of
+`msnfp_indicator` and `msnfp_measurementitem` in Dataverse — no source in this
+build enumerates the deployed indicator/measure *rows*. The figures above verify
+the grant measurement **design**, not the count of configured Dataverse records.
 
 ## Out of Scope (for now)
 

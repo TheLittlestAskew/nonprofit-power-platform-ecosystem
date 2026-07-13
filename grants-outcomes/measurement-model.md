@@ -7,8 +7,11 @@ custom survey and goal tables.
 > **Evidence tier:** Reconstructed. The entities and their presence in the
 > Tracking area are **verified** from the sitemap source. How they are wired
 > together is a **working interpretation** based on the Nonprofit Accelerator's
-> standard impact-tracking model. Specific counts (KPIs, measures) are
-> **pending verification.**
+> standard impact-tracking model. The grant measurement **design counts** (9
+> headline KPI targets, 19 supporting items, 20 curated measures, 23 proposal
+> objectives) are now **verified** from two grant sources; the live Dataverse
+> `msnfp_indicator` / `msnfp_measurementitem` record counts remain **pending
+> verification.**
 
 ## The Entity Backbone
 
@@ -82,13 +85,34 @@ Every measure should resolve to:
 
 If a measure can't complete that chain, it isn't audit-ready.
 
-## ⚠️ Pending Verification
+## The Grant Measurement Matrix (verified)
 
-- **Number of KPIs / indicators:** pending verification (no source enumerates
-  `msnfp_indicator` records for this build).
-- **Number of measures:** pending verification (no source enumerates
-  `msnfp_measurementitem` records for this build).
-- Any specific "nine KPIs" / "twenty measures" figures discussed elsewhere are
-  **not** confirmed here and must not be presented as verified.
+The design behind the indicators and measures is now grounded in two private
+grant sources (see [`../docs/evidence-register.md`](../docs/evidence-register.md),
+Sources 6 and 7):
+
+> The grant measurement matrix defined nine headline KPI targets and 19
+> supporting measurement and implementation items across case management and
+> counseling. A curated reporting framework translated that work into 20 tracked
+> measures. The related 2026 proposal identified 23 measurable objectives and
+> established interim and final reporting requirements.
+
+These figures count **different things** and are **not** additive:
+
+- **9 headline KPI targets** — target-based KPIs (percentages and weekly session
+  counts) split across case management and counseling.
+- **19 supporting measurement and implementation items** — additional outcome
+  concepts, implementation notes, and unresolved measurement-design questions.
+  Not all 19 are finalized KPIs; several are open design questions.
+- **20 tracked measures** — a curated reporting framework built on the nine
+  headline KPIs. This is a *designed* framework, not the raw matrix row count.
+- **23 measurable objectives** — listed in the 2026 grant proposal.
+
+## ⚠️ Still Pending Verification
+
+- **Deployed indicator/measure record counts:** the number of `msnfp_indicator`
+  and `msnfp_measurementitem` **records configured in Dataverse** is still not
+  enumerated by any source in this build. The verified figures above describe the
+  grant measurement *design*, not the count of live Dataverse rows.
 
 See [`../docs/evidence-register.md`](../docs/evidence-register.md).

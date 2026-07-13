@@ -32,6 +32,13 @@ activities funded, the outcomes promised, and the reporting cadence.
   scaffolding in `msnfp_theoryofchange` and `msnfp_objective`.
 - **Why it matters:** every downstream measure should trace back to a specific
   funder requirement. If it doesn't, it's activity without accountability.
+- **Verified worked example (2026 proposal):** one related 2026 foundation
+  proposal **requested $100,000** (a request, *not* an awarded amount), proposed
+  serving **150** individuals, listed **23 measurable objectives**, and
+  established **interim** (due December 31, 2026) and **final** (due within 30
+  days of the 12-month grant period) reporting requirements. Dollar figures are
+  grant-specific: this $100,000 request must not be conflated with amounts from
+  other grants or reporting artifacts.
 
 ## Stage 2 — Program Deliverables
 
@@ -55,8 +62,15 @@ both **outputs** (what was done) and **outcomes** (what changed).
   (structured assessment instruments). Survey instruments feed measures from
   `tr_intakesurvey`, `tr_exitsurvey`, `tr_followupsurvey`, and
   `tr_casemeetingsurveys`.
-- ⚠️ **Pending verification:** the exact number of KPIs and measures is not
-  confirmed by any available source and is **not stated here as fact.**
+- **Verified design counts:** the grant measurement matrix defined **9 headline
+  KPI targets** and **19 supporting measurement and implementation items** across
+  case management and counseling; a curated reporting framework translated that
+  work into **20 tracked measures**. These count different things and are **not**
+  additive. See [`measurement-model.md`](measurement-model.md).
+- ⚠️ **Still pending verification:** the number of `msnfp_indicator` /
+  `msnfp_measurementitem` **records deployed in Dataverse** is not enumerated by
+  any available source; the counts above describe the measurement *design*, not
+  live record totals.
 
 ## Stage 4 — Dataverse Records
 

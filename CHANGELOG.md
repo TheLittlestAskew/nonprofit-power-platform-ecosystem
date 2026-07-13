@@ -8,6 +8,36 @@ not released software).
 
 ## [Unreleased]
 
+### Changed
+
+- Refreshed the Dataverse inventory from the revised source descriptions.
+  Reclassified relationship/intersect tables by **schema structure** (a `tr_`
+  table embedding a second entity reference such as `tr_msnfp_award_msnfp_indicator`)
+  and treated literal `N/A` descriptions as no-description. Classification
+  distribution moved from core 67 / support 9 / intersect 8 / unclear 45 to
+  **core 50 / support 9 / intersect 25 / unclear 45** (total unchanged at 129).
+
+### Security
+
+- Generalized especially sensitive clinical / behavioral-health schema names in
+  the public catalog and summary. PHQ-9 and GAD-7 → *Behavioral-health
+  assessment*; Diagnosis / Diagnostic Impressions → *Clinical classification*;
+  Mental Status → *Mental-status assessment*; Treatment Goals → *Counseling
+  treatment goals*; Medications / Med Log → *Medication-management record*. The
+  exact internal schema identifiers are withheld from published files; the fact
+  that each domain existed is preserved. Documented in `SECURITY.md` and
+  `docs/evidence-register.md`.
+
+### Verified
+
+- Grant measurement design from two private grant sources: **9 headline KPI
+  targets**, **19 supporting measurement/implementation items**, a curated
+  **20-measure** reporting framework, and **23 measurable objectives** in the
+  2026 proposal. The 2026 proposal **requested $100,000** (a request, not an
+  award), proposed serving **150** individuals, and set an interim report
+  (due 2026-12-31) and a final report (within 30 days of the 12-month period).
+  These counts are distinct and not additive; dollar figures are grant-specific.
+
 ### Added
 
 - Project governance and agent-instruction files: `AGENTS.md`, `CLAUDE.md`,
