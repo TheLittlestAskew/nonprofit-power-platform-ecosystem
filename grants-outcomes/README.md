@@ -1,55 +1,91 @@
 # Outcomes, Grants & Compliance
 
-This module documents how funder requirements were translated into measurable program activity, Dataverse records, analysis, and compliance reporting.
+The flagship module of this case study. It documents how the environment turns
+**funder requirements** into **measured impact** and **audit-ready compliance
+reporting**, using a combination of Microsoft Nonprofit Accelerator impact
+entities and custom `tr_` tables.
 
-## Core Workflow
+> **Internal origin:** In the model-driven application, this work lives in the
+> area originally named **"Tracking."** See
+> [`../dataverse/application-sitemap.md`](../dataverse/application-sitemap.md)
+> for the full area → group → entity structure.
+
+## What This Area Supported
+
+The Tracking area was built to support the full grant-outcomes cycle:
+
+- **Impact-number collection** — capturing the counts and values that describe
+  what programs delivered.
+- **Grant KPI tracking** — recording performance against funder-defined key
+  performance indicators.
+- **Outcome measurement** — measuring change, not just activity.
+- **Grant compliance** — keeping deliverables, awards, and disbursements
+  aligned with funder terms.
+- **Reporting preparation** — assembling the data behind each report.
+- **Mid-year and final reporting** — producing periodic and closeout reports.
+- **Audit-ready documentation** — retaining a traceable record from funder
+  requirement through to reported result.
+
+## The Lifecycle
 
 ```text
-Funder Requirement
+FUNDER REQUIREMENTS
         ↓
-Program Deliverable
+PROGRAM DELIVERABLES
         ↓
-KPI
+KPIs AND MEASURES
         ↓
-Measure Definition
+DATAVERSE RECORDS
         ↓
-Dataverse Record
+IMPACT ANALYSIS
         ↓
-Impact Analysis
-        ↓
-Mid-Year / Final Report
+COMPLIANCE REPORTING
 ```
 
-## What This Module Will Demonstrate
+Full walkthrough: [`grant-lifecycle.md`](grant-lifecycle.md).
 
-- Proposal and program requirements converted into trackable obligations
-- KPI and outcome definitions aligned to funder language
-- Measures assigned to responsible programs or departments
-- Live operational data structured for analysis and reporting
-- Grant-compliance evidence maintained in an audit-ready system
-- Mid-year and final narratives supported by measurable program records
-- Reporting outputs designed for funders, leadership, and organizational learning
+## Files in This Module
 
-## Initial Evidence Set
+| File | What it covers | Evidence tier |
+|---|---|---|
+| [`grant-lifecycle.md`](grant-lifecycle.md) | End-to-end lifecycle, stage by stage | Reconstructed from verified structure |
+| [`measurement-model.md`](measurement-model.md) | How theory-of-change, indicators, and measures are modeled | Reconstructed from verified structure |
+| [`reporting-workflow.md`](reporting-workflow.md) | How reports are prepared and produced | Reconstructed / working interpretation |
+| [`data-dictionary.csv`](data-dictionary.csv) | Fields of the key measurement entities | Reconstructed |
+| [`sample-records.json`](sample-records.json) | **Fictional** sample records illustrating structure | Invented sample |
 
-- Grant application and award documentation
-- Program budgets
-- KPI and outcomes framework
-- Case-management and counseling measures
-- Employment, benefits, demographic, and discharge analyses
-- Mid-year reporting materials
-- Fundraising and grant dashboard artifacts
+## How This Was Built (Data Basis)
 
-## Planned Files
+The **Tracking** area surfaces these entities (verified from the sitemap
+source):
 
-- `grant-lifecycle.md`
-- `kpi-framework.md`
-- `measure-dictionary.csv`
-- `reporting-workflow.md`
-- `sample-measures.json`
-- `data-lineage.md`
-- `screenshots/`
+- **Mission group** (impact measurement): `msnfp_theoryofchange`,
+  `msnfp_objective`, `msnfp_deliveryframework`, `msnfp_indicator`,
+  `msnfp_indicatorvalue`, `msnfp_result`, `msnfp_operation`,
+  `msnfp_programitem`, `msnfp_assessment`, `msnfp_workitem`.
+- **Grant Management group**: `msnfp_award`, `msnfp_disbursement`, `msnfp_item`,
+  `msnfp_measurementitem`, `msnfp_report`, plus standard `report` and `account`,
+  and custom `tr_goals`.
+- **Programs group** (custom): `tr_adminreporting`, `tr_counselingreporting`,
+  `tr_busfare`, `tr_farmbus`.
+- **Surveys group** (custom): `tr_intakesurvey`, `tr_exitsurvey`,
+  `tr_followupsurvey`, `tr_casemeetingsurveys`, `tr_surveylinks`.
 
-## Publication Standard
+The `msnfp_*` entities are Microsoft **Nonprofit Accelerator** tables; the
+`tr_*` entities are **custom** tables built for this environment.
 
-Examples in this module will use invented records and reconstructed visuals. Public grant and program information may be referenced, but production records and internal identifiers will not be published.
+## ⚠️ Pending Verification
+
+Specific counts of **KPIs** and **measures** (for example a "nine KPIs" or
+"twenty measures" figure) are **not verified**. No source file available to this
+build enumerates them; the indicator and measure definitions live in
+`msnfp_indicator` / `msnfp_measurementitem`, for which no data export was
+available. These counts are **pending verification** and must not be stated as
+fact until grounded in a source. See
+[`../docs/evidence-register.md`](../docs/evidence-register.md).
+
+## Out of Scope (for now)
+
+Public resource-directory records (`tr_resourcecollection`, `tr_commongoals`)
+are **not** published here. Even where the underlying information may be public,
+it requires a separate review first.
