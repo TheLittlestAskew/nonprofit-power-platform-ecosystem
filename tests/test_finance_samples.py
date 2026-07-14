@@ -4,6 +4,9 @@ All fixtures are INVENTED. These exercise ``scan_for_real_identifiers`` and
 ``validate_samples`` from ``scripts/validate_finance_samples.py`` and also assert
 that the committed ``development-finance/sample-records.json`` passes.
 
+The email fixtures use RFC 6761 reserved domains (``example.invalid`` is the only
+accepted one; ``example.com`` and real domains must be rejected).
+
 Run with:  python -m pytest tests/ -q
 """
 from __future__ import annotations
@@ -19,27 +22,53 @@ import validate_finance_samples as vfs  # noqa: E402
 
 
 def _good_doc():
+    scenarios = [
+        {"id": f"SAMPLE-SCN-{i:02d}", "scenario": name}
+        for i, name in enumerate(sorted(vfs._REQUIRED_SCENARIOS), start=1)
+    ]
+    # the reconciled scenario needs a status
+    for s in scenarios:
+        if s["scenario"] == "reconciled_relationship":
+            s["reconciliation_status"] = "reconciled"
     return {
         "sample_data": True,
         "deposits": [{"id": "SAMPLE-DEP-001", "net_total": 1209}],
         "transactions": [{"id": "SAMPLE-CHG-001", "deposit_reference": "SAMPLE-DEP-001"}],
-        "donor_match_examples": [{"id": "SAMPLE-MATCH-001", "match_signal": "existing processor-customer relationship"}],
-        "exception_examples": [{"id": "SAMPLE-EXC-001", "reason": "no matching donor found"}],
+        "scenarios": scenarios,
     }
 
 
 # --------------------------------------------------------------------------- #
-# Real-identifier scanning (negative safety check)
+# Email domain policy
+# --------------------------------------------------------------------------- #
+
+def test_example_invalid_accepted():
+    assert vfs.scan_for_real_identifiers({"e": "sample.donor@example.invalid"}) == []
+
+
+def test_example_com_rejected():
+    problems = vfs.scan_for_real_identifiers({"e": "sample.donor@example.com"})
+    assert any("email domain" in p for p in problems)
+
+
+def test_real_looking_domain_rejected():
+    problems = vfs.scan_for_real_identifiers({"e": "donor@gmail.com"})
+    assert any("email domain" in p for p in problems)
+
+
+def test_subdomain_of_example_invalid_rejected():
+    # domain must be exactly example.invalid, not a subdomain
+    problems = vfs.scan_for_real_identifiers({"e": "x@mail.example.invalid"})
+    assert any("email domain" in p for p in problems)
+
+
+# --------------------------------------------------------------------------- #
+# Other real-identifier scanning
 # --------------------------------------------------------------------------- #
 
 def test_flags_real_stripe_id():
     problems = vfs.scan_for_real_identifiers({"x": "ch_3PabcdEFGH12345"})
     assert any("Stripe id" in p for p in problems)
-
-
-def test_flags_email():
-    problems = vfs.scan_for_real_identifiers({"x": "donor@example.com"})
-    assert any("email" in p for p in problems)
 
 
 def test_flags_guid():
@@ -67,36 +96,45 @@ def test_good_doc_validates():
 def test_missing_sample_flag_fails():
     doc = _good_doc()
     doc["sample_data"] = False
-    problems = vfs.validate_samples(doc)
-    assert any("sample_data" in p for p in problems)
+    assert any("sample_data" in p for p in vfs.validate_samples(doc))
 
 
 def test_missing_section_fails():
     doc = _good_doc()
-    del doc["exception_examples"]
-    problems = vfs.validate_samples(doc)
-    assert any("exception_examples" in p for p in problems)
+    del doc["deposits"]
+    assert any("deposits" in p for p in vfs.validate_samples(doc))
 
 
 def test_id_without_fiction_marker_fails():
     doc = _good_doc()
-    doc["deposits"][0]["id"] = "DEP-001"  # no SAMPLE/FICTIONAL marker
-    problems = vfs.validate_samples(doc)
-    assert any("fiction marker" in p for p in problems)
+    doc["deposits"][0]["id"] = "DEP-001"
+    assert any("fiction marker" in p for p in vfs.validate_samples(doc))
 
 
-def test_match_example_missing_signal_fails():
+def test_missing_lower_confidence_scenario_fails():
     doc = _good_doc()
-    del doc["donor_match_examples"][0]["match_signal"]
-    problems = vfs.validate_samples(doc)
-    assert any("match_signal" in p for p in problems)
+    doc["scenarios"] = [s for s in doc["scenarios"] if s["scenario"] != "lower_confidence_review"]
+    assert any("lower_confidence_review" in p for p in vfs.validate_samples(doc))
 
 
-def test_embedded_email_in_sample_fails():
+def test_missing_duplicate_prevention_scenario_fails():
+    doc = _good_doc()
+    doc["scenarios"] = [s for s in doc["scenarios"] if s["scenario"] != "duplicate_detected"]
+    assert any("duplicate_detected" in p for p in vfs.validate_samples(doc))
+
+
+def test_missing_reconciliation_status_fails():
+    doc = _good_doc()
+    for s in doc["scenarios"]:
+        if s["scenario"] == "reconciled_relationship":
+            s.pop("reconciliation_status", None)
+    assert any("reconciliation_status" in p for p in vfs.validate_samples(doc))
+
+
+def test_embedded_bad_email_domain_in_sample_fails():
     doc = _good_doc()
     doc["transactions"][0]["donor_display"] = "real.person@example.com"
-    problems = vfs.validate_samples(doc)
-    assert any("email" in p for p in problems)
+    assert any("email domain" in p for p in vfs.validate_samples(doc))
 
 
 # --------------------------------------------------------------------------- #

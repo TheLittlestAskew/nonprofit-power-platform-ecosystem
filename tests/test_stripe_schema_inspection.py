@@ -1,8 +1,9 @@
 """Unit tests for the sanitized Stripe schema inspector.
 
 All fixtures are INVENTED. No production data is used. These tests exercise
-``categorize_field``, ``safe_field_report``, and ``load_charge_sample`` from
-``scripts/inspect_stripe_schema.py`` and confirm the inspector never emits values.
+``categorize_field``, ``iter_record_paths``, ``safe_field_report``, and
+``load_charge_sample`` from ``scripts/inspect_stripe_schema.py`` and confirm the
+inspector reports nested structure while never emitting a value.
 
 Run with:  python -m pytest tests/ -q
 """
@@ -19,7 +20,7 @@ import inspect_stripe_schema as insp  # noqa: E402
 
 
 # --------------------------------------------------------------------------- #
-# Field categorization
+# Field categorization (leaf-based, dotted paths and [] markers)
 # --------------------------------------------------------------------------- #
 
 def test_personal_fields():
@@ -28,7 +29,7 @@ def test_personal_fields():
 
 
 def test_payment_method_fields():
-    for name in ("last4", "fingerprint", "exp_month", "brand", "cvc_check"):
+    for name in ("source.last4", "source.fingerprint", "exp_month", "brand", "cvc_check"):
         assert insp.categorize_field(name) == insp.CAT_PAYMENT, name
 
 
@@ -38,7 +39,7 @@ def test_identifier_fields():
 
 
 def test_financial_fields():
-    for name in ("amount", "fee", "net", "currency"):
+    for name in ("amount", "balance_transaction.fee", "balance_transaction.net", "currency"):
         assert insp.categorize_field(name) == insp.CAT_FINANCIAL, name
 
 
@@ -48,7 +49,7 @@ def test_pagination_fields():
 
 
 def test_metadata_fields():
-    for name in ("metadata", "statement_descriptor", "form_name"):
+    for name in ("metadata.form_name", "statement_descriptor", "metadata"):
         assert insp.categorize_field(name) == insp.CAT_METADATA, name
 
 
@@ -57,58 +58,129 @@ def test_unknown_defaults_to_structural():
         assert insp.categorize_field(name) == insp.CAT_STRUCTURAL, name
 
 
+def test_list_marker_leaf_is_stripped():
+    # refunds.data[] -> leaf 'data' -> structural; refunds.data[].amount -> financial
+    assert insp.categorize_field("refunds.data[]") == insp.CAT_STRUCTURAL
+    assert insp.categorize_field("refunds.data[].amount") == insp.CAT_FINANCIAL
+
+
 def test_empty_name_is_structural_not_error():
     assert insp.categorize_field("") == insp.CAT_STRUCTURAL
     assert insp.categorize_field("   ") == insp.CAT_STRUCTURAL
 
 
-def test_sensitive_categories_are_not_value_publishable():
-    for cat in (insp.CAT_PERSONAL, insp.CAT_IDENTIFIER, insp.CAT_PAYMENT, insp.CAT_METADATA, insp.CAT_FINANCIAL):
-        assert insp.VALUE_PUBLISHABLE[cat] is False
-    for cat in (insp.CAT_STRUCTURAL, insp.CAT_PAGINATION):
-        assert insp.VALUE_PUBLISHABLE[cat] is True
-
-
 # --------------------------------------------------------------------------- #
-# Safe report (no values)
+# Nested path discovery
 # --------------------------------------------------------------------------- #
 
-def _invented_records():
+def _nested_records():
     return [
-        {"object": "charge", "amount": 500, "paid": True,
-         "billing_details": {"email": "a@example.test"}, "id": "SAMPLE-CHG-1"},
-        {"object": "charge", "amount": 750, "paid": True,
-         "billing_details": {"email": None}, "id": "SAMPLE-CHG-2"},
+        {
+            "object": "charge",
+            "amount": 500,
+            "billing_details": {"email": "a@example.invalid", "name": "X"},
+            "balance_transaction": {"amount": 500, "fee": 16, "net": 484},
+            "metadata": {"form_name": "spring"},
+            "source": {"fingerprint": "zzz", "last4": "4242"},
+            "refunds": {"object": "list", "data": []},
+        },
+        {
+            "object": "charge",
+            "amount": 750,
+            "billing_details": {"email": None, "name": "Y"},
+            # no balance_transaction on this record
+            "metadata": {"form_name": "monthly"},
+            "source": {"fingerprint": "yyy", "last4": "1881"},
+            "refunds": {"object": "list", "data": []},
+        },
     ]
 
 
-def test_safe_field_report_has_no_values():
-    report = insp.safe_field_report(_invented_records())
-    # The report must contain only field/category/type/presence metadata.
-    allowed = {"field", "category", "types", "present_pct", "value_publishable"}
-    for row in report:
+def test_nested_paths_discovered():
+    fields = {r["field"] for r in insp.safe_field_report(_nested_records())}
+    for path in ("billing_details.email", "balance_transaction.amount",
+                 "balance_transaction.fee", "balance_transaction.net",
+                 "metadata.form_name", "source.fingerprint"):
+        assert path in fields, path
+    # container path is distinguished from its children
+    assert "billing_details" in fields
+
+
+def test_nested_sensitive_category():
+    report = {r["field"]: r for r in insp.safe_field_report(_nested_records())}
+    assert report["source.fingerprint"]["category"] == insp.CAT_PAYMENT
+    assert report["billing_details.email"]["category"] == insp.CAT_PERSONAL
+    assert report["balance_transaction.amount"]["category"] == insp.CAT_FINANCIAL
+    assert report["metadata.form_name"]["category"] == insp.CAT_METADATA
+
+
+def test_nested_values_never_serialized():
+    blob = json.dumps(insp.safe_field_report(_nested_records()))
+    for value in ("a@example.invalid", "spring", "monthly", "zzz", "yyy",
+                  "4242", "1881", "500", "750", "484"):
+        assert value not in blob, value
+
+
+def test_report_keys_are_structure_only():
+    allowed = {"field", "category", "types", "present_pct"}
+    for row in insp.safe_field_report(_nested_records()):
         assert set(row.keys()) == allowed
-    # No invented value should appear anywhere in the serialized report.
+    # No publishable-value flag exists anymore.
+    assert not hasattr(insp, "VALUE_PUBLISHABLE")
+
+
+def test_presence_pct_with_nested_absent():
+    report = {r["field"]: r for r in insp.safe_field_report(_nested_records())}
+    # balance_transaction present in 1 of 2 records
+    assert report["balance_transaction.amount"]["present_pct"] == 50.0
+    # billing_details present in both
+    assert report["billing_details.name"]["present_pct"] == 100.0
+
+
+def test_null_and_types_are_captured_without_values():
+    report = {r["field"]: r for r in insp.safe_field_report(_nested_records())}
+    # email is str in one record, null in the other -> both types, no values
+    assert set(report["billing_details.email"]["types"]) == {"null", "str"}
+
+
+# --------------------------------------------------------------------------- #
+# Malformed input safety
+# --------------------------------------------------------------------------- #
+
+def test_malformed_list_items_do_not_crash_or_expose():
+    records = [
+        {"object": "charge", "amount": 1, "refunds": {"data": ["oops-string", 123, None]}},
+        "not-a-dict-record",
+        None,
+        {"object": "charge", "tags": [{"k": "v-secret"}]},
+    ]
+    report = insp.safe_field_report(records)  # must not raise
     blob = json.dumps(report)
-    assert "500" not in blob and "750" not in blob
-    assert "example.test" not in blob and "SAMPLE-CHG-1" not in blob
+    # scalar list-item VALUES must not leak
+    assert "oops-string" not in blob and "v-secret" not in blob and "123" not in blob
+    # the list-item path is still discovered (structure), typed only
+    fields = {r["field"] for r in report}
+    assert "refunds.data[]" in fields
+    assert "tags[].k" in fields
 
 
-def test_safe_field_report_presence_and_category():
-    report = {r["field"]: r for r in insp.safe_field_report(_invented_records())}
-    assert report["amount"]["present_pct"] == 100.0
-    assert report["amount"]["category"] == insp.CAT_FINANCIAL
-    assert report["id"]["category"] == insp.CAT_IDENTIFIER
-    assert report["id"]["value_publishable"] is False
-
-
-def test_safe_field_report_empty():
-    assert insp.safe_field_report([]) == []
+def test_iter_record_paths_yields_only_types():
+    rec = {"a": 1, "b": {"c": "secret"}, "d": [ "x", {"e": 2} ]}
+    pairs = list(insp.iter_record_paths(rec, ""))
+    emitted = {p for p, _ in pairs}
+    types = {t for _, t in pairs}
+    assert "b.c" in emitted and "d[]" in emitted and "d[].e" in emitted
+    # only JSON type names are ever emitted as the second element
+    assert types <= {"int", "str", "dict", "list", "float", "bool", "null"}
 
 
 # --------------------------------------------------------------------------- #
 # Loading / shape validation
 # --------------------------------------------------------------------------- #
+
+def test_safe_field_report_empty():
+    assert insp.safe_field_report([]) == []
+
 
 def test_load_missing_raises(tmp_path):
     try:

@@ -75,8 +75,10 @@ Architecture diagram:
 ## Reproducible tooling
 
 - `../scripts/inspect_stripe_schema.py` — reads the private Stripe sample and
-  reports **sanitized structure only** (field names, privacy category, presence
-  %). It never prints or writes a field value.
+  reports **sanitized structure only**: dotted field paths (including nested
+  objects and list items), privacy category, observed JSON types, presence %, and
+  aggregate record/object-type counts. **No production record value is published**
+  — it never prints or writes a field value.
 - `../scripts/validate_finance_samples.py` — validates that
   `sample-records.json` stays fictional and complete.
 

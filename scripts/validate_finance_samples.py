@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """Validate the public development-finance sample records.
 
-Checks ``development-finance/sample-records.json`` to guarantee it is safe to
-publish: it must be flagged as sample data, must contain only clearly-fictional
-values, and must demonstrate the reconciliation structures the module documents
-(deposit, transaction, donor match, and exception).
+Guarantees ``development-finance/sample-records.json`` is safe to publish: it must
+be flagged as sample data, contain only clearly-fictional values, demonstrate the
+eight required reconciliation scenarios, and use only the reserved
+``@example.invalid`` domain for any email-shaped value.
 
-This validator is what keeps invented demonstration data from ever drifting into
-something that resembles production. It is a **positive** check (required
-structure present) and a **negative** check (no real-looking identifiers).
+**No production record value is published.** This validator is a positive check
+(required structure present) and a negative check (no real-looking identifier,
+email domain, GUID, or card run).
 
 Usage:
     python scripts/validate_finance_samples.py
@@ -25,18 +25,32 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SAMPLE_FILE = REPO_ROOT / "development-finance" / "sample-records.json"
 
-# Patterns that would indicate REAL processor / personal data leaked into a
-# sample. Sample values must never match these.
+# Real-data indicators. Sample values must never match these.
 _REAL_STRIPE_ID = re.compile(r"\b(ch|po|cus|txn|pi|acct|tok|re|py)_[A-Za-z0-9]{8,}\b")
 _EMAIL = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
 _GUID = re.compile(r"\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b")
 _CARD = re.compile(r"\b(?:\d[ -]?){13,19}\b")
 
-# A fictional value must be recognizable as invented. We accept these markers.
-_FICTION_MARKERS = ("SAMPLE", "FICTIONAL", "EXAMPLE", "sample")
+# The ONLY email domain permitted in the committed sample (RFC 6761 reserved).
+_ALLOWED_EMAIL_DOMAIN = "example.invalid"
 
-# Structures the sample must demonstrate (top-level keys).
-_REQUIRED_KEYS = ("deposits", "transactions", "donor_match_examples", "exception_examples")
+# A fictional value must be recognizable as invented.
+_FICTION_MARKERS = ("SAMPLE", "FICTIONAL", "EXAMPLE")
+
+# Structures the sample must demonstrate (non-empty top-level lists).
+_REQUIRED_SECTIONS = ("deposits", "transactions", "scenarios")
+
+# The eight reconciliation scenarios that must each appear in ``scenarios``.
+_REQUIRED_SCENARIOS = frozenset({
+    "high_confidence_auto_match",
+    "lower_confidence_review",
+    "unmatched",
+    "multiple_candidate_ambiguity",
+    "duplicate_detected",
+    "payout_as_deposit",
+    "transaction_linked_to_deposit",
+    "reconciled_relationship",
+})
 
 
 def _walk_strings(obj):
@@ -51,22 +65,29 @@ def _walk_strings(obj):
             yield from _walk_strings(v)
 
 
-def scan_for_real_identifiers(doc) -> list[str]:
-    """Return a list of problems if any real-looking identifier appears.
+def _email_domain(email: str) -> str:
+    return email.rsplit("@", 1)[-1].strip().lower()
 
-    Flags real Stripe id patterns, email addresses, GUIDs, and card-like digit
-    runs. Fictional sample ids (e.g. ``SAMPLE-CHG-001``) do not match these.
+
+def scan_for_real_identifiers(doc) -> list[str]:
+    """Return problems if any real-looking identifier or email domain appears.
+
+    Emails are rejected by default; an address whose domain is exactly
+    ``example.invalid`` is allowed. Any other domain (``example.com``, real
+    domains) is flagged. Real Stripe id patterns, GUIDs, and card-like digit runs
+    are always flagged. Fictional sample ids (e.g. ``SAMPLE-CHG-001``) do not
+    match these.
     """
     problems: list[str] = []
     for s in _walk_strings(doc):
+        for m in _EMAIL.finditer(s):
+            if _email_domain(m.group(0)) != _ALLOWED_EMAIL_DOMAIN:
+                problems.append(f"email domain not '@{_ALLOWED_EMAIL_DOMAIN}' in a sample string")
         if _REAL_STRIPE_ID.search(s):
-            problems.append(f"real-looking Stripe id pattern in a sample string (len={len(s)})")
-        if _EMAIL.search(s):
-            problems.append("email-address pattern in a sample string")
+            problems.append("real-looking Stripe id pattern in a sample string")
         if _GUID.search(s):
             problems.append("GUID pattern in a sample string")
-        if _CARD.search(s) and any(c.isdigit() for c in s):
-            # Avoid flagging short ids; only long digit runs.
+        if _CARD.search(s):
             digits = re.sub(r"\D", "", s)
             if len(digits) >= 13:
                 problems.append("card-like digit run in a sample string")
@@ -83,23 +104,30 @@ def validate_samples(doc) -> list[str]:
     if doc.get("sample_data") is not True:
         problems.append("missing or false 'sample_data': true flag")
 
-    for key in _REQUIRED_KEYS:
+    for key in _REQUIRED_SECTIONS:
         val = doc.get(key)
         if not isinstance(val, list) or not val:
             problems.append(f"required section '{key}' missing or empty")
 
-    # Every deposit/transaction id should carry a fiction marker.
-    for section in ("deposits", "transactions"):
+    # Every deposit/transaction/scenario id should carry a fiction marker.
+    for section in ("deposits", "transactions", "scenarios"):
         for i, rec in enumerate(doc.get(section, []) or []):
             rid = rec.get("id", "") if isinstance(rec, dict) else ""
-            if not any(m in str(rid) for m in _FICTION_MARKERS):
+            if not any(m in str(rid).upper() for m in _FICTION_MARKERS):
                 problems.append(f"{section}[{i}] id '{rid}' lacks a fiction marker (e.g. SAMPLE-)")
 
-    # Behavioral/PII demonstration must stay generalized: match examples should
-    # describe a signal, not a real person.
-    for i, rec in enumerate(doc.get("donor_match_examples", []) or []):
-        if isinstance(rec, dict) and "match_signal" not in rec:
-            problems.append(f"donor_match_examples[{i}] missing 'match_signal' (keep matching generalized)")
+    # All eight reconciliation scenarios must be present.
+    present = {
+        rec.get("scenario") for rec in (doc.get("scenarios", []) or []) if isinstance(rec, dict)
+    }
+    for name in sorted(_REQUIRED_SCENARIOS - present):
+        problems.append(f"missing required scenario: '{name}'")
+
+    # A reconciled relationship must actually declare a reconciliation status.
+    for i, rec in enumerate(doc.get("scenarios", []) or []):
+        if isinstance(rec, dict) and rec.get("scenario") == "reconciled_relationship":
+            if not rec.get("reconciliation_status"):
+                problems.append(f"scenarios[{i}] 'reconciled_relationship' missing 'reconciliation_status'")
 
     problems.extend(scan_for_real_identifiers(doc))
     return problems
@@ -121,7 +149,8 @@ def main() -> int:
         for p in problems:
             sys.stderr.write(f"  - {p}\n")
         return 1
-    print(f"OK: {SAMPLE_FILE.relative_to(REPO_ROOT)} is valid, fictional, and complete.")
+    print(f"OK: {SAMPLE_FILE.relative_to(REPO_ROOT)} is valid, fictional, and complete "
+          f"(all {len(_REQUIRED_SCENARIOS)} scenarios present).")
     return 0
 
 

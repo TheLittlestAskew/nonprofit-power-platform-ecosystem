@@ -1,9 +1,17 @@
 {
   "sample_data": true,
-  "_notice": "ALL RECORDS BELOW ARE FICTIONAL. This file illustrates the STRUCTURE of the Stripe-to-Dataverse reconciliation model (payout->Deposit, charge->Transaction, donor matching, and exceptions). It contains no production data, no real donor, no real Stripe object, and no real amount. Every id, name, and value was invented for demonstration.",
-  "_evidence_tier": "Invented sample. Field concepts reconstruct the documented model; values are fictional. Sensitive Stripe fields are represented only by generalized placeholders, never real values.",
-  "_model_reference": "See development-finance/reconciliation-lifecycle.md, matching-model.md, and data-dictionary.csv.",
+  "_notice": "ALL RECORDS BELOW ARE FICTIONAL. This file illustrates the STRUCTURE of the Stripe-to-Dataverse reconciliation model (payout->Deposit, charge->Transaction, donor matching, exceptions, duplicate prevention, and reconciliation). It contains no production data, no real donor, no real Stripe object, and no real amount. Every id, name, and value was invented for demonstration.",
+  "_evidence_tier": "Invented sample. Field concepts reconstruct the documented model; values are fictional. No production record value is represented.",
+  "_model_reference": "See development-finance/reconciliation-lifecycle.md, matching-model.md, exception-handling.md, and data-dictionary.csv.",
+  "_confidence_note": "Confidence labels below (high/medium/low) are INVENTED demonstrations for readability. They are NOT the historical four-tier thresholds, which are not preserved and are not reconstructed here.",
   "reporting_period": "SAMPLE-PERIOD (fictional)",
+  "normalized_email_example": {
+    "id": "SAMPLE-EMAIL-001",
+    "raw_billing_email": "SAMPLE.Donor@Example.Invalid",
+    "raw_receipt_email_fallback": "",
+    "normalized_email": "sample.donor@example.invalid",
+    "note": "Fictional. Shows trim + lowercase normalization concept only. The only email domain used in this sample is the RFC-reserved example.invalid; no real address appears."
+  },
   "deposits": [
     {
       "id": "SAMPLE-DEP-001",
@@ -31,7 +39,8 @@
       "payment_method": "card (brand withheld in samples)",
       "campaign_source": "SAMPLE-FORM-SPRING-APPEAL",
       "recurring": false,
-      "match_status": "auto-matched"
+      "match_status": "auto-matched",
+      "reconciliation_status": "reconciled"
     },
     {
       "id": "SAMPLE-CHG-002",
@@ -46,47 +55,79 @@
       "payment_method": "card (brand withheld in samples)",
       "campaign_source": "SAMPLE-FORM-MONTHLY-GIVING",
       "recurring": true,
-      "match_status": "auto-matched"
+      "match_status": "auto-matched",
+      "reconciliation_status": "reconciled"
     }
   ],
-  "donor_match_examples": [
+  "scenarios": [
     {
-      "id": "SAMPLE-MATCH-001",
+      "id": "SAMPLE-SCN-01",
+      "scenario": "high_confidence_auto_match",
+      "confidence_label": "high (invented)",
       "match_signal": "existing processor-customer relationship",
-      "outcome": "linked to existing Contact",
-      "note": "Fictional. Illustrates matching by a stored processor-customer link. No real ids."
+      "outcome": "auto-matched to existing Contact",
+      "note": "Fictional. Illustrates the strongest matching signal. Confidence label is invented, not a historical threshold."
     },
     {
-      "id": "SAMPLE-MATCH-002",
-      "match_signal": "normalized billing/receipt email",
-      "outcome": "linked to existing Contact",
-      "note": "Fictional. Email normalization (trim + lowercase) is shown as a concept only; no real email value is stored here."
-    },
-    {
-      "id": "SAMPLE-MATCH-003",
+      "id": "SAMPLE-SCN-02",
+      "scenario": "lower_confidence_review",
+      "confidence_label": "medium (invented)",
       "match_signal": "billing name plus form/invoice metadata",
-      "outcome": "linked to existing Contact",
-      "note": "Fictional. Illustrates a secondary identifying signal. Exact tier order is not preserved and is not invented."
+      "outcome": "candidate proposed, routed for human review",
+      "note": "Fictional. A weaker signal proposes a candidate but does not auto-commit."
+    },
+    {
+      "id": "SAMPLE-SCN-03",
+      "scenario": "unmatched",
+      "match_signal": "none resolved",
+      "outcome": "controlled new-Contact creation with review",
+      "note": "Fictional. No signal resolved to an existing Contact."
+    },
+    {
+      "id": "SAMPLE-SCN-04",
+      "scenario": "multiple_candidate_ambiguity",
+      "match_signal": "normalized email matched more than one Contact",
+      "outcome": "held for human review",
+      "note": "Fictional. Ambiguous matches leave the automatic path by design."
+    },
+    {
+      "id": "SAMPLE-SCN-05",
+      "scenario": "duplicate_detected",
+      "match_signal": "processor identifier already imported",
+      "outcome": "skipped (existing Transaction updated, not duplicated)",
+      "note": "Fictional. Idempotency check by processor identifier prevents duplicates on rerun."
+    },
+    {
+      "id": "SAMPLE-SCN-06",
+      "scenario": "payout_as_deposit",
+      "deposit_reference": "SAMPLE-DEP-001",
+      "outcome": "Stripe payout represented as a Dataverse Deposit",
+      "note": "Fictional. A payout becomes the bank-level Deposit record."
+    },
+    {
+      "id": "SAMPLE-SCN-07",
+      "scenario": "transaction_linked_to_deposit",
+      "transaction_reference": "SAMPLE-CHG-001",
+      "deposit_reference": "SAMPLE-DEP-001",
+      "outcome": "Transaction bound to its Deposit via the Dataverse identifier",
+      "note": "Fictional. Links a charge-derived Transaction to its payout-derived Deposit."
+    },
+    {
+      "id": "SAMPLE-SCN-08",
+      "scenario": "reconciled_relationship",
+      "transaction_reference": "SAMPLE-CHG-001",
+      "deposit_reference": "SAMPLE-DEP-001",
+      "reconciliation_status": "reconciled",
+      "outcome": "processor settlement, bank deposit, and CRM transaction agree",
+      "note": "Fictional. Demonstrates an explicitly reconciled Transaction/Deposit relationship."
     }
   ],
   "exception_examples": [
     {
       "id": "SAMPLE-EXC-001",
-      "reason": "no matching donor found",
-      "resolution_path": "controlled new-Contact creation with review",
-      "note": "Fictional exception record. Represents the manual-review path, not production data."
-    },
-    {
-      "id": "SAMPLE-EXC-002",
-      "reason": "multiple possible donor matches",
-      "resolution_path": "held for human review",
-      "note": "Fictional. Ambiguous matches leave the automatic path by design."
-    },
-    {
-      "id": "SAMPLE-EXC-003",
       "reason": "missing payout/Deposit relationship",
       "resolution_path": "reconciliation deferred until settlement finalized",
-      "note": "Fictional. A charge whose payout has not yet settled cannot bind to a Deposit."
+      "note": "Fictional. A charge whose payout has not settled cannot bind to a Deposit yet."
     }
   ]
 }

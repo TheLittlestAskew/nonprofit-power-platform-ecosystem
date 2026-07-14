@@ -21,23 +21,28 @@ produce sanitized public output; they never write raw values to a tracked path.
 
 ## Field categories
 
-Every Stripe field is classified into one of seven privacy categories. Only
-category and **field name** are ever published — never a value. This taxonomy is
-implemented in `../scripts/inspect_stripe_schema.py` and published, name-only, in
-[`data-dictionary.csv`](data-dictionary.csv).
+**No production record value is published. Only sanitized structure and
+aggregate characteristics are reported.** Every Stripe field is classified into
+one of seven privacy categories; only the category, **field name/path**, and
+aggregate characteristics (type, presence %) are ever emitted — never a value.
+This taxonomy is implemented in `../scripts/inspect_stripe_schema.py` and
+published, name-only, in [`data-dictionary.csv`](data-dictionary.csv).
 
-| Category | Value publishable? | Examples (names only) |
+| Category | Production value treatment | Examples (names only) |
 |---|---|---|
-| Safe structural | Yes | `object`, `status`, `paid`, `captured`, `reporting_category` |
-| Pagination / API | Yes | `has_more`, `total_count` |
-| Financial | Schema only (names yes, values no) | `amount`, `fee`, `net`, `currency` |
-| Personal / contact | No | billing `name`, `email`, `phone`, `address`, `tax_id` |
-| Processor identifier | No | `id`, `customer`, `payment_intent` |
-| Payment-method / card | No | `last4`, `brand`, `fingerprint`, `exp_month` |
-| Metadata / free-text | No | `metadata.*`, `statement_descriptor` |
+| Safe structural | Aggregate/schema only | `object`, `status`, `paid`, `captured`, `reporting_category` |
+| Pagination / API | Aggregate/schema only | `has_more`, `total_count` |
+| Financial | Aggregate/schema only | `amount`, `fee`, `net`, `currency` |
+| Personal / contact | Never publish | billing `name`, `email`, `phone`, `address`, `tax_id` |
+| Processor identifier | Never publish | `id`, `customer`, `payment_intent` |
+| Payment-method / card | Never publish | `last4`, `brand`, `fingerprint`, `exp_month` |
+| Metadata / free-text | Never publish | `metadata.*`, `statement_descriptor` |
 
-"Schema only" means the field **name** may appear in a data dictionary while its
-**value** is always withheld or replaced with an invented sample.
+**"Aggregate/schema only"** means the field **name/path** may appear in a data
+dictionary and its aggregate characteristics (JSON type, presence %) may be
+reported — but no per-record **value** is ever published, including booleans,
+statuses, enums, dates, timestamps, and amounts. Sample values in
+`sample-records.json` are entirely fictional.
 
 ## What is never published
 
