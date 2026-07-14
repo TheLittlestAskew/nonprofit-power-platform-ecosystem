@@ -14,7 +14,7 @@ Stripe source (charge),amount_refunded,financial,int,Aggregate/schema only,Value
 Stripe source (charge),balance_transaction.amount,financial,int,Aggregate/schema only,Gross; from expanded balance transaction; values never published
 Stripe source (charge),balance_transaction.fee,financial,int,Aggregate/schema only,Processing fee; values never published
 Stripe source (charge),balance_transaction.net,financial,int,Aggregate/schema only,Net; values never published
-Stripe source (charge),balance_transaction.reporting_category,safe-structural,str,Aggregate/schema only,Enum name; 'charge' in this sample
+Stripe source (charge),balance_transaction.reporting_category,safe-structural,str,Aggregate/schema only,Reporting-category field; production values withheld
 Stripe source (charge),id,processor-identifier,str,Never publish,Processor identifier
 Stripe source (charge),customer,processor-identifier,str,Never publish,Processor identifier
 Stripe source (charge),payment_intent,processor-identifier,str,Never publish,Processor identifier

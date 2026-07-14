@@ -70,6 +70,40 @@ def test_empty_name_is_structural_not_error():
 
 
 # --------------------------------------------------------------------------- #
+# Path-aware classification (ancestor segments, not only the leaf)
+# --------------------------------------------------------------------------- #
+
+def test_address_descendants_are_personal():
+    for path in ("billing_details.address.line1", "billing_details.address.city",
+                 "shipping.address.postal_code", "source.address_line1"):
+        assert insp.categorize_field(path) == insp.CAT_PERSONAL, path
+
+
+def test_card_descendants_are_payment_sensitive():
+    for path in ("source.card.network", "payment_method_details.card.brand",
+                 "payment_method_details.card.wallet.type",
+                 "payment_method_details.card.network"):
+        assert insp.categorize_field(path) == insp.CAT_PAYMENT, path
+
+
+def test_metadata_descendants_are_freetext():
+    for path in ("metadata.any_descendant", "metadata.unknown_custom_key",
+                 "metadata.nested.deeper.key"):
+        assert insp.categorize_field(path) == insp.CAT_METADATA, path
+
+
+def test_ordinary_nested_structural_stays_structural():
+    for path in ("outcome.network_status", "balance_transaction.reporting_category",
+                 "balance_transaction.status", "payment_method_details.type"):
+        assert insp.categorize_field(path) == insp.CAT_STRUCTURAL, path
+
+
+def test_metadata_ancestor_wins_over_descendant_leaf():
+    # a card-looking descendant under metadata is still metadata (ancestor precedence)
+    assert insp.categorize_field("metadata.card_note") == insp.CAT_METADATA
+
+
+# --------------------------------------------------------------------------- #
 # Nested path discovery
 # --------------------------------------------------------------------------- #
 

@@ -86,29 +86,58 @@ _FINANCIAL = frozenset({"amount", "amount_captured", "amount_refunded", "fee", "
                         "currency", "exchange_rate", "gross"})
 
 
-def categorize_field(field_name: str) -> str:
-    """Classify a field path into one of the seven privacy categories.
+def _strip_list_marker(segment: str) -> str:
+    """Remove any trailing ``[]`` list marker(s) from a path segment."""
+    while segment.endswith("[]"):
+        segment = segment[:-2]
+    return segment
 
-    Name-based only; never inspects values. Matching uses the leaf segment (after
-    the last ``.``, with any trailing ``[]`` list marker removed) against explicit
-    sets, most-sensitive first. Anything with ``address`` in the leaf is personal.
-    Unmatched names fall back to ``safe-structural`` (booleans/enums such as
-    ``paid``, ``captured``, ``status``, ``livemode``). Empty/whitespace names
-    classify as structural rather than raising, so a malformed export cannot crash
-    the pass.
+
+def categorize_field(field_name: str) -> str:
+    """Classify a dotted field path into one of the seven privacy categories.
+
+    Name-based only; never inspects values. Classification is **path-aware**: an
+    ancestor segment can determine the category so that any descendant of a
+    sensitive parent inherits the parent's sensitivity (for example every field
+    under ``metadata`` or ``*.address`` or ``*.card``). Precedence, most-sensitive
+    first:
+
+    1. ``metadata`` ancestor            -> metadata-freetext
+    2. ``address`` / ``shipping`` / personal ancestor -> personal-contact
+    3. ``card`` / payment ancestor      -> payment-method-sensitive
+    4. exact sensitive leaf rules       -> metadata / personal / payment
+    5. identifier leaf
+    6. pagination leaf
+    7. financial leaf
+    8. structural fallback (booleans/enums such as ``paid``, ``status``)
+
+    Empty/whitespace names classify as structural rather than raising, so a
+    malformed export cannot crash the pass.
     """
     n = (field_name or "").strip().lower()
     if not n:
         return CAT_STRUCTURAL
-    leaf = n.split(".")[-1]
-    while leaf.endswith("[]"):
-        leaf = leaf[:-2]
-    if leaf in _PAYMENT:
+    segments = [_strip_list_marker(s) for s in n.split(".")]
+    leaf = segments[-1]
+
+    # 1. metadata ancestor: any descendant of metadata is free-text.
+    if "metadata" in segments:
+        return CAT_METADATA
+    # 2. address / shipping / personal ancestor.
+    if "shipping" in segments or any("address" in s for s in segments) \
+            or any(s in _PERSONAL for s in segments):
+        return CAT_PERSONAL
+    # 3. card / payment ancestor.
+    if "card" in segments or any(s in _PAYMENT for s in segments):
         return CAT_PAYMENT
+    # 4. exact sensitive leaf rules (fields not under a sensitive ancestor).
     if leaf in _METADATA:
         return CAT_METADATA
     if "address" in leaf or leaf in _PERSONAL:
         return CAT_PERSONAL
+    if leaf in _PAYMENT:
+        return CAT_PAYMENT
+    # 5-8. identifier, pagination, financial, structural fallback.
     if leaf in _IDENTIFIER:
         return CAT_IDENTIFIER
     if leaf in _PAGINATION:
