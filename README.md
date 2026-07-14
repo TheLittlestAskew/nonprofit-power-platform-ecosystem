@@ -38,7 +38,8 @@ New to this repository? Read in this order:
 2. **[System Overview](architecture/system-overview.md)** — how the six operational areas connect through one Dataverse environment.
 3. **[Dataverse Inventory Summary](dataverse/inventory-summary.md)** — how the 129 custom `tr_` tables were counted and classified (reproducible).
 4. **[Application Sitemap & Entity Map](dataverse/application-sitemap.md)** — the 94 entities surfaced in the primary app, by area.
-5. **[Source Evidence Register](docs/evidence-register.md)** — what every claim traces back to, and what remains unverified.
+5. **[Development Finance & Revenue](development-finance/README.md)** — the Stripe→Dataverse reconciliation workflow (charges, payouts, donor matching, deposits, exceptions).
+6. **[Source Evidence Register](docs/evidence-register.md)** — what every claim traces back to, and what remains unverified.
 
 Governance: **[AGENTS.md](AGENTS.md)** (authoritative instructions) · **[SECURITY.md](SECURITY.md)** (publication policy) · **[RIGHTS.md](RIGHTS.md)** (no reuse license granted yet).
 
@@ -68,11 +69,11 @@ COMPLIANCE REPORTING
 | [`scripts/`](scripts/) | Reproducible generators for the sanitized catalogs | **Complete + tested** |
 | [`tests/`](tests/) | Unit tests for inventory classification/prefix logic | **Complete** |
 | [`docs/`](docs/) | Governance context and the source evidence register | Evidence register complete; more planned |
-| [`development-finance/`](development-finance/) | Donor operations, payment reconciliation, revenue workflows | Placeholder — not started |
+| [`development-finance/`](development-finance/) | Stripe→Dataverse reconciliation lifecycle, matching model, exception handling, revenue engine, data dictionary, sample records, privacy controls | **Initial module complete** |
 | [`service-navigation/`](service-navigation/) | Community-resource taxonomy and goal-pathway model | Placeholder — pending resource-directory review |
 | [`power-automate/`](power-automate/) | Sanitized flow documentation and patterns | Placeholder — not started |
 | [`web-resources/`](web-resources/) | Selected JavaScript, HTML, and SVG resources | Placeholder — not started |
-| [`portfolio/`](portfolio/) | Recruiter-facing case-study copy and visuals | Placeholder — not started |
+| [`portfolio/`](portfolio/) | Recruiter-facing case-study copy and visuals | Stripe→Dataverse case study added |
 
 ## Publication and Sanitization Standard
 
@@ -89,11 +90,13 @@ See [`SECURITY.md`](SECURITY.md) for the repository's publication rules.
 ## Current Status
 
 This repository is under active construction. **Complete so far:** the
-**Outcomes, Grants & Compliance** module, the Dataverse inventory and
+**Outcomes, Grants & Compliance** module, the **Development Finance & Revenue**
+module (Stripe→Dataverse reconciliation, with a reproducible sanitized schema
+inspector, sample validator, and tests), the Dataverse inventory and
 application-sitemap documentation (with reproducible generator scripts and
-tests), the initial architecture diagrams, and the source evidence register.
-**Next:** development-finance automation, service navigation (pending a separate
-resource-directory review), Power Automate documentation, and web resources.
+tests), the architecture diagrams, and the source evidence register.
+**Next:** service navigation (pending a separate resource-directory review),
+Power Automate documentation, and web resources.
 
 Placeholder modules above are labeled as such and should not be read as
 completed work.

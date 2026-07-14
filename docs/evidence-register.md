@@ -180,6 +180,66 @@ unverified.
   established by this source; award outcome is unverified here.
 - **Last validated:** 2026-07-13
 
+## Source 8 — `stripejson.txt` (Stripe charge export)
+
+- **Supports:** the field-level **schema** of the Stripe charge source behind the
+  development-finance module.
+- **Verified counts:** a single Stripe `list` response, `object: "list"`,
+  `has_more: false`, containing **74 records, all `charge` objects** (every
+  `balance_transaction.reporting_category` = `charge`). 48 top-level fields, with
+  embedded `balance_transaction`, `billing_details`, card `source`, `metadata`,
+  and `refunds`.
+- **Public derivatives:** `development-finance/data-dictionary.csv` (field names +
+  privacy category only); `scripts/inspect_stripe_schema.py` output (structure
+  only).
+- **Sanitization performed:** only field **names**, JSON **types**, and
+  **presence %** are emitted — **never a value**. No id, email, name, address,
+  card data, amount, timestamp, metadata value, or URL is published.
+- **Distinct-object discipline:** these are **charges**, not payouts. The
+  portfolio "483+ … payout records" claim references a different object type; the
+  74 charges are a **separate** surviving sample, **not** a known subset of the
+  483+ and **not** the 89.7% denominator.
+- **Unresolved questions:** the full migration population, the payout dataset, and
+  the object composition of the 483+ total are **not preserved** in this file.
+- **Last validated:** 2026-07-14
+
+## Source 9 — `stripe-dataverse-process-reconstruction.md` (private notes)
+
+- **Supports:** the **reconstructed architecture** of the Stripe→Dataverse
+  workflow (API retrieval, watermark state, pagination, payout→Deposit,
+  charge→Transaction, email normalization, deposit linking, duplicate prevention,
+  concurrency).
+- **Verified?** Working reconstruction from surviving technical notes; the
+  matching **inputs** are corroborated, the exact four-tier order/thresholds and
+  final production export are **not preserved**.
+- **Public derivatives:** `development-finance/*.md`,
+  `portfolio/stripe-dataverse-website-case-study.md`,
+  `architecture/development-finance-lifecycle.md`.
+- **Sanitization performed:** real internal field names, expressions, and API
+  endpoints stay private. Public artifacts use generalized concepts and
+  pseudocode only — no internal schema names, GUIDs, Stripe ids, URLs, or values.
+- **Unresolved questions:** exact tier sequence/thresholds, exact query filters,
+  the 89.7% numerator/denominator, and the 483+ object composition are **not
+  preserved** (recorded as *not preserved*, not *pending verification*).
+- **Last validated:** 2026-07-14
+
+## Source 10 — Portfolio design PDFs (fundraising operations)
+
+- **Supports:** the **portfolio-documented** operational results and the
+  annual-giving operating model.
+- **Content:** `Annual Giving Workflow.pdf` and `Revenue Engine.pdf` are a
+  two-page recruiter-facing portfolio set stating **483+** Stripe-related records,
+  an **89.7%** automatic match rate, a **four-tier** matching process, and a
+  7-step annual-giving lifecycle. `Annual Fundraising Performance.pdf` is a
+  **production reporting dashboard** (FY2025) — highest sensitivity.
+- **Verified?** The figures are **portfolio-documented self-assertions**, not
+  independently reproducible from data. Published as documented, never as audited.
+- **Public derivatives:** `development-finance/revenue-engine.md`,
+  `portfolio/stripe-dataverse-website-case-study.md` (qualitative model only).
+- **Sanitization performed:** **no** FY2025 revenue totals, by-source breakdowns,
+  funder names, grant amounts, preparer name, or org legal name are published.
+- **Last validated:** 2026-07-14
+
 ---
 
 ## Standing Open Questions
@@ -193,5 +253,11 @@ unverified.
 - 1 custom `tr_` table (`tr_ActionItem`) lacks a usable description and needs
   manual classification; reported exactly, not force-classified.
 - The *awarded* grant amount (vs. the $100,000 requested) is unverified.
+- **Finance (Sources 8–10):** the 483+ / 89.7% / four-tier figures are
+  **portfolio-documented**, not reproducible from the surviving data. The exact
+  tier order/thresholds, query filters, 89.7% numerator/denominator, 483+ object
+  composition, and the payout dataset are **not preserved** (not the same as
+  pending verification). The surviving sample is **74 charges**, a separate
+  export.
 - The resource-directory datasets (Sources 3 & 4) await a dedicated publication
   review.

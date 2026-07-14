@@ -8,6 +8,25 @@ not released software).
 
 ## [Unreleased]
 
+### Added
+
+- **Development Finance & Revenue module** (`development-finance/`): a
+  Stripe→Dataverse reconciliation case study — reconciliation lifecycle, matching
+  model, exception handling, revenue engine, sanitized data dictionary, fictional
+  sample records, and privacy controls. Plus
+  `architecture/development-finance-lifecycle.md`.
+- Recruiter-facing case study `portfolio/stripe-dataverse-website-case-study.md`.
+- Reproducible finance tooling: `scripts/inspect_stripe_schema.py` (reads the
+  private Stripe sample and emits **sanitized structure only** — never a value)
+  and `scripts/validate_finance_samples.py`, with unit tests in `tests/`.
+- Evidence discipline for the finance work: **483+** Stripe-related records,
+  **89.7%** automatic match rate, and a **four-tier** matching process are
+  **portfolio-documented** (not audited/reproduced/recalculated). A **separate**
+  surviving sample of **74 charge objects** corroborates the schema only — it is
+  not a subset of the 483+, not the 89.7% denominator, and not the full
+  migration. Tier order/thresholds, exact query filters, the 89.7%
+  numerator/denominator, and the 483+ object composition are **not preserved**.
+
 ### Changed
 
 - Refreshed the Dataverse inventory from the revised source workbook (now carries
