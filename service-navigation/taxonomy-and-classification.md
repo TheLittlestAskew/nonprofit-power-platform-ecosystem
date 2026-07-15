@@ -76,8 +76,11 @@ normalization, so they are reproducible:
 | Top-level category | split on `;` → trim → casefold per token | 8 distinct tokens |
 | Pathway `step_type` | trim + casefold; the source label for the middle level is plural (normalized to the singular *Action Item* in public docs) | Goal 32 / Action Items 68 / Need 86 |
 
-Duplicate organizations are **legitimate** (one organization, multiple
-programs) — normalization deduplicates for *counting*, never for merging rows.
+Organization values appearing on multiple rows *can* be legitimate (one
+organization, multiple programs); in this export the one repeated value does
+not carry distinct program titles, so it is reported neutrally
+(see [`metrics.md`](metrics.md)). Normalization deduplicates for *counting*,
+never for merging rows.
 
 ## Curation guidance
 

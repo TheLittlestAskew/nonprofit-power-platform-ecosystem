@@ -39,17 +39,27 @@ a reconstruction.
 
 ## Why organization and program are separate fields
 
-A single organization legitimately operates multiple programs, and the
-recomputed aggregates prove this shape exists in production: **204** resource
-rows resolve to **199** distinct organizations and **201** distinct program
-titles. Keeping the two concepts in separate columns means:
+A single organization can legitimately operate multiple programs, and keeping
+the two concepts in separate columns is what makes that shape representable.
+The recomputed aggregates for this specific export: 204 resource rows, 200
+organization cells populated, **199 distinct organizations** (one organization
+value appears on two rows), 204 program-title cells populated, **201 distinct
+program titles**. The one repeated organization value does **not** carry more
+than one distinct program title in this export, so the multi-program shape is
+a *design rationale* here, not an evidenced production pattern
+(see [`metrics.md`](metrics.md)).
+
+Separate columns matter because:
 
 - The *program* is the referable unit (a person enrolls in a program, not an
   org chart), while the *organization* is the accountability and relationship
   unit (MOUs, partnership contacts, reputation).
-- Duplicate organization values across rows are **legitimate**, not data
-  errors — they represent one provider with several distinct offerings. A
-  dedupe pass that keyed on organization alone would silently destroy programs.
+- Organization values repeating across rows can be legitimate (one provider,
+  several offerings), so a dedupe pass keyed on organization alone risks
+  silently destroying programs. Whether a given repeat is a multi-program
+  provider or a data-entry duplicate is a curation question — the aggregate
+  "repeated organizations with more than one distinct program title" makes the
+  distinction measurable.
 - Rollups ("how many referral options does this partner give us?") stay
   possible without parsing combined name strings.
 
