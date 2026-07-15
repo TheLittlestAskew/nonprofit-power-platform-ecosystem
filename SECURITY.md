@@ -114,8 +114,11 @@ strict rules:
 - **UI command hiding is not authorization.** Any operation a privileged command
   performs must be enforced server-side (security roles, table/column
   permissions, or plug-in logic).
-- Scripts touching sensitive personal identifiers, workforce time/compensation, or
-  protected service logic are **not reconstructed at all**.
+- **Sensitive fields and domain-specific rules are removed from reviewed
+  derivatives** (a reviewed script keeps its generalized technique, not its
+  protected fields or rules). **Separately scoped high-risk scripts** whose
+  primary purpose was sensitive identifiers, workforce compensation, or protected
+  service controls are **not reconstructed at all**.
 - `scripts/validate_web_resource_examples.py` enforces these rules over
   `web-resources/` and is covered by unit tests.
 

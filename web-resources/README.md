@@ -29,8 +29,12 @@ production export.
   production behavior.
 - **Withheld:** production schema, form/record GUIDs, role IDs, internal role and
   business-unit names, protected service rules, and exact operational
-  notification text. Scripts touching sensitive personal identifiers, workforce
-  time/compensation, or protected service logic were **not reconstructed**
+  notification text. **Sensitive fields and domain-specific rules were removed
+  from reviewed derivatives** — for example, the returning-record auto-fill source
+  *was* reviewed, but its sensitive field groups were omitted and its protected
+  operational rule was replaced by a neutral review flag. **Separately scoped
+  high-risk scripts** whose primary purpose was sensitive identifiers, workforce
+  compensation, or protected service controls were **not reconstructed at all**
   (see [`privacy-controls.md`](privacy-controls.md)).
 
 Public code is **not** a deployable production export.
@@ -42,7 +46,7 @@ Public code is **not** a deployable production export.
 | Form routing (new vs. existing → intake/main form) | [`form-routing.md`](form-routing.md) | [`examples/form-routing.js`](examples/form-routing.js) |
 | Returning-record auto-fill (map prior values forward) | [`returning-record-autofill.md`](returning-record-autofill.md) | [`examples/returning-record-autofill.js`](examples/returning-record-autofill.js) |
 | Duplicate prevention (async check before save) | [`duplicate-prevention.md`](duplicate-prevention.md) | [`examples/duplicate-prevention.js`](examples/duplicate-prevention.js) |
-| Date/time validation (auto end-time, overnight, cleanup) | [`date-time-validation.md`](date-time-validation.md) | [`examples/date-time-validation.js`](examples/date-time-validation.js) |
+| Date/time validation (scheduled-date alignment, overnight validation, equal-pair cleanup) | [`date-time-validation.md`](date-time-validation.md) | [`examples/date-time-validation.js`](examples/date-time-validation.js) |
 | Cloud-flow refresh coordination (bounded polling) | [`flow-refresh-coordination.md`](flow-refresh-coordination.md) | [`examples/flow-refresh-coordination.js`](examples/flow-refresh-coordination.js) |
 | Command security (role-aware visibility) | [`command-security.md`](command-security.md) | [`examples/command-security.js`](examples/command-security.js) |
 

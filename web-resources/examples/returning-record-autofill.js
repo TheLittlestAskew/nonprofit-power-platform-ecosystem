@@ -23,7 +23,9 @@
 const ReturningRecordAutoFill = (() => {
   const CONFIG = {
     personLookupField: "sample_person",
-    primaryEntitySet: "sample_people",
+    // Table LOGICAL name (singular) — the first arg to Xrm.WebApi, NOT the
+    // plural entity-set used in raw Web API URLs.
+    primaryEntityLogicalName: "sample_person",
     // Single-valued navigation property to the prior related record.
     priorRecordExpand: "sample_prior_record",
     // Generalized field group copied forward from the primary record.
@@ -72,7 +74,7 @@ const ReturningRecordAutoFill = (() => {
     const options =
       `?$select=${select}` +
       `&$expand=${CONFIG.priorRecordExpand}($select=${CONFIG.requiresReviewFlag})`;
-    return Xrm.WebApi.retrieveRecord(CONFIG.primaryEntitySet, personId, options);
+    return Xrm.WebApi.retrieveRecord(CONFIG.primaryEntityLogicalName, personId, options);
   }
 
   function clearCopiedFields(formContext) {

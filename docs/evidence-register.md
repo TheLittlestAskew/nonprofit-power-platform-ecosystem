@@ -256,9 +256,13 @@ unverified.
   IDs, business-unit names, query values, and business rules are **replaced or
   withheld**. Original filenames appear **only** in the ignored private manifest
   (they embed production prefixes and sensitive terminology) — never in any
-  tracked file. Scripts touching sensitive personal identifiers, workforce
-  time/compensation, or protected service logic were **not reconstructed**.
-  Enforced by `scripts/validate_web_resource_examples.py`.
+  tracked file. **Sensitive fields and domain-specific rules were removed from
+  the reviewed derivatives** (e.g. the returning-record auto-fill source was
+  reviewed; its sensitive field groups were omitted and its protected rule was
+  replaced by a neutral review flag). **Separately scoped high-risk scripts**
+  whose primary purpose was sensitive identifiers, workforce compensation, or
+  protected service controls were **not reconstructed**. Enforced by
+  `scripts/validate_web_resource_examples.py`.
 - **Documented deviations:** two public examples intentionally differ from source
   and say so in code and docs — duplicate-prevention **fails closed** (source
   failed open), and returning-record auto-fill uses **`Xrm.WebApi.retrieveRecord`**

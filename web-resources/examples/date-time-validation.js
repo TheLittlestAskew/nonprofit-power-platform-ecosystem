@@ -18,8 +18,9 @@
 
 const DateTimeValidation = (() => {
   const CONFIG = {
-    // Invented date entity + column that holds the scheduled date value.
-    dateEntitySet: "sample_schedule_dates",
+    // Table LOGICAL name (singular) + column holding the scheduled date value.
+    // The logical name is the first arg to Xrm.WebApi, NOT the plural entity set.
+    dateEntityLogicalName: "sample_schedule_date",
     dateValueColumn: "sample_date_value",
     // Two invented slot configurations (production used more).
     slots: [
@@ -55,7 +56,7 @@ const DateTimeValidation = (() => {
       return null;
     }
     const record = await Xrm.WebApi.retrieveRecord(
-      CONFIG.dateEntitySet,
+      CONFIG.dateEntityLogicalName,
       dateId,
       `?$select=${CONFIG.dateValueColumn}`
     );
@@ -100,7 +101,15 @@ const DateTimeValidation = (() => {
     if (!start) {
       return;
     }
-    const scheduledDate = await fetchScheduledDate(formContext, slot);
+    // Wrap the async retrieval so a dynamically-registered OnChange handler never
+    // leaves an unhandled promise rejection.
+    let scheduledDate;
+    try {
+      scheduledDate = await fetchScheduledDate(formContext, slot);
+    } catch (err) {
+      console.error("date-time-validation: start-date retrieve failed", err && err.message);
+      return; // safe diagnostic; leave the field as entered
+    }
     if (!scheduledDate) {
       return;
     }
@@ -114,6 +123,7 @@ const DateTimeValidation = (() => {
       corrected.setHours(start.getHours(), start.getMinutes(), 0, 0);
       formContext.getAttribute(slot.start).setValue(corrected);
     } else {
+      // Clear the error on a later successful, valid retrieval.
       formContext.ui.clearFormNotification(CONFIG.startNotice);
     }
   }
@@ -127,7 +137,15 @@ const DateTimeValidation = (() => {
     if (!end) {
       return;
     }
-    const scheduledDate = await fetchScheduledDate(formContext, slot);
+    // Wrap the async retrieval so a dynamically-registered OnChange handler never
+    // leaves an unhandled promise rejection.
+    let scheduledDate;
+    try {
+      scheduledDate = await fetchScheduledDate(formContext, slot);
+    } catch (err) {
+      console.error("date-time-validation: end-date retrieve failed", err && err.message);
+      return; // safe diagnostic; leave the field as entered
+    }
     if (!scheduledDate) {
       return;
     }
@@ -145,6 +163,7 @@ const DateTimeValidation = (() => {
       corrected.setHours(end.getHours(), end.getMinutes(), 0, 0);
       formContext.getAttribute(slot.end).setValue(corrected);
     } else {
+      // Clear the error on a later successful, valid retrieval.
       formContext.ui.clearFormNotification(CONFIG.endNotice);
     }
   }

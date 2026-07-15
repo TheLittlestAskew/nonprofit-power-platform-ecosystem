@@ -1,10 +1,18 @@
 # Dataverse Web API Patterns
 
-Reusable **`Xrm.WebApi`** techniques used across the examples. All entity and
+Reusable **`Xrm.WebApi`** techniques used across the examples. All table and
 column names are invented; query values are placeholders.
 
 > **Evidence tier:** Reference / reconstructed. Standard `Xrm.WebApi` usage; no
 > production query is reproduced.
+
+## First argument is the table logical name
+
+The first argument to `Xrm.WebApi.retrieveRecord` and
+`Xrm.WebApi.retrieveMultipleRecords` is the **table (entity) logical name** —
+singular, e.g. `sample_person` — **not** the plural entity-set name. (The plural
+entity set appears only in *raw* Web API URLs like `/api/data/v9.2/sample_people`,
+which these examples do not build.)
 
 ## Prefer Xrm.WebApi over legacy APIs
 
@@ -13,7 +21,7 @@ Use the asynchronous, promise-based `Xrm.WebApi`. Do **not** use synchronous
 in these examples.
 
 ```js
-const result = await Xrm.WebApi.retrieveMultipleRecords(entitySet, options);
+const result = await Xrm.WebApi.retrieveMultipleRecords(entityLogicalName, options);
 const rows = result && result.entities ? result.entities : [];
 ```
 
@@ -34,11 +42,11 @@ const options =
 ## Most-recent-record lookup
 
 ```js
-async function fetchMostRecent(entitySet, parentColumn, parentId, cols) {
+async function fetchMostRecent(entityLogicalName, parentColumn, parentId, cols) {
   if (!parentId) return null;
   const options = `?$select=${cols}&$filter=${parentColumn} eq ${parentId}` +
                   `&$orderby=createdon desc&$top=1`;
-  const r = await Xrm.WebApi.retrieveMultipleRecords(entitySet, options);
+  const r = await Xrm.WebApi.retrieveMultipleRecords(entityLogicalName, options);
   return r && r.entities && r.entities.length ? r.entities[0] : null;
 }
 ```
@@ -57,5 +65,5 @@ on the result.
 
 ## Never in public examples
 
-Real entity set names, real column logical names, real filter values, environment
-URLs, or record GUIDs. Everything here is a placeholder.
+Real table logical names, real column logical names, real filter values,
+environment URLs, or record GUIDs. Everything here is a placeholder.

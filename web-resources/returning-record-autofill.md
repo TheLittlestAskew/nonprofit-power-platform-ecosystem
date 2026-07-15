@@ -38,7 +38,7 @@ Example: [`examples/returning-record-autofill.js`](examples/returning-record-aut
 
 ```js
 const options = `?$select=${select}&$expand=${prior}($select=${reviewFlag})`;
-const record = await Xrm.WebApi.retrieveRecord(entitySet, personId, options);
+const record = await Xrm.WebApi.retrieveRecord(entityLogicalName, personId, options);
 // copy mapped fields, then:
 if (record[prior] && record[prior][reviewFlag] === true) {
   mappedFields.forEach((f) => setDisabled(formContext, f, true));

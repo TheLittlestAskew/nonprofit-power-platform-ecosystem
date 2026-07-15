@@ -103,7 +103,8 @@ const FlowRefreshCoordination = (() => {
   // for reference only; prefer the form-data-refresh primary above.
   // ----------------------------------------------------------------------- //
   const ALTERNATIVE = {
-    relatedEntitySet: "sample_related_records",
+    // Table LOGICAL name (singular) — the first arg to Xrm.WebApi.
+    relatedEntityLogicalName: "sample_related_record",
     parentColumn: "_sample_case_record_value",
 
     async countRelated(parentId) {
@@ -111,7 +112,7 @@ const FlowRefreshCoordination = (() => {
         `?$select=${this.parentColumn}` +
         `&$filter=${this.parentColumn} eq ${parentId}` +
         `&$top=1`;
-      const result = await Xrm.WebApi.retrieveMultipleRecords(this.relatedEntitySet, options);
+      const result = await Xrm.WebApi.retrieveMultipleRecords(this.relatedEntityLogicalName, options);
       return result && result.entities ? result.entities.length : 0;
     },
 

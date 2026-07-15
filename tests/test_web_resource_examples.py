@@ -176,6 +176,65 @@ def test_command_security_uses_security_role_ids():
 
 
 # --------------------------------------------------------------------------- #
+# Xrm.WebApi first argument = table logical name (singular)
+# --------------------------------------------------------------------------- #
+
+def test_examples_use_entity_logical_name_keys():
+    for ex, key in [
+        ("returning-record-autofill.js", "primaryEntityLogicalName"),
+        ("duplicate-prevention.js", "relatedEntityLogicalName"),
+        ("date-time-validation.js", "dateEntityLogicalName"),
+        ("flow-refresh-coordination.js", "relatedEntityLogicalName"),
+    ]:
+        assert key in _read(ex), ex
+
+
+def test_examples_have_no_entityset_config_keys():
+    for ex in ("returning-record-autofill.js", "duplicate-prevention.js",
+               "date-time-validation.js", "flow-refresh-coordination.js"):
+        assert "EntitySet" not in _read(ex), ex  # old plural-set config key gone
+
+
+def test_examples_use_singular_logical_names():
+    assert '"sample_people"' not in _read("returning-record-autofill.js")
+    assert '"sample_person"' in _read("returning-record-autofill.js")
+    assert '"sample_related_records"' not in _read("duplicate-prevention.js")
+    assert '"sample_related_record"' in _read("duplicate-prevention.js")
+    assert '"sample_related_records"' not in _read("flow-refresh-coordination.js")
+    assert '"sample_schedule_dates"' not in _read("date-time-validation.js")
+    assert '"sample_schedule_date"' in _read("date-time-validation.js")
+
+
+def test_webapi_reference_uses_logical_name():
+    t = (REPO_ROOT / "web-resources" / "patterns" / "dataverse-web-api-patterns.md").read_text(encoding="utf-8")
+    assert "logical name" in t.lower()
+    assert "entityLogicalName" in t
+    assert "retrieveMultipleRecords(entitySet" not in t  # not taught as an entity set
+
+
+# --------------------------------------------------------------------------- #
+# Date/time async retrieval failures are handled (no escaping rejections)
+# --------------------------------------------------------------------------- #
+
+def _slice(text, start_marker, end_marker):
+    a = text.index(start_marker)
+    b = text.index(end_marker, a + len(start_marker))
+    return text[a:b]
+
+
+def test_datetime_onstartchange_handles_retrieval_failure():
+    t = _read("date-time-validation.js")
+    body = _slice(t, "async function onStartChange", "async function onEndChange")
+    assert "try {" in body and "catch" in body
+
+
+def test_datetime_onendchange_handles_retrieval_failure():
+    t = _read("date-time-validation.js")
+    body = _slice(t, "async function onEndChange", "function onSave")
+    assert "try {" in body and "catch" in body
+
+
+# --------------------------------------------------------------------------- #
 # The committed web-resources tree must pass
 # --------------------------------------------------------------------------- #
 

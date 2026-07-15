@@ -22,7 +22,9 @@
 const DuplicatePrevention = (() => {
   const CONFIG = {
     parentLookupField: "sample_case_record",
-    relatedEntitySet: "sample_related_records",
+    // Table LOGICAL name (singular) — the first arg to Xrm.WebApi, NOT the
+    // plural entity-set used in raw Web API URLs.
+    relatedEntityLogicalName: "sample_related_record",
     parentColumn: "_sample_case_record_value",
     notificationId: "duplicate_prevention_notice",
   };
@@ -48,7 +50,7 @@ const DuplicatePrevention = (() => {
       `?$select=${CONFIG.parentColumn}` +
       `&$filter=${CONFIG.parentColumn} eq ${parentId}` +
       `&$top=1`;
-    const result = await Xrm.WebApi.retrieveMultipleRecords(CONFIG.relatedEntitySet, options);
+    const result = await Xrm.WebApi.retrieveMultipleRecords(CONFIG.relatedEntityLogicalName, options);
     return Boolean(result && result.entities && result.entities.length);
   }
 
