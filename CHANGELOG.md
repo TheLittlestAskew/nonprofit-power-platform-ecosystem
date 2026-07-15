@@ -20,11 +20,12 @@ not released software).
   validator (`scripts/validate_web_resource_examples.py`) that rejects GUIDs,
   organization schema prefixes, environment URLs, non-fictional emails,
   production role names, forbidden terminology, missing notices, legacy
-  synchronous network calls, and private source references, plus unit tests. The
-  private originals were **not present in this build**; the module is a
-  reconstruction from documented pattern descriptions — nothing was read or
-  copied from source. Command-security docs state plainly that UI hiding is not
-  authorization.
+  synchronous network calls, and private source references, plus unit tests.
+  **Six primary production web resources were reviewed privately** (originals kept
+  in the git-ignored `source-private/` area); each public example is a sanitized,
+  reorganized derivative. Two examples note intentional deviations from source
+  (duplicate-prevention fails closed; auto-fill uses `Xrm.WebApi.retrieveRecord`).
+  Command-security docs state plainly that UI hiding is not authorization.
 - **Development Finance & Revenue module** (`development-finance/`): a
   Stripe→Dataverse reconciliation case study — reconciliation lifecycle, matching
   model, exception handling, revenue engine, sanitized data dictionary, fictional

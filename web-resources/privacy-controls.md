@@ -9,11 +9,11 @@ identifiers, roles, or operational logic.
 ## The boundary
 
 Original web-resource exports are private. They live only in the repository's
-git-ignored private source area (see [`../SECURITY.md`](../SECURITY.md)) when
-present, and are **never** committed, copied into `web-resources/`, or referenced
-by filename in any tracked file. In this build the originals were **not present
-locally**, so the module was reconstructed from documented pattern descriptions
-rather than from source — nothing was read or copied.
+git-ignored `source-private/` area (see [`../SECURITY.md`](../SECURITY.md)) and
+are **never** committed, copied into `web-resources/`, or referenced by filename
+in any tracked file. **Six primary production web resources were reviewed
+privately**; each public example is a sanitized, reorganized derivative — no
+original code is published.
 
 ## What every public example is
 

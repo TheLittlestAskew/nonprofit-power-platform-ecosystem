@@ -1,46 +1,47 @@
 # Form Routing
 
-Route a record to an **intake** form (new record) or the **main** form (existing
-record) on load.
-
-> **Evidence:** Sanitized reconstruction of a documented production form-routing
-> pattern. Form identifiers, the returning-record flag, and routing rules are
-> **invented**. The private original was not present in this build; nothing was
-> read from it.
+Keep records on the correct form: a **new** record opened on the main form is
+redirected to the intake form; a new record already on the intake form stays;
+**existing** records are never auto-rerouted.
 
 Example: [`examples/form-routing.js`](examples/form-routing.js)
+
+## Evidence
+
+- **Directly supported technique:** two form-scoped OnLoad handlers; detecting
+  create vs. existing with `getFormType()`; identifying the current form via
+  `formSelector.getCurrentItem()`; redirecting a new record on the main form to
+  the intake form with `Xrm.Navigation.navigateTo`.
+- **Sanitized replacement:** production form GUIDs → `SAMPLE_INTAKE_FORM_ID` /
+  `SAMPLE_MAIN_FORM_ID`; production entity name → `sample_person`.
+- **Withheld:** the two production form GUIDs and the real entity name.
 
 ## What it demonstrates
 
 - **New vs. existing detection** via `formContext.ui.getFormType()`
-  (`1` = create, `2` = update).
-- **Routing** to an invented `SAMPLE_INTAKE_FORM_ID` or `SAMPLE_MAIN_FORM_ID`
-  using `formContext.ui.formSelector`.
-- **Generalized form identifiers** — placeholder tokens, never production GUIDs.
-- **Safe fallback** — if the target form is unavailable to the user, or matches
-  the current form, the handler does nothing and leaves the default form in
-  place (no reload loop).
+  (`1` = create).
+- **Form-scoped handlers** — one registered on the intake form (stay-only) and
+  one on the main form (redirect new records only).
+- **Redirect** with `Xrm.Navigation.navigateTo` using invented form/entity
+  tokens.
+- **No auto-reroute of existing records**, and a **safe fallback**: if a handler
+  runs on an unexpected form or navigation fails, the user simply stays put.
 
 ## Key technique
 
 ```js
-const formType = formContext.ui.getFormType(); // 1 = new, 2 = existing
-if (formType === 1) {
-  routeTo(formContext, CONFIG.intakeFormId);
-}
+// Main-form handler: only a NEW record is redirected to the intake form.
+if (formContext.ui.getFormType() !== 1) return; // existing record stays
+Xrm.Navigation.navigateTo(
+  { pageType: "entityrecord", entityName: CONFIG.entityName, formId: CONFIG.intakeFormId },
+  { target: 1, position: 1 }
+);
 ```
 
-`routeTo()` compares the current form id to the target and only calls
-`item.navigate()` when they differ — avoiding an infinite navigate/reload cycle.
-
-## Notes
-
-- Registered as an **OnLoad** handler on the table's form(s).
-- `formContext` is derived from the execution context and passed explicitly to
-  helpers, never read from a global.
+The intake-form handler performs no navigation — a new record belongs there, and
+an existing record opened there is treated as intentional.
 
 ## Not preserved / withheld
 
-The production form names and GUIDs, the real returning-record indicator column,
-and the exact routing conditions are withheld. Only the generalized technique is
-shown.
+The production form GUIDs and entity name are withheld; only the generalized
+two-handler routing technique is shown.

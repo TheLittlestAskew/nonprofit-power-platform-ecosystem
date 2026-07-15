@@ -15,20 +15,25 @@ This module follows the repository's factuality rules
 ([`../AGENTS.md`](../AGENTS.md)). It is a **sanitized reconstruction**, not a
 production export.
 
-- **Pattern origin:** each example reconstructs a documented production
-  web-resource *pattern*. The private originals were **not present in this build
-  environment**; nothing was read or copied from them. The examples implement the
-  described technique using standard Client API / Web API practice.
-- **Sanitized reconstruction:** all schema names, form and record identifiers,
-  role names, query values, and business rules are **invented**. Code is
-  organized for readability and privacy.
-- **Not preserved / intentionally withheld:** production schema, form and record
-  GUIDs, internal role and business-unit names, protected service logic, and
-  exact operational notification text. Scripts touching sensitive personal
-  identifiers, workforce time/compensation, or protected service rules were
-  **not reconstructed at all** (see [`privacy-controls.md`](privacy-controls.md)).
+- **Pattern origin:** **six primary production web resources were reviewed
+  privately** (their originals live only in the repository's git-ignored
+  `source-private/` area and are never committed). Each public example is a
+  **sanitized, reorganized derivative** of the reviewed original.
+- **Sanitized reconstruction:** all production schema names, form and record
+  GUIDs, role IDs/names, query values, notification text, and sensitive business
+  rules are **replaced or withheld**; code may be reorganized for readability and
+  privacy.
+- **Documented deviations:** where the public example intentionally differs from
+  the source (a hardening or a modernization), that deviation is called out in
+  both the code and the pattern doc — and is never presented as historical
+  production behavior.
+- **Withheld:** production schema, form/record GUIDs, role IDs, internal role and
+  business-unit names, protected service rules, and exact operational
+  notification text. Scripts touching sensitive personal identifiers, workforce
+  time/compensation, or protected service logic were **not reconstructed**
+  (see [`privacy-controls.md`](privacy-controls.md)).
 
-None of these examples is a deployable production export.
+Public code is **not** a deployable production export.
 
 ## The six patterns
 

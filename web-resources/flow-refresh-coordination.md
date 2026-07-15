@@ -1,46 +1,45 @@
 # Cloud-Flow Refresh Coordination
 
-A command triggers a Power Automate cloud flow that creates a related record
-asynchronously. The form polls (bounded) for that record to appear, then
-refreshes a subgrid or the form.
-
-> **Evidence:** Sanitized reconstruction of a documented production
-> flow-coordination pattern. Entity/column/subgrid names and timings are
-> **invented**. The private original was not present in this build; nothing was
-> read from it.
+On a new record's load, wait (bounded) for the record to get an id, then poll by
+refreshing form data and checking two related lookup fields that a Power Automate
+cloud flow creates out-of-band. Stop when both appear and do one final refresh.
 
 Example: [`examples/flow-refresh-coordination.js`](examples/flow-refresh-coordination.js)
 
+## Evidence
+
+- **Directly supported technique (primary):** run only for a new record; wait,
+  with a bounded timeout, until the record receives an id; poll by refreshing form
+  data; after each refresh check two related lookup fields; stop when both exist;
+  perform one final refresh; stop cleanly after the maximum attempts; include
+  error and timeout handling.
+- **Sanitized replacement:** production entity/lookup names → invented
+  `sample_related_record_a` / `sample_related_record_b`.
+- **Alternative (not source-backed):** a Web API baseline-count poll is retained
+  only as a clearly labeled alternative; it does **not** replace the primary
+  form-data-refresh pattern.
+- **Withheld:** the production entity/lookup names.
+
 ## What it demonstrates
 
-- **Polling for a flow-created record** by comparing a related-record count
-  against a baseline captured before the flow ran.
-- **Bounded retry logic** — at most `maxAttempts` polls, `delayMs` apart, using an
-  `await`-able `wait()` wrapper around `setTimeout` (no busy loop, no unbounded
-  spin).
-- **Refreshing the form or subgrid** via `grid.refresh()`, falling back to
-  `formContext.data.refresh(false)`.
-- **Timeout and failure handling** — a timeout shows a "refresh manually"
-  message; a query error fails closed rather than spinning.
+- **Bounded wait for the record id** after the initial save.
+- **Poll via `formContext.data.refresh(false)`**, checking two lookups per pass.
+- **Final refresh** once both related records are present.
+- **Bounded** loops with error/timeout handling — never an unbounded spin.
 
 ## Key technique
 
 ```js
-for (let attempt = 0; attempt < CONFIG.maxAttempts; attempt += 1) {
-  await wait(CONFIG.delayMs);
-  const current = await countRelated(parentId);
-  if (current > baseline) return true; // appeared
+// Poll by refreshing form data and checking both lookups (bounded).
+for (let i = 0; i < CONFIG.maxPollAttempts; i += 1) {
+  await wait(CONFIG.pollIntervalMs);
+  await formContext.data.refresh(false);
+  if (hasValue(formContext, CONFIG.lookupA) && hasValue(formContext, CONFIG.lookupB)) return true;
 }
 return false; // bounded timeout
 ```
 
-## Notes
-
-- The cloud flow itself is triggered by the platform command; this script
-  coordinates the **client-side** wait-and-refresh only.
-- An INFO notification communicates progress and is cleared when polling ends.
-
 ## Not preserved / withheld
 
-The production entity/column/subgrid names, the real poll interval and attempt
-count, and the exact notification wording are withheld.
+The production entity and lookup names are withheld; the poll timings shown are
+invented defaults.

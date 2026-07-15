@@ -1,42 +1,52 @@
 # Duplicate Prevention
 
-Before saving a new related record, check whether an equivalent record already
-exists for the same parent within a time window. If so, cancel the save and
-notify the user.
-
-> **Evidence:** Sanitized reconstruction of a documented production duplicate-check
-> pattern. Entity/column names, the window, and messages are **invented**. The
-> private original was not present in this build; nothing was read from it.
+Prevent creating more than one related record for the same parent. On save of a
+**new** record, check whether any related record already exists for the selected
+parent; block and notify if so.
 
 Example: [`examples/duplicate-prevention.js`](examples/duplicate-prevention.js)
 
+## Evidence
+
+- **Directly supported technique:** OnSave guard for create forms only; reading
+  the parent lookup; an async `Xrm.WebApi` existence check for the parent;
+  `eventArgs.preventDefault()` to defer the save; blocking + notifying on a
+  duplicate; re-issuing the save when clean; existing records update normally.
+- **Sanitized replacement:** production entity/columns and the FetchXML query →
+  invented `sample_case_record` / `sample_related_records` and an OData filter.
+- **Intentional hardening (documented deviation):** the production source **failed
+  open** — it allowed the save if the duplicate query errored. This public
+  reconstruction **fails closed**: on a query error it blocks the save and asks
+  the user to retry. This is a deliberate hardening, **not** historical production
+  behavior.
+- **Modernization:** a re-entrancy guard prevents the re-issued save from looping.
+- **Withheld:** the production entity/column names and the exact query.
+
 ## What it demonstrates
 
-- **Checking for an existing related record before save** via an async
-  `Xrm.WebApi` query filtered by parent and a date window.
-- **Async validation inside OnSave** using `eventArgs.preventDefault()` to defer
-  the platform save while the query runs.
-- **Cancelling the save safely** and re-issuing it exactly once when the check
-  passes (a re-entrancy flag prevents an infinite save loop).
-- **User-facing notification** through `formContext.ui.setFormNotification()`.
+- **Existence check before save** — is there *any* related record for this
+  parent? (One per parent; there is no time window.)
+- **Async validation inside OnSave** with a deferred, then re-issued, save.
+- **User-facing notification** via `setFormNotification`.
 
 ## Key technique
 
 ```js
-eventArgs.preventDefault();               // defer the save
-const duplicate = await existsDuplicate(parentId, date);
-if (duplicate) {
-  formContext.ui.setFormNotification(msg, "WARNING", CONFIG.notificationId);
-  return;                                 // save stays cancelled
-}
-formContext.data.__dupCheckPassed = true; // mark validated
-formContext.data.save();                  // re-issue once
+eventArgs.preventDefault();                 // defer the save
+const duplicate = await existsForParent(parentId);
+if (duplicate) { formContext.ui.setFormNotification(msg, "ERROR", id); return; }
+formContext.data.__dupCheckPassed = true;   // re-entrancy guard
+formContext.data.save();                    // re-issue once
 ```
 
-On a query error the handler **fails closed** — it surfaces an error and does not
-silently allow a possible duplicate.
+```js
+// Intentional deviation from source: fail CLOSED on query error.
+catch (err) {
+  formContext.ui.setFormNotification("Could not verify duplicates. Please retry.", "ERROR", id);
+}
+```
 
 ## Not preserved / withheld
 
-The production entity and column names, the real matching window, and the exact
-notification wording are withheld.
+Production entity/column names, the exact duplicate query, and the production
+alert wording are withheld.

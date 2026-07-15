@@ -240,29 +240,31 @@ unverified.
   funder names, grant amounts, preparer name, or org legal name are published.
 - **Last validated:** 2026-07-14
 
-## Source 11 — Model-driven web-resource patterns (originals **not present**)
+## Source 11 — Model-driven web-resource originals (reviewed privately)
 
 - **Supports:** the `web-resources/` module — sanitized client-side patterns
   (form routing, returning-record auto-fill, duplicate prevention, date/time
   validation, cloud-flow refresh coordination, command security).
-- **Verified?** **No source was read in this build.** The private JavaScript
-  originals referenced by the operator were **not present locally**, so the module
-  is a **sanitized reconstruction from documented pattern descriptions** plus
-  standard Client API / Web API practice. The *existence* of the patterns is
-  attested by the operator's inventory of production web resources; the code here
-  is not a copy of any original.
+- **Verified?** **Yes — six primary production web resources were reviewed
+  privately.** The originals live only in the git-ignored `source-private/` area
+  (hashes recorded in the ignored private manifest) and are **never** committed.
+  Each public example is a **sanitized, reorganized derivative** of the reviewed
+  original — not a copy.
 - **Public derivatives:** `web-resources/**` (docs + `examples/*.js`),
   `architecture/model-driven-web-resource-lifecycle.md`.
-- **Sanitization performed:** all schema names, form/record GUIDs, role and
-  business-unit names, query values, and business rules are **invented**. Original
-  filenames are **withheld** because they embed production publisher prefixes and
-  sensitive terminology. Scripts touching sensitive personal identifiers,
-  workforce time/compensation, or protected service logic were **not
-  reconstructed**. Enforced by `scripts/validate_web_resource_examples.py`.
-- **Unresolved questions:** the production schema, GUIDs, role/business-unit names,
-  protected service rules, and exact notification text are **not preserved /
-  withheld**. If the originals are later added under the private source area, the
-  reconstructions can be checked against them (still without publishing source).
+- **Sanitization performed:** production schema names, form/record GUIDs, role
+  IDs, business-unit names, query values, and business rules are **replaced or
+  withheld**. Original filenames appear **only** in the ignored private manifest
+  (they embed production prefixes and sensitive terminology) — never in any
+  tracked file. Scripts touching sensitive personal identifiers, workforce
+  time/compensation, or protected service logic were **not reconstructed**.
+  Enforced by `scripts/validate_web_resource_examples.py`.
+- **Documented deviations:** two public examples intentionally differ from source
+  and say so in code and docs — duplicate-prevention **fails closed** (source
+  failed open), and returning-record auto-fill uses **`Xrm.WebApi.retrieveRecord`**
+  (source used a raw `fetch`).
+- **Unresolved questions:** the production schema, GUIDs, role IDs/business-unit
+  names, protected service rules, and exact notification text remain **withheld**.
 - **Last validated:** 2026-07-14
 
 ---
