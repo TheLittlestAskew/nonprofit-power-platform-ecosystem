@@ -10,6 +10,21 @@ not released software).
 
 ### Added
 
+- **Web Resources module** (`web-resources/`): sanitized, reconstructed
+  model-driven client-side patterns — form routing, returning-record auto-fill,
+  duplicate prevention, date/time validation, cloud-flow refresh coordination,
+  and command security. Each pattern ships a documented `.md` and a
+  `node --check`-clean `.js` example that opens with a SANITIZED EXAMPLE notice
+  and uses invented names, `async/await`, and `Xrm.WebApi`. Adds reusable pattern
+  guides, `architecture/model-driven-web-resource-lifecycle.md`, a reproducible
+  validator (`scripts/validate_web_resource_examples.py`) that rejects GUIDs,
+  organization schema prefixes, environment URLs, non-fictional emails,
+  production role names, forbidden terminology, missing notices, legacy
+  synchronous network calls, and private source references, plus unit tests. The
+  private originals were **not present in this build**; the module is a
+  reconstruction from documented pattern descriptions — nothing was read or
+  copied from source. Command-security docs state plainly that UI hiding is not
+  authorization.
 - **Development Finance & Revenue module** (`development-finance/`): a
   Stripe→Dataverse reconciliation case study — reconciliation lifecycle, matching
   model, exception handling, revenue engine, sanitized data dictionary, fictional

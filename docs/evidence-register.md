@@ -240,6 +240,31 @@ unverified.
   funder names, grant amounts, preparer name, or org legal name are published.
 - **Last validated:** 2026-07-14
 
+## Source 11 — Model-driven web-resource patterns (originals **not present**)
+
+- **Supports:** the `web-resources/` module — sanitized client-side patterns
+  (form routing, returning-record auto-fill, duplicate prevention, date/time
+  validation, cloud-flow refresh coordination, command security).
+- **Verified?** **No source was read in this build.** The private JavaScript
+  originals referenced by the operator were **not present locally**, so the module
+  is a **sanitized reconstruction from documented pattern descriptions** plus
+  standard Client API / Web API practice. The *existence* of the patterns is
+  attested by the operator's inventory of production web resources; the code here
+  is not a copy of any original.
+- **Public derivatives:** `web-resources/**` (docs + `examples/*.js`),
+  `architecture/model-driven-web-resource-lifecycle.md`.
+- **Sanitization performed:** all schema names, form/record GUIDs, role and
+  business-unit names, query values, and business rules are **invented**. Original
+  filenames are **withheld** because they embed production publisher prefixes and
+  sensitive terminology. Scripts touching sensitive personal identifiers,
+  workforce time/compensation, or protected service logic were **not
+  reconstructed**. Enforced by `scripts/validate_web_resource_examples.py`.
+- **Unresolved questions:** the production schema, GUIDs, role/business-unit names,
+  protected service rules, and exact notification text are **not preserved /
+  withheld**. If the originals are later added under the private source area, the
+  reconstructions can be checked against them (still without publishing source).
+- **Last validated:** 2026-07-14
+
 ---
 
 ## Standing Open Questions

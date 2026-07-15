@@ -96,6 +96,29 @@ identifiers. They are handled under strict rules:
   **portfolio-documented** claims, never as audited or recalculated results, and
   never accompanied by confidential FY totals, funder names, or grant amounts.
 
+## Client-Side Web Resources
+
+Original model-driven JavaScript web resources carry production schema names,
+form/record GUIDs, role names, and operational logic. They are handled under
+strict rules:
+
+- Original exports live only in the git-ignored private source area and are
+  **never** committed, copied into `web-resources/`, or named in any tracked file.
+- Public examples are **sanitized reconstructions** with invented names
+  (`sample_*`, `SAMPLE_*_FORM_ID`, `Sample Administrator`). Every `.js` file opens
+  with a `SANITIZED EXAMPLE` notice.
+- Never publish: production schema names or publisher prefixes (`tr_`, `new_`,
+  `msnfp_`, …), form/record GUIDs, environment URLs, business-unit or real
+  security-role names, protected service rules, or exact production notification
+  text.
+- **UI command hiding is not authorization.** Any operation a privileged command
+  performs must be enforced server-side (security roles, table/column
+  permissions, or plug-in logic).
+- Scripts touching sensitive personal identifiers, workforce time/compensation, or
+  protected service logic are **not reconstructed at all**.
+- `scripts/validate_web_resource_examples.py` enforces these rules over
+  `web-resources/` and is covered by unit tests.
+
 ## Privacy Scan
 
 Before a release, tracked files are scanned for common leakage patterns:
