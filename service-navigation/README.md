@@ -19,16 +19,21 @@ obligations — not merely a contact list.
 
 ## Verified scale (recomputed 2026-07-15)
 
-From two private production exports (structure and aggregates only — no
-record values are published; see
+From three private production sources — two exports plus a recovered
+client-side copy-workflow script (structure and aggregates only; no record
+values are published; see
 [`evidence-and-limitations.md`](evidence-and-limitations.md)):
 
 - **204** resource-directory rows, **199** distinct organizations,
   **175** distinct service descriptions, **8** top-level resource categories
 - **186** goal-pathway rows: **32** Goals, **68** Action Items, **86** Needs
-  (totals reconcile: 32 + 68 + 86 = 186)
-- **165** pathway rows link to a directory resource, covering **16** distinct
-  resources — pathway coverage is intentionally partial, not universal
+  (reconciliation passes: zero unrecognized types; levels sum to 186)
+- **165** pathway rows carry a resource reference (16 distinct values, each
+  join-verified to exactly one directory row — pathways covered **16 of 204**
+  directory entries; coverage was selective, not universal)
+- A production **copy workflow existed**: it copied a Goal template with its
+  child Action Items and Needs into person-specific records, preserving
+  parent references and checking for duplicates
 
 ## Module Contents
 

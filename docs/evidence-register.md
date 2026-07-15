@@ -87,13 +87,19 @@ unverified.
   `tr_commongoals` custom table backs a Goal → Action Item → Need hierarchy.
 - **Verified?** **Yes.** Recomputed 2026-07-15 by
   `scripts/inspect_service_navigation.py`: **186** data rows (0 blank) =
-  **32 Goals + 68 Action Items + 86 Needs** (type totals reconcile exactly;
-  the source's middle-level label is plural "Action Items"). Dotted hierarchy
-  codes (`#`, `#.#`, `#.#.#`; 31 distinct top-level codes; 4 blank codes; 2
-  letter-suffixed sibling insertions). **165** rows reference a directory
-  resource across **16** distinct resources. Optional-step flag on 51 rows
-  (5 yes / 46 no); phase on 21 rows; one need-text column unpopulated on all
-  186 rows.
+  **32 Goals + 68 Action Items + 86 Needs** (reconciliation passes: zero
+  unrecognized types and the levels sum to the row count; the source's
+  middle-level label is plural "Action Items"). Dotted hierarchy codes
+  (`#`, `#.#`, `#.#.#`; 31 distinct top-level codes). **Hierarchy integrity:**
+  31/65/86 validly coded rows by level, 0 malformed, 0 duplicate codes, every
+  coded child's prefix matches an existing coded parent (0 missing); 4
+  blank-code rows unresolved; 2 letter-suffixed Need codes are an observed
+  shape with uninterpreted semantics. **165** rows carry a resource reference
+  (16 distinct normalized values; the cross-workbook join under Source 4
+  matches each to exactly one directory row). Optional-step states:
+  **yes 5 / no 46 / blank-unspecified 135** (blank is reported as unspecified,
+  not folded into "required"); phase on 21 rows; one need-text column
+  unpopulated on all 186 rows.
 - **Public derivatives:** `service-navigation/goal-pathway-model.md`,
   `linkage-model.md`, `metrics.md`, `data-dictionary.csv`,
   `evidence-and-limitations.md`, `fictional-samples.json` (invented),
@@ -117,13 +123,17 @@ unverified.
   resource directory.
 - **Verified?** **Yes.** Recomputed 2026-07-15 by
   `scripts/inspect_service_navigation.py`: **204** data rows (0 blank);
-  **199** distinct organizations (of 200 populated; 1 organization on 2 rows —
-  a legitimate multi-program shape); **201** distinct program titles;
-  **175** distinct service descriptions (trim-only; 174 case-folded) of 202
-  populated; **8** distinct top-level categories (multi-select; 3
-  multi-category rows). Presence rates: phone 184, email 127, address 171,
-  website 192, hours 115, summary 200, specialization 202, rating 204,
-  copy-target 1 (all /204).
+  **199** distinct organizations of 200 populated (1 organization value
+  appears on 2 rows; those rows do **not** carry distinct program titles, so
+  no multi-program shape is claimed); program-title cells 204 populated /
+  **201** distinct; **175** distinct service descriptions (trim-only; 174
+  case-folded) of 202 populated; **8** distinct top-level categories
+  (multi-select; 3 multi-category rows). Presence rates: phone 184, email 127,
+  address 171, website 192, hours 115, summary 200, specialization 202,
+  rating 204, copy-target 1 (all /204). **Cross-workbook join** (deterministic,
+  unit-tested; key = normalized program title, the pathway lookup's primary
+  name): 16 distinct pathway references → **16 matched exactly one directory
+  row, 0 ambiguous, 0 unmatched** (denominator: the 204 analyzed rows).
 - **Publication decision (the dedicated review this source was waiting on):**
   the **row-level collection is not published**. Approved for publication:
   recomputed aggregates, generalized field structure under invented public
@@ -309,6 +319,44 @@ unverified.
   names, protected service rules, and exact notification text remain **withheld**.
 - **Last validated:** 2026-07-14
 
+## Source 12 — `CopyCommonGoals.js.txt` (recovered client-side copy workflow)
+
+- **Supports:** the **goal-pathway copy workflow** in the service-navigation
+  module — a production client-side script recovered on 2026-07-15 and
+  reviewed privately (kept only in the git-ignored
+  `source-private/service-navigation/` area; SHA-256 recorded there in the
+  ignored private manifest).
+- **Verified?** **Yes — the workflow existed.** The script directly
+  demonstrates: selecting a reusable Goal template (with a type check);
+  copying the Goal into a person-specific record; retrieving child Action
+  Items and child Needs via a dedicated **parent-reference field** plus a type
+  filter (production parentage is a lookup — the dotted code is an identifier
+  the workflow copies and uses for duplicate checks); creating copies that
+  bind to their newly created parents (hierarchy preserved); duplicate
+  checking within the person's case context (confirmation on a hit);
+  association with a person-specific case context; and copying selected
+  pathway fields — including contact/link fields — onto the new records (a
+  **hybrid reference + snapshot model**).
+- **Public derivatives:** evidence-tier upgrades and corrections in
+  `service-navigation/goal-pathway-model.md`, `linkage-model.md`,
+  `evidence-and-limitations.md`, `data-dictionary.csv`, and
+  `architecture/service-navigation-lifecycle.md`. The filename appears only
+  here and in the ignored private manifest — not in module pages.
+- **Sanitization performed:** nothing from the script is quoted. Withheld:
+  the production schema (table, field, and namespace names), form logic and
+  identifiers, person/case terminology, option-set values,
+  notification/dialog text, and exact field mappings.
+- **Context note (working interpretation):** the copies land in three
+  person-record tables, one of which is the inventory's sole
+  "unclear/manual review" custom table (`tr_ActionItem`, Source 1). This
+  script suggests it holds person-specific action items copied from templates;
+  the inventory classification itself is unchanged pending manual review.
+- **Unresolved questions:** production status fields on the copied records,
+  how often the workflow ran, and the copied records' downstream lifecycle are
+  not demonstrated. The two letter-suffixed Need codes are **not** explained
+  by this script.
+- **Last validated:** 2026-07-15
+
 ---
 
 ## Standing Open Questions
@@ -320,7 +368,10 @@ unverified.
   **records deployed in Dataverse** — no source in this build enumerates the live
   rows.
 - 1 custom `tr_` table (`tr_ActionItem`) lacks a usable description and needs
-  manual classification; reported exactly, not force-classified.
+  manual classification; reported exactly, not force-classified. Source 12 now
+  provides a **working interpretation** (person-specific action items created
+  by the goal-pathway copy workflow); the catalog classification is unchanged
+  pending manual review.
 - The *awarded* grant amount (vs. the $100,000 requested) is unverified.
 - **Finance (Sources 8–10):** the 483+ / 89.7% / four-tier figures are
   **portfolio-documented**, not reproducible from the surviving data. The exact
@@ -328,10 +379,12 @@ unverified.
   composition, and the payout dataset are **not preserved** (not the same as
   pending verification). The surviving sample is **74 charges**, a separate
   export.
-- **Service navigation (Sources 3 & 4): the dedicated publication review is
-  complete.** Outcome: aggregates, generalized structure, and invented samples
-  are published; the row-level collection and the real category vocabulary are
-  withheld. Remaining open: pathway coverage was selective (16 of 204
-  resources); no usage/outcome data exists in the evidence; the
-  individualized-plan copy workflow is a reconstruction (copy-target populated
-  on 1 row).
+- **Service navigation (Sources 3, 4 & 12): the dedicated publication review
+  is complete.** Outcome: aggregates, generalized structure, and invented
+  samples are published; the row-level collection and the real category
+  vocabulary are withheld. The **copy workflow is now source-backed**
+  (Source 12) and the production linkage was a hybrid reference + snapshot
+  model. Remaining open: pathway coverage was selective (join-verified 16 of
+  204 directory rows); no usage/outcome data exists in the evidence; the 4
+  blank-code rows and the 2 letter-suffixed Need codes are unexplained;
+  production status fields on copied records are not demonstrated.

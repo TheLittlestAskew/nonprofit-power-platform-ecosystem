@@ -2,9 +2,14 @@
 
 **Evidence tier:** the three-level hierarchy, its field structure, and all
 counts are **directly supported** by a private production export and
-**verified** by recomputation ([`metrics.md`](metrics.md)). Public field names
-are **invented**. The individualized-plan copy workflow is a **sanitized
-reconstruction** (see [`linkage-model.md`](linkage-model.md)).
+**verified** by recomputation ([`metrics.md`](metrics.md)). A recovered
+private production client script **directly demonstrates** the copy workflow:
+selecting a reusable Goal template, copying it with its child Action Items and
+Needs into person-specific records, preserving parent references, checking for
+duplicates, and associating the copies with a person-specific case context.
+Public field names, the public status vocabulary, and the fictional examples
+are **invented** (see [`linkage-model.md`](linkage-model.md) and
+[`evidence-and-limitations.md`](evidence-and-limitations.md)).
 
 The goal pathway answers *"how do I reach it?"* Where the resource directory
 identifies available help, the pathway decomposes a broad outcome into an
@@ -54,42 +59,62 @@ reality: one step commonly requires several things.
 
 ## Hierarchy mechanics
 
-**Parent-child relationships and ordering.** The source encodes the hierarchy
-in a dotted **hierarchy code** on each row: Goals are `1`, `2`, …; Action
-Items are `1.1`, `1.2`, …; Needs are `1.1.1`, `1.1.2`, …. The code carries
-three jobs at once: parentage (prefix), level (segment depth), and sibling
-order (final segment). Recomputed pattern shapes confirm this: Goal rows are
-single-segment, Action Items two-segment, Needs three-segment, with a small
-number of deviations documented in
-[`evidence-and-limitations.md`](evidence-and-limitations.md) (4 rows with a
-blank code, 2 Needs with a letter-suffixed code such as `#.#.#a` — an
-insertion between existing siblings).
+**Parent-child relationships.** In production, parentage is a dedicated
+**parent reference** on each record: the recovered copy script retrieves a
+Goal's children by querying that parent reference (with a type filter), not by
+parsing codes. The analyzed export view does not include the parent-reference
+column, so the reference itself is evidenced by the script rather than the
+spreadsheet. Alongside it, every row carries a dotted **hierarchy code**
+(`1`, `1.1`, `1.1.1`) that mirrors the tree in human-readable form: level
+(segment depth), pathway membership (leading segment), and sibling order
+(final segment). The copy workflow copies this code onto the person-specific
+records and uses it for duplicate checks.
 
-**Pathway identifiers.** The top-level segment doubles as the **pathway
-identifier**: every row of one pathway shares the Goal's leading number
-(31 distinct top-level prefixes across the coded rows). A row is therefore
-self-describing — type, pathway membership, parent, and position all recover
-from `step_type` + `step_code`.
+**Hierarchy-integrity results (recomputed).** The code convention holds
+cleanly across the coded rows: 31 coded Goals, 65 coded Action Items, and 86
+coded Needs; **0 malformed codes, 0 duplicate codes**; every coded Action
+Item's leading segment matches an existing coded Goal, and every coded Need's
+two-segment prefix matches an existing coded Action Item (0 missing parents).
+Four rows carry a **blank code** (1 Goal, 3 Action Items) and remain
+explicitly unresolved — their tree position is presumably held by the
+parent-reference field, which the export does not show. Two Needs carry a
+letter-suffixed code (`#.#.#` plus a letter): an **observed shape** whose
+meaning is not established by the evidence and is not interpreted here.
+
+**Pathway identifiers.** The top-level code segment doubles as the **pathway
+identifier**: every coded row of one pathway shares the Goal's leading number
+(31 distinct top-level prefixes). A **validly coded** row is self-describing —
+type, pathway membership, and position recover from `step_type` + `step_code`;
+blank-code rows are not, and depend on the parent reference.
 
 **Optional versus required steps.** An explicit `optional_step` flag exists in
-the source (populated on 51 rows: 5 yes, 46 no; blank elsewhere). Blank is
-operationally treated as *required* — the safe default, because skipping a
-required step breaks a plan while performing an optional one merely costs
-time. The flag lets one reusable pathway serve people in different situations
-without forking the template.
+the source, with three observed states: **yes (5), no (46), and blank /
+unspecified (135)**. Blank values are reported as unspecified. A future
+implementation may choose a fail-safe default (treating unspecified as
+required, since skipping a required step breaks a plan while performing an
+optional one merely costs time), but that policy is **not preserved in the
+source evidence** and is a design recommendation only. The flag lets one
+reusable pathway serve people in different situations without forking the
+template; the copy workflow carries the flag onto the person-specific copies.
 
 **Linkage to a resource.** Pathway rows may reference a generalized directory
-resource record (165 of 186 source rows do, across 16 distinct resources).
-The reference appears at every level: on the Goal (which resource this pathway
+resource record: 165 of 186 source rows do, carrying 16 distinct normalized
+reference values, and a deterministic cross-workbook join confirms each of the
+16 matches exactly one directory row (see [`metrics.md`](metrics.md)). The
+reference appears at every level: on the Goal (which resource this pathway
 pursues), and on Action Items and Needs where a *different* supporting
-resource applies to a single step.
+resource applies to a single step. The production model was a **hybrid**:
+the reference was kept *and* selected contact/link fields were copied onto
+person-specific records as snapshots — see
+[`linkage-model.md`](linkage-model.md).
 
 ## Generalized pathway-step record
 
 | Public field | Concept |
 |---|---|
 | `step_reference` | Stable identifier for the step record |
-| `step_code` | Dotted hierarchy code (`1`, `1.2`, `1.2.3`) — parent, level, order |
+| `step_code` | Dotted hierarchy code (`1`, `1.2`, `1.2.3`): level, order, and pathway membership; also used by the copy workflow's duplicate check |
+| `parent_step` | Parent reference (the production parentage mechanism; evidenced by the copy workflow, not present in the analyzed export view) |
 | `step_type` | `Goal`, `Action Item`, or `Need` |
 | `pathway_reference` | Top-level code segment shared by the whole pathway |
 | `linked_resource` | Reference to a generalized directory resource |
@@ -110,13 +135,18 @@ working model.
 
 ## Reuse: template pathways and individual plans
 
-The 186 rows analyzed here are **reusable templates** ("common goals"): the
-generic, person-independent route to an outcome. Executing one for a specific
-person means **copying** the template into an individualized plan — preserving
-the hierarchy and codes, adding person-specific status, dates, and notes — so
-the template stays clean for the next person. The copy workflow, and why
-status must never live on the template, is covered in
-[`linkage-model.md`](linkage-model.md).
+The 186 rows analyzed here are **reusable templates**: the generic,
+person-independent route to an outcome. A recovered production client script
+**directly demonstrates** the reuse mechanism: it selects a template Goal,
+verifies its type, checks for an existing copy in the person's case context
+(by the hierarchy code, with a confirmation prompt on a hit), then creates
+person-specific copies of the Goal, each child Action Item, and each child
+Need — re-binding the new records to each other so the hierarchy survives the
+copy, and to the person's case context. Selected template fields (including
+the code, the optional flag, rationale, and contact/link fields) are copied
+onto the new records. The template itself is never modified by the copy. The
+full linkage model — and why status lives on the copies, never the template —
+is covered in [`linkage-model.md`](linkage-model.md).
 
 ## What is not published
 

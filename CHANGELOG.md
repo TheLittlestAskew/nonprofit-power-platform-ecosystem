@@ -8,6 +8,48 @@ not released software).
 
 ## [Unreleased]
 
+### Fixed
+
+- **Service Navigation evidence corrections** (post-review pass, third source):
+  - **Copy workflow is now source-backed.** A recovered production client-side
+    script (Source 12, reviewed privately, never committed) directly
+    demonstrates copying a reusable Goal template — with its child Action Items
+    and Needs — into person-specific records: parent references preserved,
+    duplicates checked within the person's case context, selected fields
+    copied onto the new records. Production **parentage is a dedicated
+    parent-reference field** (the dotted code is an identifier the workflow
+    copies and uses for duplicate checks), and the linkage was a **hybrid
+    reference + snapshot model**: resource references were retained *and*
+    selected contact/link values were copied, so copied values can go stale
+    unless refreshed. Removed earlier claims that pathway records never
+    duplicated contact/link values and that directory edits automatically
+    updated every pathway and plan; reference-only (or reference plus explicit
+    snapshot) is now framed as a public design recommendation, not a
+    production claim.
+  - **Optional-step semantics:** the three source states are reported
+    separately (yes 5 / no 46 / blank-unspecified 135). Blank is no longer
+    presented as production evidence of "required"; a fail-safe default is a
+    recommendation not preserved in the evidence.
+  - **Coverage claims:** "16 of 204" is now backed by a deterministic,
+    unit-tested **cross-workbook join** (16 distinct pathway references; each
+    matched exactly one directory row; 0 ambiguous; 0 unmatched; denominator =
+    204 analyzed directory rows) instead of being asserted from the reference
+    count alone.
+  - **Multi-program wording retracted:** the one repeated organization value
+    does not carry distinct program titles; repeated organizations are now
+    reported neutrally, with a dedicated aggregate
+    ("repeated organizations with >1 distinct program title": 0).
+  - **Inspector hardening:** type reconciliation is no longer tautological
+    (passes only with zero unrecognized types and level counts summing to the
+    row total); real hierarchy-integrity counts added (31/65/86 validly coded,
+    0 malformed, 0 duplicates, 0 missing parents, 4 blank codes unresolved;
+    letter-suffixed codes reported as observed shapes, not interpreted);
+    worksheet selection is by **visibility + generalized schema** with an
+    explicit ambiguity error (never by row count); and **source filenames,
+    paths, and embedded export timestamps are withheld from output** (sources
+    identified by role and SHA-256 only). All enforced by new invented-fixture
+    tests.
+
 ### Added
 
 - **Service Navigation module** (`service-navigation/`): sanitized documentation
@@ -29,7 +71,7 @@ not released software).
   validator (`scripts/validate_service_navigation_samples.py`: hierarchy
   integrity, fiction markers, scans for GUIDs, checksums, emails, phones,
   URLs, addresses, and schema prefixes, plus Markdown-link and Mermaid
-  checks), with 59 unit tests on invented fixtures. **The row-level collection is not published**: no organization or
+  checks), with unit tests on invented fixtures. **The row-level collection is not published**: no organization or
   program names, contacts, addresses, URLs, procedural instructions,
   identifiers, checksums, or timestamps appear in any tracked file.
 - **Web Resources module** (`web-resources/`): sanitized, reconstructed

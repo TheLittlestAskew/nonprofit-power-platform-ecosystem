@@ -8,10 +8,15 @@ to tracking a person's progress toward it.
 > concepts, and the resource-to-pathway link are **directly supported** by two
 > private production exports (aggregates recomputed 2026-07-15; see
 > [`../service-navigation/metrics.md`](../service-navigation/metrics.md)). The
-> individualized-plan copy stage is a **sanitized reconstruction** — the
-> template design and a copy-target field imply it, but no person-level plan
-> data exists in the analyzed evidence. Pathway coverage was **selective**
-> (16 of 204 directory resources), not universal.
+> individualized-plan **copy stage is directly supported** by a recovered
+> production client script that copied a Goal template with its child Action
+> Items and Needs into person-specific records, preserving parent references
+> and checking for duplicates; the **status vocabulary shown here is a
+> sanitized reconstruction** (production status fields are not in the
+> evidence). Pathway coverage was **selective** — a deterministic join
+> confirms 16 of the 204 directory entries — not universal. Production used a
+> **hybrid** linkage: resource references plus selected contact/link fields
+> copied as snapshots.
 
 ## The lifecycle
 
@@ -23,8 +28,8 @@ flowchart TD
     G["GOAL\ndesired outcome (32)"]
     AI["ACTION ITEM\nconcrete ordered step (68)"]
     N["NEED\nprerequisite / document / condition (86)"]
-    IP["INDIVIDUALIZED PLAN\nperson-specific copy (reconstructed)"]
-    ST["STATUS / COMPLETION / NOTES\nper copied step"]
+    IP["INDIVIDUALIZED PLAN\nperson-specific copy (workflow evidenced)"]
+    ST["STATUS / COMPLETION / NOTES\nper copied step (vocabulary reconstructed)"]
 
     RD --> SR
     SR --> RP
@@ -43,12 +48,12 @@ flowchart TD
 |---|---|---|
 | Resource directory | Curated catalog of organizations, programs, taxonomy, contacts, hours | Directly supported |
 | Selected resource / program | Case manager narrows by category, specialization, service description | Directly supported (taxonomy layers) |
-| Reusable goal pathway | The template route attached to a resource | Directly supported (165 linked rows, 16 resources) |
+| Reusable goal pathway | The template route attached to a resource | Directly supported (165 referencing rows; join-verified 16 of 204) |
 | Goal | Outcome broad enough to orient, specific enough to act on | Directly supported (32 rows) |
 | Action Item | Ordered concrete step; may be optional or phased | Directly supported (68 rows) |
 | Need | Prerequisite required before the step completes | Directly supported (86 rows) |
-| Individualized plan | Hierarchy copied per person, template preserved | Reconstructed |
-| Status / completion / notes | Per-step progress on the copy only | Reconstructed |
+| Individualized plan | Hierarchy copied per person, template preserved | Directly supported (recovered copy workflow) |
+| Status / completion / notes | Per-step progress on the copy only | Reconstructed (vocabulary invented; production status fields not evidenced) |
 
 ## The two systems solve different problems
 

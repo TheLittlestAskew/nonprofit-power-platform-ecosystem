@@ -1,7 +1,8 @@
 # Privacy Controls — Service Navigation
 
-This module is built from two private production exports that mix several
-sensitivity classes in the same rows:
+This module is built from three private production sources: two Dataverse
+exports and a recovered client-side copy-workflow script. The exports mix
+several sensitivity classes in the same rows:
 
 - internal record identifiers (Dataverse GUIDs)
 - row checksums and modification metadata
@@ -48,18 +49,28 @@ operational work product and stays private.
   are template/directory data — but the individualized-plan design in
   [`linkage-model.md`](linkage-model.md) is case data by definition and no
   real plan is represented anywhere in this module)
+- From the recovered copy-workflow script: the production schema (table,
+  field, and namespace names), form logic and identifiers, person/case
+  terminology, option-set values, notification/dialog text, and exact field
+  mappings. The script's existence and its generalized mechanics are
+  documented; nothing from it is quoted, and its filename appears only in the
+  evidence register and the ignored private manifest — never in module pages.
 
 ## Enforcement
 
-- The private exports live only under `source-private/service-navigation/`
+- The private sources live only under `source-private/service-navigation/`
   (git-ignored; verified untracked before and after the build). Original
   filenames, byte counts, SHA-256 hashes, and the full sanitization record are
   kept in an **ignored private evidence manifest** in that directory.
 - `scripts/inspect_service_navigation.py` reads the exports locally and emits
   **aggregates only** — it is safe by construction and never prints a cell
-  value, GUID, checksum, timestamp, email, phone, URL, organization name, or
-  raw column header. Unit tests prove leakage patterns cannot appear in its
-  output using entirely invented fixtures.
+  value, GUID, checksum, timestamp, email, phone, URL, organization name, raw
+  column header, **or source filename/path** (sources are identified by role
+  and SHA-256; export filenames embed production terminology and timestamps).
+  Its data worksheet is selected by visibility and generalized schema, its
+  cross-workbook join emits match counts only, and unit tests prove leakage
+  patterns — including a planted distinctive filename — cannot appear in its
+  output, using entirely invented fixtures.
 - `scripts/validate_service_navigation_samples.py` scans every public file in
   this module for GUIDs, checksum/base64-like runs, emails outside the
   reserved `example.invalid` domain, phone-like digit runs, non-fictional
