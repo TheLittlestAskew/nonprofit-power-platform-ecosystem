@@ -76,6 +76,26 @@ Rules applied:
 - Exact schema names are retained for ordinary nonclinical tables unless a
   separate privacy concern is found.
 
+## Payment-Processor Data (Stripe)
+
+Raw payment-processor exports carry donor PII, partial card data, and processor
+identifiers. They are handled under strict rules:
+
+- The raw Stripe export and the detailed reconstruction notes live only under
+  `source-private/` and are **never** committed.
+- Stripe fields are classified into seven privacy categories (see
+  `development-finance/privacy-controls.md`). Only a field's **category** and
+  **name** may be published — **never a value**. Field names are Stripe's public
+  API vocabulary; values (amounts, ids, emails, card data, metadata, timestamps)
+  are always withheld or replaced with invented samples.
+- `scripts/inspect_stripe_schema.py` reads the private sample and emits sanitized
+  structure only; it never prints or writes a field value.
+- `scripts/validate_finance_samples.py` fails if any sample record contains a
+  real-looking Stripe id, email, GUID, or card-like digit run.
+- Operational figures (e.g. record counts and match rates) are published only as
+  **portfolio-documented** claims, never as audited or recalculated results, and
+  never accompanied by confidential FY totals, funder names, or grant amounts.
+
 ## Privacy Scan
 
 Before a release, tracked files are scanned for common leakage patterns:

@@ -1,0 +1,52 @@
+Layer,Field or Concept,Category,Type,Production Value Treatment,Notes
+Stripe source (charge),object,pagination-api,str,Aggregate/schema only,Field name and aggregate structure only; no per-record value
+Stripe source (charge),status,safe-structural,str,Aggregate/schema only,Enum name only; status values never published
+Stripe source (charge),paid,safe-structural,bool,Aggregate/schema only,Boolean; per-record value never published
+Stripe source (charge),captured,safe-structural,bool,Aggregate/schema only,Boolean; per-record value never published
+Stripe source (charge),refunded,safe-structural,bool,Aggregate/schema only,Boolean; per-record value never published
+Stripe source (charge),disputed,safe-structural,bool,Aggregate/schema only,Boolean; per-record value never published
+Stripe source (charge),livemode,safe-structural,bool,Aggregate/schema only,Boolean; per-record value never published
+Stripe source (charge),created,safe-structural,int,Never publish,Unix timestamp tied to a record; never published
+Stripe source (charge),currency,financial,str,Aggregate/schema only,Name documented; currency value never published
+Stripe source (charge),amount,financial,int,Aggregate/schema only,Minor units; values never published
+Stripe source (charge),amount_captured,financial,int,Aggregate/schema only,Values never published
+Stripe source (charge),amount_refunded,financial,int,Aggregate/schema only,Values never published
+Stripe source (charge),balance_transaction.amount,financial,int,Aggregate/schema only,Gross; from expanded balance transaction; values never published
+Stripe source (charge),balance_transaction.fee,financial,int,Aggregate/schema only,Processing fee; values never published
+Stripe source (charge),balance_transaction.net,financial,int,Aggregate/schema only,Net; values never published
+Stripe source (charge),balance_transaction.reporting_category,safe-structural,str,Aggregate/schema only,Reporting-category field; production values withheld
+Stripe source (charge),id,processor-identifier,str,Never publish,Processor identifier
+Stripe source (charge),customer,processor-identifier,str,Never publish,Processor identifier
+Stripe source (charge),payment_intent,processor-identifier,str,Never publish,Processor identifier
+Stripe source (charge),receipt_url,processor-identifier,str,Never publish,Never published
+Stripe source (charge),billing_details.name,personal-contact,str,Never publish,Donor PII
+Stripe source (charge),billing_details.email,personal-contact,str,Never publish,Donor PII
+Stripe source (charge),billing_details.phone,personal-contact,str,Never publish,Donor PII
+Stripe source (charge),billing_details.address,personal-contact,dict,Never publish,Donor PII
+Stripe source (charge),billing_details.tax_id,personal-contact,str,Never publish,Donor PII
+Stripe source (charge),receipt_email,personal-contact,str,Never publish,Donor PII
+Stripe source (charge),source.last4,payment-method-sensitive,str,Never publish,Card data
+Stripe source (charge),source.brand,payment-method-sensitive,str,Never publish,Card data
+Stripe source (charge),source.exp_month,payment-method-sensitive,int,Never publish,Card data
+Stripe source (charge),source.exp_year,payment-method-sensitive,int,Never publish,Card data
+Stripe source (charge),source.fingerprint,payment-method-sensitive,str,Never publish,Card fingerprint
+Stripe source (charge),source.funding,payment-method-sensitive,str,Never publish,Card data
+Stripe source (charge),metadata.form_name,metadata-freetext,str,Never publish,Free-text; values never published
+Stripe source (charge),metadata.invoice_id,metadata-freetext,str,Never publish,Free-text; values never published
+Stripe source (charge),statement_descriptor,metadata-freetext,str,Never publish,Free-text; values never published
+Stripe source (list),object,pagination-api,str,Aggregate/schema only,Always 'list'
+Stripe source (list),has_more,pagination-api,bool,Aggregate/schema only,Pagination flag; aggregate only
+Stripe source (list),url,pagination-api,str,Never publish,API path; never published
+Dataverse target (generalized),Processor charge reference,processor-identifier,concept,Fictional samples only,Generalized; internal schema name withheld
+Dataverse target (generalized),Related payout reference,processor-identifier,concept,Fictional samples only,Generalized; internal schema name withheld
+Dataverse target (generalized),Deposit reference,safe-structural,concept,Fictional samples only,Generalized relationship concept
+Dataverse target (generalized),Book date,safe-structural,date,Fictional samples only,Transaction or accounting date
+Dataverse target (generalized),Expected deposit date,safe-structural,date,Fictional samples only,Derived from related payout
+Dataverse target (generalized),Gross,financial,number,Fictional samples only,From expanded balance transaction
+Dataverse target (generalized),Fee,financial,number,Fictional samples only,From expanded balance transaction
+Dataverse target (generalized),Net,financial,number,Fictional samples only,From expanded balance transaction
+Dataverse target (generalized),Donor display,personal-contact,concept,Fictional samples only,Represents matched donor; sample uses fictional label
+Dataverse target (generalized),Payment method,safe-structural,concept,Fictional samples only,Card or method type; card detail withheld
+Dataverse target (generalized),Campaign source,metadata-freetext,concept,Fictional samples only,From processor metadata; values withheld
+Dataverse target (generalized),Recurring indicator,safe-structural,bool,Fictional samples only,Recurring-payment flag
+Dataverse target (generalized),Match status,safe-structural,concept,Fictional samples only,auto-matched or exception
