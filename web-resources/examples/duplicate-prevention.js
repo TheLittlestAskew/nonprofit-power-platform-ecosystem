@@ -4,9 +4,17 @@
  * Reconstructed from a production model-driven app pattern.
  * All schema names, identifiers, role names, and business rules are fictional.
  *
- * Pattern: before saving a new related record, check whether an equivalent
- * record already exists for the same parent within a time window. If so, cancel
- * the save and notify the user. Uses async Xrm.WebApi and defers the save.
+ * Pattern: prevent creating more than one related record for the same parent.
+ * On save of a NEW record, look up the selected parent, check whether ANY
+ * related record already exists for it, defer the save during the async check,
+ * block + notify on a duplicate, and re-issue the save when clean. Existing
+ * records update normally.
+ *
+ * INTENTIONAL DEVIATION FROM SOURCE (hardening):
+ *   Production source allowed the save after a query failure (fail-open). This
+ *   public reconstruction blocks the save and asks the user to retry
+ *   (fail-closed). This is a deliberate hardening, NOT historical production
+ *   behavior.
  */
 
 "use strict";
@@ -14,12 +22,8 @@
 const DuplicatePrevention = (() => {
   const CONFIG = {
     parentLookupField: "sample_case_record",
-    dateField: "sample_meeting_date",
     relatedEntitySet: "sample_related_records",
     parentColumn: "_sample_case_record_value",
-    dateColumn: "sample_meeting_date",
-    // Invented window: treat records on the same calendar day as duplicates.
-    windowHours: 24,
     notificationId: "duplicate_prevention_notice",
   };
 
@@ -32,39 +36,26 @@ const DuplicatePrevention = (() => {
     return value[0].id.replace(/[{}]/g, "");
   }
 
-  function getDate(formContext) {
-    const attr = formContext.getAttribute(CONFIG.dateField);
-    const value = attr ? attr.getValue() : null;
-    return value instanceof Date ? value : null;
-  }
-
   /**
-   * Return true if a matching record already exists for this parent in the
-   * configured window. Query values are invented.
+   * True if ANY related record already exists for this parent. There is no time
+   * window — one related record per parent is the rule. Query values invented.
    */
-  async function existsDuplicate(parentId, date) {
-    if (!parentId || !date) {
+  async function existsForParent(parentId) {
+    if (!parentId) {
       return false;
     }
-    const windowMs = CONFIG.windowHours * 60 * 60 * 1000;
-    const start = new Date(date.getTime() - windowMs).toISOString();
-    const end = new Date(date.getTime() + windowMs).toISOString();
     const options =
-      `?$select=${CONFIG.dateColumn}` +
+      `?$select=${CONFIG.parentColumn}` +
       `&$filter=${CONFIG.parentColumn} eq ${parentId}` +
-      ` and ${CONFIG.dateColumn} ge ${start}` +
-      ` and ${CONFIG.dateColumn} le ${end}` +
       `&$top=1`;
-    const result = await Xrm.WebApi.retrieveMultipleRecords(
-      CONFIG.relatedEntitySet,
-      options
-    );
+    const result = await Xrm.WebApi.retrieveMultipleRecords(CONFIG.relatedEntitySet, options);
     return Boolean(result && result.entities && result.entities.length);
   }
 
   /**
-   * OnSave handler. Only new records are checked. The save is deferred with
-   * preventDefault() while the async check runs, then re-issued if clean.
+   * OnSave handler. Only new records are guarded; existing records update
+   * normally. The save is deferred with preventDefault() while the async check
+   * runs, then re-issued exactly once (a re-entrancy flag prevents a save loop).
    */
   async function onSave(executionContext) {
     const formContext = executionContext.getFormContext();
@@ -73,41 +64,40 @@ const DuplicatePrevention = (() => {
       return;
     }
     if (formContext.ui.getFormType() !== 1) {
-      return; // only guard creation of new records
+      return; // existing record: allow normal update
     }
-    // Avoid re-entrancy: a flag on the form marks a validated, re-issued save.
+    // Re-entrancy guard (modernization): a validated, re-issued save skips the
+    // check exactly once, avoiding an infinite save loop.
     if (formContext.data && formContext.data.__dupCheckPassed) {
       formContext.data.__dupCheckPassed = false;
       return;
     }
 
     const parentId = getParentId(formContext);
-    const date = getDate(formContext);
-    if (!parentId || !date) {
-      return; // insufficient data to check; let platform validation handle it
+    if (!parentId) {
+      return; // no parent selected; let platform validation handle it
     }
 
-    // Defer the save until the async check completes.
-    eventArgs.preventDefault();
+    eventArgs.preventDefault(); // defer the save during the async check
 
     try {
-      const duplicate = await existsDuplicate(parentId, date);
+      const duplicate = await existsForParent(parentId);
       if (duplicate) {
         formContext.ui.setFormNotification(
-          "A matching record already exists for this parent in the selected window.",
-          "WARNING",
+          "A related record already exists for the selected parent. Only one is allowed.",
+          "ERROR",
           CONFIG.notificationId
         );
         return; // save stays cancelled
       }
       formContext.ui.clearFormNotification(CONFIG.notificationId);
-      // Mark as validated and re-issue the save exactly once.
       if (formContext.data) {
         formContext.data.__dupCheckPassed = true;
       }
-      formContext.data.save();
+      formContext.data.save(); // re-issue once
     } catch (err) {
-      // On error, do not silently allow a possible duplicate; surface it.
+      // INTENTIONAL DEVIATION (fail-closed): unlike the source, do not allow the
+      // save on a query error — surface it and ask the user to retry.
       console.error("duplicate-prevention: check failed", err && err.message);
       formContext.ui.setFormNotification(
         "Could not verify duplicates. Please retry.",
@@ -117,7 +107,7 @@ const DuplicatePrevention = (() => {
     }
   }
 
-  return { onSave, existsDuplicate, getParentId, getDate, CONFIG };
+  return { onSave, existsForParent, getParentId, CONFIG };
 })();
 
 if (typeof module !== "undefined" && module.exports) {

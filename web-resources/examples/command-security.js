@@ -4,91 +4,100 @@
  * Reconstructed from a production model-driven app pattern.
  * All schema names, identifiers, role names, and business rules are fictional.
  *
- * Pattern: show or enable a command only for users holding a given role. Role
- * names are invented. IMPORTANT: hiding a command in the UI is a convenience,
- * NOT a security control. Any operation the command performs must be enforced
- * server-side (security roles, column/table permissions, or plug-in logic).
+ * Primary pattern (source-backed): gate a command by comparing the current
+ * user's security-role IDs against invented role-ID tokens. Supports a single
+ * role check and a multiple-role check.
+ *
+ * IMPORTANT: hiding a command in the UI is a convenience, NOT a security
+ * control. Any operation a privileged command performs must be enforced
+ * server-side (security roles, table/column permissions, or plug-in logic). A
+ * user can still invoke the underlying operation directly.
  */
 
 "use strict";
 
 const CommandSecurity = (() => {
-  // Invented role names. Real security-role and business-unit names are never
-  // published; a deployment maps these placeholders to its own roles.
-  const ROLES = {
-    administrator: "Sample Administrator",
-    reviewer: "Sample Reviewer",
+  // Invented role-ID tokens. Production role GUIDs are never published; a
+  // deployment replaces these placeholders with its own role ids.
+  const ROLE_IDS = {
+    admin: "SAMPLE_ADMIN_ROLE_ID",
+    reviewer: "SAMPLE_REVIEWER_ROLE_ID",
   };
 
   /**
-   * Return the set of role names for the current user, lowercased for
-   * case-insensitive comparison. Returns an empty set on any failure.
+   * The current user's security-role IDs, lowercased. Empty array on failure.
    */
-  function getUserRoleNames() {
+  function getUserSecurityRoleIds() {
     try {
-      const settings = Xrm.Utility.getGlobalContext().userSettings;
-      const roles = settings && settings.roles;
-      const names = new Set();
-      if (roles && typeof roles.forEach === "function") {
-        roles.forEach((role) => {
-          const name = role && role.name ? String(role.name).toLowerCase() : "";
-          if (name) {
-            names.add(name);
-          }
-        });
-      }
-      return names;
+      const roles = Xrm.Utility.getGlobalContext().userSettings.securityRoles;
+      return Array.isArray(roles) ? roles.map((r) => String(r).toLowerCase()) : [];
     } catch (err) {
-      console.error("command-security: could not read roles", err && err.message);
-      return new Set();
+      console.error("command-security: could not read securityRoles", err && err.message);
+      return [];
     }
   }
 
   /**
-   * True if the current user holds any of the supplied role names.
+   * Single-role check: does the user hold the given role id?
    */
-  function hasAnyRole(requiredRoleNames) {
-    if (!Array.isArray(requiredRoleNames) || requiredRoleNames.length === 0) {
+  function hasRole(roleId) {
+    if (!roleId) {
       return false;
     }
-    const userRoles = getUserRoleNames();
-    return requiredRoleNames.some((name) =>
-      userRoles.has(String(name).toLowerCase())
-    );
+    const target = String(roleId).toLowerCase();
+    return getUserSecurityRoleIds().some((id) => id === target);
   }
 
   /**
-   * Command-visibility rule for a privileged command. Ribbon/command rules call
-   * this and use the boolean to show or enable the button.
-   *
-   * Reminder: this only affects what the user SEES. It does not authorize the
-   * underlying action — that must be enforced by server-side security.
+   * Multiple-role check: does the user hold ANY of the given role ids?
+   */
+  function hasAnyRole(roleIds) {
+    if (!Array.isArray(roleIds) || roleIds.length === 0) {
+      return false;
+    }
+    const userRoleIds = getUserSecurityRoleIds();
+    return roleIds.some((rid) => userRoleIds.includes(String(rid).toLowerCase()));
+  }
+
+  /**
+   * Command-visibility rule. A ribbon/command Enable rule calls this and uses the
+   * boolean to show/enable the button. It affects UI only — not authorization.
    */
   function canSeePrivilegedCommand() {
-    return hasAnyRole([ROLES.administrator, ROLES.reviewer]);
+    return hasAnyRole([ROLE_IDS.admin, ROLE_IDS.reviewer]);
   }
 
-  /**
-   * Enable/disable a command's control if the host exposes it. Falls back to
-   * doing nothing (safe) when the control cannot be resolved.
-   */
-  function applyEnablement(formContext, controlName) {
-    if (!formContext || !controlName) {
-      return;
-    }
-    const control = formContext.getControl(controlName);
-    if (control && typeof control.setDisabled === "function") {
-      control.setDisabled(!canSeePrivilegedCommand());
-    }
-  }
-
-  return {
-    canSeePrivilegedCommand,
-    hasAnyRole,
-    getUserRoleNames,
-    applyEnablement,
-    ROLES,
+  // ----------------------------------------------------------------------- //
+  // ALTERNATIVE (modern) approach: compare role NAMES via userSettings.roles
+  // instead of role IDs. Documented for reference; the primary uses role IDs to
+  // mirror the source technique.
+  // ----------------------------------------------------------------------- //
+  const ALTERNATIVE = {
+    roleNames: { admin: "sample administrator", reviewer: "sample reviewer" },
+    getUserRoleNames() {
+      try {
+        const roles = Xrm.Utility.getGlobalContext().userSettings.roles;
+        const names = [];
+        if (roles && typeof roles.forEach === "function") {
+          roles.forEach((role) => {
+            if (role && role.name) {
+              names.push(String(role.name).toLowerCase());
+            }
+          });
+        }
+        return names;
+      } catch (err) {
+        console.error("command-security(alt): could not read roles", err && err.message);
+        return [];
+      }
+    },
+    hasAnyRoleName(requiredNames) {
+      const userNames = this.getUserRoleNames();
+      return requiredNames.some((n) => userNames.includes(String(n).toLowerCase()));
+    },
   };
+
+  return { canSeePrivilegedCommand, hasRole, hasAnyRole, getUserSecurityRoleIds, ALTERNATIVE, ROLE_IDS };
 })();
 
 if (typeof module !== "undefined" && module.exports) {

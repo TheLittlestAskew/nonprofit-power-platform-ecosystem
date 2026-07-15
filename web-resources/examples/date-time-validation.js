@@ -4,22 +4,41 @@
  * Reconstructed from a production model-driven app pattern.
  * All schema names, identifiers, role names, and business rules are fictional.
  *
- * Pattern: auto-populate an end time from a start time and duration, handle an
- * event that crosses midnight, validate before save, and clean up transient
- * form state afterward.
+ * Pattern: each schedule "slot" has a date lookup and start/end datetime fields.
+ * When the date lookup changes, the scheduled date is applied to start and end
+ * (preserving any existing time). Start must fall on the scheduled date; end may
+ * fall on the scheduled date or the next day (overnight interval). On save, a
+ * slot whose start equals its end is cleared (it represents no interval).
+ *
+ * The production original mapped seven days; this reconstruction uses two
+ * invented slot configurations. No duration field is introduced.
  */
 
 "use strict";
 
 const DateTimeValidation = (() => {
   const CONFIG = {
-    startField: "sample_start_time",
-    endField: "sample_end_time",
-    durationField: "sample_duration_minutes", // whole number of minutes
-    defaultDurationMinutes: 60,
-    notificationId: "datetime_validation_notice",
-    transientFlag: "sample_end_autofilled",
+    // Invented date entity + column that holds the scheduled date value.
+    dateEntitySet: "sample_schedule_dates",
+    dateValueColumn: "sample_date_value",
+    // Two invented slot configurations (production used more).
+    slots: [
+      { lookup: "sample_slot_a_date", start: "sample_slot_a_start", end: "sample_slot_a_end" },
+      { lookup: "sample_slot_b_date", start: "sample_slot_b_start", end: "sample_slot_b_end" },
+    ],
+    startNotice: "start_date_mismatch",
+    endNotice: "end_date_invalid",
+    registerDelayMs: 2000,
   };
+
+  function getLookupId(formContext, field) {
+    const attr = formContext.getAttribute(field);
+    const value = attr ? attr.getValue() : null;
+    if (!value || !value.length || !value[0].id) {
+      return null;
+    }
+    return value[0].id.replace(/[{}]/g, "");
+  }
 
   function getDate(formContext, field) {
     const attr = formContext.getAttribute(field);
@@ -27,90 +46,167 @@ const DateTimeValidation = (() => {
     return value instanceof Date ? value : null;
   }
 
-  function getDuration(formContext) {
-    const attr = formContext.getAttribute(CONFIG.durationField);
-    const raw = attr ? attr.getValue() : null;
-    const minutes = Number.isFinite(raw) ? raw : CONFIG.defaultDurationMinutes;
-    return minutes > 0 ? minutes : CONFIG.defaultDurationMinutes;
-  }
-
   /**
-   * Compute an end time from a start time plus a duration in minutes. Because
-   * this is date-arithmetic, an end that lands past midnight naturally rolls to
-   * the next day, so overnight events are handled without special casing.
+   * Retrieve the scheduled date value for a slot's date lookup, or null.
    */
-  function computeEnd(start, durationMinutes) {
-    if (!(start instanceof Date)) {
+  async function fetchScheduledDate(formContext, slot) {
+    const dateId = getLookupId(formContext, slot.lookup);
+    if (!dateId) {
       return null;
     }
-    return new Date(start.getTime() + durationMinutes * 60 * 1000);
+    const record = await Xrm.WebApi.retrieveRecord(
+      CONFIG.dateEntitySet,
+      dateId,
+      `?$select=${CONFIG.dateValueColumn}`
+    );
+    const raw = record ? record[CONFIG.dateValueColumn] : null;
+    return raw ? new Date(raw) : null;
+  }
+
+  // Apply a scheduled date to a datetime field, preserving any existing time.
+  function applyDatePreservingTime(formContext, field, scheduledDate) {
+    const next = new Date(scheduledDate);
+    const existing = getDate(formContext, field);
+    if (existing) {
+      next.setHours(existing.getHours(), existing.getMinutes(), 0, 0);
+    }
+    const attr = formContext.getAttribute(field);
+    if (attr) {
+      attr.setValue(next);
+    }
   }
 
   /**
-   * OnChange handler for start time or duration: recompute the end time.
+   * OnChange for a slot's date lookup: apply the scheduled date to start and end.
    */
-  function onStartOrDurationChange(executionContext) {
+  async function onDateLookupChange(formContext, slot) {
+    try {
+      const scheduledDate = await fetchScheduledDate(formContext, slot);
+      if (!scheduledDate) {
+        return;
+      }
+      applyDatePreservingTime(formContext, slot.start, scheduledDate);
+      applyDatePreservingTime(formContext, slot.end, scheduledDate);
+    } catch (err) {
+      console.error("date-time-validation: date retrieve failed", err && err.message);
+    }
+  }
+
+  /**
+   * OnChange for a slot's start: the start date must match the scheduled date.
+   */
+  async function onStartChange(formContext, slot) {
+    const start = getDate(formContext, slot.start);
+    if (!start) {
+      return;
+    }
+    const scheduledDate = await fetchScheduledDate(formContext, slot);
+    if (!scheduledDate) {
+      return;
+    }
+    if (scheduledDate.toDateString() !== start.toDateString()) {
+      formContext.ui.setFormNotification(
+        "Start date must match the scheduled date for this slot.",
+        "ERROR",
+        CONFIG.startNotice
+      );
+      const corrected = new Date(scheduledDate);
+      corrected.setHours(start.getHours(), start.getMinutes(), 0, 0);
+      formContext.getAttribute(slot.start).setValue(corrected);
+    } else {
+      formContext.ui.clearFormNotification(CONFIG.startNotice);
+    }
+  }
+
+  /**
+   * OnChange for a slot's end: end may be the scheduled date or the next day
+   * (overnight interval).
+   */
+  async function onEndChange(formContext, slot) {
+    const end = getDate(formContext, slot.end);
+    if (!end) {
+      return;
+    }
+    const scheduledDate = await fetchScheduledDate(formContext, slot);
+    if (!scheduledDate) {
+      return;
+    }
+    const nextDay = new Date(scheduledDate);
+    nextDay.setDate(nextDay.getDate() + 1);
+    const isSameDay = scheduledDate.toDateString() === end.toDateString();
+    const isNextDay = nextDay.toDateString() === end.toDateString();
+    if (!isSameDay && !isNextDay) {
+      formContext.ui.setFormNotification(
+        "End date must be the scheduled date or the next day (overnight).",
+        "ERROR",
+        CONFIG.endNotice
+      );
+      const corrected = new Date(scheduledDate);
+      corrected.setHours(end.getHours(), end.getMinutes(), 0, 0);
+      formContext.getAttribute(slot.end).setValue(corrected);
+    } else {
+      formContext.ui.clearFormNotification(CONFIG.endNotice);
+    }
+  }
+
+  /**
+   * OnSave: clear any slot whose start equals its end (no interval scheduled).
+   */
+  function onSave(executionContext) {
     const formContext = executionContext.getFormContext();
     if (!formContext) {
       return;
     }
-    const start = getDate(formContext, CONFIG.startField);
-    if (!start) {
-      return; // nothing to compute from
-    }
-    const end = computeEnd(start, getDuration(formContext));
-    const endAttr = formContext.getAttribute(CONFIG.endField);
-    if (end && endAttr) {
-      endAttr.setValue(end);
-      // Mark that we auto-filled the end so cleanup can distinguish it from a
-      // value a user typed manually.
-      const flag = formContext.getAttribute(CONFIG.transientFlag);
-      if (flag) {
-        flag.setValue(true);
+    for (const slot of CONFIG.slots) {
+      const startAttr = formContext.getAttribute(slot.start);
+      const endAttr = formContext.getAttribute(slot.end);
+      if (!startAttr || !endAttr) {
+        continue;
+      }
+      const start = startAttr.getValue();
+      const end = endAttr.getValue();
+      if (start instanceof Date && end instanceof Date && start.getTime() === end.getTime()) {
+        startAttr.setValue(null);
+        endAttr.setValue(null);
       }
     }
   }
 
   /**
-   * OnSave handler: validate that end is strictly after start. An overnight
-   * event (end on the following day) is valid; end before start is not.
+   * OnLoad: register per-slot OnChange handlers. A short delay lets any
+   * auto-save refresh settle before wiring events (matches the source).
    */
-  function onSave(executionContext) {
+  function onLoad(executionContext) {
     const formContext = executionContext.getFormContext();
-    const eventArgs = executionContext.getEventArgs();
-    if (!formContext || !eventArgs) {
+    if (!formContext) {
       return;
     }
-    const start = getDate(formContext, CONFIG.startField);
-    const end = getDate(formContext, CONFIG.endField);
-    if (start && end && end.getTime() <= start.getTime()) {
-      eventArgs.preventDefault(); // cancel the save
-      formContext.ui.setFormNotification(
-        "End time must be after start time.",
-        "ERROR",
-        CONFIG.notificationId
-      );
-      return;
-    }
-    formContext.ui.clearFormNotification(CONFIG.notificationId);
-    cleanupTransientState(formContext);
-  }
-
-  /**
-   * Clear the transient auto-fill marker so it does not persist between edits.
-   */
-  function cleanupTransientState(formContext) {
-    const flag = formContext.getAttribute(CONFIG.transientFlag);
-    if (flag) {
-      flag.setValue(false);
-    }
+    setTimeout(function registerEvents() {
+      for (const slot of CONFIG.slots) {
+        const lookupAttr = formContext.getAttribute(slot.lookup);
+        const startAttr = formContext.getAttribute(slot.start);
+        const endAttr = formContext.getAttribute(slot.end);
+        if (lookupAttr) {
+          lookupAttr.addOnChange(() => onDateLookupChange(formContext, slot));
+        }
+        if (startAttr) {
+          startAttr.addOnChange(() => onStartChange(formContext, slot));
+        }
+        if (endAttr) {
+          endAttr.addOnChange(() => onEndChange(formContext, slot));
+        }
+      }
+    }, CONFIG.registerDelayMs);
   }
 
   return {
-    onStartOrDurationChange,
+    onLoad,
     onSave,
-    computeEnd,
-    cleanupTransientState,
+    onDateLookupChange,
+    onStartChange,
+    onEndChange,
+    fetchScheduledDate,
+    applyDatePreservingTime,
     CONFIG,
   };
 })();
