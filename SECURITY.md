@@ -122,6 +122,34 @@ strict rules:
 - `scripts/validate_web_resource_examples.py` enforces these rules over
   `web-resources/` and is covered by unit tests.
 
+## Service-Navigation Data (Resource Directory + Goal Pathways)
+
+The two private exports behind `service-navigation/` mix curated organization
+information, direct contact data, addresses, URLs, procedural instructions,
+potentially sensitive prerequisites, and internal Dataverse metadata. They are
+handled under strict rules:
+
+- The exports live only under `source-private/service-navigation/` and are
+  **never** committed. Hashes and the sanitization record are kept in an
+  ignored private evidence manifest beside them.
+- **The row-level collection is not published.** Even where an organization's
+  information is public elsewhere, the curated dataset, its internal
+  relationships, ratings, and operational context remain private. The real
+  category vocabulary is also withheld (taxonomy labels are publishable only
+  after a separate review).
+- Published: recomputed aggregate counts, generalized field structure under
+  **invented public field names**, hierarchy pattern shapes, invented samples,
+  and original diagrams. Never published: organization/program names, phones,
+  emails, addresses, URLs, application/form instructions, prerequisites,
+  GUIDs, row checksums, timestamps, or exact record mappings.
+- `scripts/inspect_service_navigation.py` reads the exports locally and emits
+  **aggregates only**. It never prints a cell value or raw column header, and
+  every output line passes a leakage guard that rejects email-, GUID-, URL-,
+  phone-, and checksum-shaped text. Unit tests plant leakage values in
+  invented fixtures and prove they cannot appear in output.
+- `scripts/validate_service_navigation_samples.py` scans every public module
+  file for leakage patterns and validates the fictional samples structurally.
+
 ## Privacy Scan
 
 Before a release, tracked files are scanned for common leakage patterns:

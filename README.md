@@ -13,7 +13,9 @@ As sole systems developer and development operations administrator, I architecte
   measurement design verified at **9 headline KPI targets**, **19 supporting
   measurement/implementation items**, a **20-measure** curated reporting
   framework, and **23** proposal objectives
-- Structured community-resource and service-navigation data
+- Structured community-resource and service-navigation data — a **204-entry**
+  resource directory (199 organizations, 8 top-level categories) linked to a
+  **186-row** Goal → Action Item → Need pathway model (32/68/86)
 - Donation and payment reconciliation workflows
 - Power Automate flows, JavaScript web resources, and supporting documentation
 
@@ -70,7 +72,7 @@ COMPLIANCE REPORTING
 | [`tests/`](tests/) | Unit tests for inventory classification/prefix logic | **Complete** |
 | [`docs/`](docs/) | Governance context and the source evidence register | Evidence register complete; more planned |
 | [`development-finance/`](development-finance/) | Stripe→Dataverse reconciliation lifecycle, matching model, exception handling, revenue engine, data dictionary, sample records, privacy controls | **Initial module complete** |
-| [`service-navigation/`](service-navigation/) | Community-resource taxonomy and goal-pathway model | Placeholder — pending resource-directory review |
+| [`service-navigation/`](service-navigation/) | Resource-directory and Goal→Action Item→Need pathway models, linkage architecture, recomputed metrics, data dictionary, fictional samples, privacy controls | **Initial module complete** |
 | [`power-automate/`](power-automate/) | Sanitized flow documentation and patterns | Placeholder — not started |
 | [`web-resources/`](web-resources/) | Sanitized model-driven client-side patterns: form routing, returning-record auto-fill, duplicate prevention, date/time validation, cloud-flow refresh coordination, command security | **Initial module complete** |
 | [`portfolio/`](portfolio/) | Recruiter-facing case-study copy and visuals | Stripe→Dataverse case study added |
@@ -93,11 +95,12 @@ This repository is under active construction. **Complete so far:** the
 **Outcomes, Grants & Compliance** module, the **Development Finance & Revenue**
 module (Stripe→Dataverse reconciliation, with a reproducible sanitized schema
 inspector, sample validator, and tests), the **Web Resources** module (sanitized
-model-driven client-side patterns with a validator and tests), the Dataverse
+model-driven client-side patterns with a validator and tests), the **Service
+Navigation** module (resource-directory and goal-pathway models with a
+safe-aggregate inspector, module validator, and tests), the Dataverse
 inventory and application-sitemap documentation (with reproducible generator
 scripts and tests), the architecture diagrams, and the source evidence register.
-**Next:** service navigation (pending a separate resource-directory review) and
-Power Automate documentation.
+**Next:** Power Automate documentation.
 
 Placeholder modules above are labeled as such and should not be read as
 completed work.

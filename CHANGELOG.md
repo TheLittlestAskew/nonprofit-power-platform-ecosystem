@@ -10,6 +10,28 @@ not released software).
 
 ### Added
 
+- **Service Navigation module** (`service-navigation/`): sanitized documentation
+  of two linked production systems — a curated **resource directory** ("where
+  help exists") and a **Goal → Action Item → Need pathway model** ("how to reach
+  it") — plus the linkage architecture that carries case management from
+  discovery to an individualized, status-tracked plan. Ships model docs,
+  taxonomy/classification guidance, `architecture/service-navigation-lifecycle.md`,
+  a sanitized data dictionary (invented public field names; per-field
+  production-value treatment), clearly fictional samples, and privacy controls.
+  Aggregates were **independently recomputed** from the two private exports:
+  **204** directory rows, **199** distinct organizations, **175** distinct
+  service descriptions (trim-only; 174 case-folded), **8** top-level categories,
+  and **186** pathway rows = **32 Goals + 68 Action Items + 86 Needs**
+  (reconciles exactly). Pathways link to **16** distinct resources (coverage was
+  selective, not universal — stated plainly). Adds a safe-by-construction source
+  inspector (`scripts/inspect_service_navigation.py`: aggregates only, raw
+  headers withheld, every output line passes a leakage guard) and a module
+  validator (`scripts/validate_service_navigation_samples.py`: hierarchy
+  integrity, fiction markers, scans for GUIDs, checksums, emails, phones,
+  URLs, addresses, and schema prefixes, plus Markdown-link and Mermaid
+  checks), with 59 unit tests on invented fixtures. **The row-level collection is not published**: no organization or
+  program names, contacts, addresses, URLs, procedural instructions,
+  identifiers, checksums, or timestamps appear in any tracked file.
 - **Web Resources module** (`web-resources/`): sanitized, reconstructed
   model-driven client-side patterns — form routing, returning-record auto-fill,
   duplicate prevention, date/time validation, cloud-flow refresh coordination,
