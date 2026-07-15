@@ -72,7 +72,7 @@ COMPLIANCE REPORTING
 | [`development-finance/`](development-finance/) | Stripe→Dataverse reconciliation lifecycle, matching model, exception handling, revenue engine, data dictionary, sample records, privacy controls | **Initial module complete** |
 | [`service-navigation/`](service-navigation/) | Community-resource taxonomy and goal-pathway model | Placeholder — pending resource-directory review |
 | [`power-automate/`](power-automate/) | Sanitized flow documentation and patterns | Placeholder — not started |
-| [`web-resources/`](web-resources/) | Selected JavaScript, HTML, and SVG resources | Placeholder — not started |
+| [`web-resources/`](web-resources/) | Sanitized model-driven client-side patterns: form routing, returning-record auto-fill, duplicate prevention, date/time validation, cloud-flow refresh coordination, command security | **Initial module complete** |
 | [`portfolio/`](portfolio/) | Recruiter-facing case-study copy and visuals | Stripe→Dataverse case study added |
 
 ## Publication and Sanitization Standard
@@ -92,11 +92,12 @@ See [`SECURITY.md`](SECURITY.md) for the repository's publication rules.
 This repository is under active construction. **Complete so far:** the
 **Outcomes, Grants & Compliance** module, the **Development Finance & Revenue**
 module (Stripe→Dataverse reconciliation, with a reproducible sanitized schema
-inspector, sample validator, and tests), the Dataverse inventory and
-application-sitemap documentation (with reproducible generator scripts and
-tests), the architecture diagrams, and the source evidence register.
-**Next:** service navigation (pending a separate resource-directory review),
-Power Automate documentation, and web resources.
+inspector, sample validator, and tests), the **Web Resources** module (sanitized
+model-driven client-side patterns with a validator and tests), the Dataverse
+inventory and application-sitemap documentation (with reproducible generator
+scripts and tests), the architecture diagrams, and the source evidence register.
+**Next:** service navigation (pending a separate resource-directory review) and
+Power Automate documentation.
 
 Placeholder modules above are labeled as such and should not be read as
 completed work.
