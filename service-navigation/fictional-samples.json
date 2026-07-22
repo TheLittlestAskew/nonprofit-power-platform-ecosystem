@@ -1,0 +1,231 @@
+{
+  "sample_data": true,
+  "_notice": "ALL RECORDS BELOW ARE FICTIONAL. This file illustrates the STRUCTURE of the service-navigation model (resource directory, Goal -> Action Item -> Need pathways, resource linkage, and individualized plan copies). It does not correspond to any actual person, organization, program, or production record. The hierarchy illustrates the model only.",
+  "_evidence_tier": "Invented sample. Field concepts reconstruct the documented model; every value was invented for demonstration. No production record value is represented.",
+  "_model_reference": "See service-navigation/resource-directory-model.md, goal-pathway-model.md, linkage-model.md, and data-dictionary.csv.",
+  "_conventions": "Identifiers use SAMPLE- prefixes; the only email domain is the RFC-reserved example.invalid; URLs use https://example.invalid/; no realistic street address or phone number appears anywhere in this file.",
+  "organizations": [
+    {
+      "id": "SAMPLE-ORG-001",
+      "organization_title": "Sample Community Network",
+      "note": "Fictional organization operating two fictional programs (demonstrates one organization with multiple programs)."
+    },
+    {
+      "id": "SAMPLE-ORG-002",
+      "organization_title": "Sample Documentation Center",
+      "note": "Fictional organization operating one fictional program."
+    }
+  ],
+  "resources": [
+    {
+      "id": "SAMPLE-RESOURCE-001",
+      "program_title": "Example Mobility Program",
+      "organization_title": "Sample Community Network",
+      "top_level_categories": ["Sample Category: Transportation Support"],
+      "specialization": "Scheduled rides for appointments (fictional)",
+      "service_description": "Weekly scheduled rides to medical and benefits appointments (fictional).",
+      "contact_channels": {
+        "email": "contact@example.invalid",
+        "phone": "SAMPLE-PHONE (no real number in samples)"
+      },
+      "location": "Sample Service Site A (fictional placeholder, not an address)",
+      "web_link": "https://example.invalid/resource/mobility",
+      "hours_availability": "Sample weekday daytime hours (fictional)",
+      "summary": "Fictional mobility service used to demonstrate the directory record shape.",
+      "average_rating": 4,
+      "active_status": "active"
+    },
+    {
+      "id": "SAMPLE-RESOURCE-002",
+      "program_title": "Sample Records Assistance Program",
+      "organization_title": "Sample Documentation Center",
+      "top_level_categories": [
+        "Sample Category: Documentation Services",
+        "Sample Category: Legal Support"
+      ],
+      "specialization": "Replacement identity documents (fictional)",
+      "service_description": "Helps participants request replacement identification and vital records (fictional).",
+      "contact_channels": {
+        "email": "records@example.invalid",
+        "phone": "SAMPLE-PHONE (no real number in samples)"
+      },
+      "location": "Sample Service Site B (fictional placeholder, not an address)",
+      "web_link": "https://example.invalid/resource/records",
+      "hours_availability": "Sample appointment-only hours (fictional)",
+      "summary": "Fictional documentation service; demonstrates a multi-category resource.",
+      "average_rating": 5,
+      "active_status": "active"
+    },
+    {
+      "id": "SAMPLE-RESOURCE-003",
+      "program_title": "Sample Financial Coaching Program",
+      "organization_title": "Sample Community Network",
+      "top_level_categories": ["Sample Category: Financial Stability"],
+      "specialization": "Budget coaching for new earners (fictional)",
+      "service_description": "One-on-one budgeting and savings coaching sessions (fictional).",
+      "contact_channels": {
+        "email": "coaching@example.invalid",
+        "phone": "SAMPLE-PHONE (no real number in samples)"
+      },
+      "location": "Sample Service Site A (fictional placeholder, not an address)",
+      "web_link": "https://example.invalid/resource/coaching",
+      "hours_availability": "Sample evening hours (fictional)",
+      "summary": "Second fictional program under Sample Community Network; demonstrates resources spread across more than one category.",
+      "average_rating": 3,
+      "active_status": "active"
+    }
+  ],
+  "pathway_templates": [
+    {
+      "pathway_reference": "SAMPLE-PATH-001",
+      "linked_resource": "SAMPLE-RESOURCE-001",
+      "note": "Fictional reusable template pathway: one Goal, three Action Items (one optional), four Needs. Demonstrates a three-level hierarchy, a multi-Action-Item pathway, a multi-Need Action Item, an optional step, and a step-level supporting-resource link.",
+      "steps": [
+        {
+          "id": "SAMPLE-GOAL-001",
+          "step_code": "1",
+          "step_type": "Goal",
+          "parent": null,
+          "linked_resource": "SAMPLE-RESOURCE-001",
+          "step_title": "Obtain reliable transportation (fictional)",
+          "goal_summary": "Participant can reliably reach work, medical, and benefits appointments (fictional).",
+          "rationale": "Transportation gaps block most other plan steps (fictional rationale).",
+          "optional_step": false
+        },
+        {
+          "id": "SAMPLE-ACTION-001",
+          "step_code": "1.1",
+          "step_type": "Action Item",
+          "parent": "SAMPLE-GOAL-001",
+          "step_title": "Submit the Example Mobility Program application (fictional)",
+          "step_summary": "Complete and submit the fictional program application.",
+          "application_links": "https://example.invalid/apply/mobility",
+          "phase": "Phase 1 (fictional)",
+          "optional_step": false
+        },
+        {
+          "id": "SAMPLE-NEED-001",
+          "step_code": "1.1.1",
+          "step_type": "Need",
+          "parent": "SAMPLE-ACTION-001",
+          "linked_resource": "SAMPLE-RESOURCE-002",
+          "step_title": "Photo identification (fictional)",
+          "step_summary": "A current photo ID is required by the fictional application; the linked supporting resource can replace a missing one.",
+          "optional_step": false
+        },
+        {
+          "id": "SAMPLE-NEED-002",
+          "step_code": "1.1.2",
+          "step_type": "Need",
+          "parent": "SAMPLE-ACTION-001",
+          "step_title": "Proof of current address (fictional)",
+          "step_summary": "Any fictional document showing current residence (demonstrates an Action Item with multiple Needs).",
+          "optional_step": false
+        },
+        {
+          "id": "SAMPLE-ACTION-002",
+          "step_code": "1.2",
+          "step_type": "Action Item",
+          "parent": "SAMPLE-GOAL-001",
+          "step_title": "Attend rider orientation (fictional)",
+          "step_summary": "Attend the fictional orientation session after application approval.",
+          "support_links": "https://example.invalid/orientation",
+          "phase": "Phase 2 (fictional)",
+          "optional_step": false
+        },
+        {
+          "id": "SAMPLE-NEED-003",
+          "step_code": "1.2.1",
+          "step_type": "Need",
+          "parent": "SAMPLE-ACTION-002",
+          "step_title": "Orientation schedule confirmation (fictional)",
+          "step_summary": "Confirmation of an orientation date (fictional).",
+          "optional_step": false
+        },
+        {
+          "id": "SAMPLE-ACTION-003",
+          "step_code": "1.3",
+          "step_type": "Action Item",
+          "parent": "SAMPLE-GOAL-001",
+          "step_title": "Register for companion rider support (fictional)",
+          "step_summary": "Optional add-on registration for riders who want a companion (demonstrates an optional step).",
+          "optional_step": true
+        }
+      ]
+    }
+  ],
+  "individual_plans": [
+    {
+      "plan_reference": "SAMPLE-PLAN-001",
+      "participant_display": "Sample Participant (fictional)",
+      "copied_from_pathway": "SAMPLE-PATH-001",
+      "note": "Fictional individualized copy of SAMPLE-PATH-001. Demonstrates that the copy preserves step_type, step_code, and parent references while adding person-specific status fields. No real plan or person is represented.",
+      "steps": [
+        {
+          "id": "SAMPLE-PLAN-STEP-001",
+          "copied_from": "SAMPLE-GOAL-001",
+          "step_code": "1",
+          "step_type": "Goal",
+          "parent": null,
+          "plan_status": "in progress",
+          "plan_notes": "Fictional case note: pathway started this week."
+        },
+        {
+          "id": "SAMPLE-PLAN-STEP-002",
+          "copied_from": "SAMPLE-ACTION-001",
+          "step_code": "1.1",
+          "step_type": "Action Item",
+          "parent": "SAMPLE-PLAN-STEP-001",
+          "plan_status": "blocked",
+          "plan_notes": "Fictional case note: waiting on the ID replacement need below."
+        },
+        {
+          "id": "SAMPLE-PLAN-STEP-003",
+          "copied_from": "SAMPLE-NEED-001",
+          "step_code": "1.1.1",
+          "step_type": "Need",
+          "parent": "SAMPLE-PLAN-STEP-002",
+          "plan_status": "in progress",
+          "plan_notes": "Fictional case note: referral made to Sample Records Assistance Program."
+        },
+        {
+          "id": "SAMPLE-PLAN-STEP-004",
+          "copied_from": "SAMPLE-NEED-002",
+          "step_code": "1.1.2",
+          "step_type": "Need",
+          "parent": "SAMPLE-PLAN-STEP-002",
+          "plan_status": "complete",
+          "completion_date": "2027-04-01",
+          "plan_notes": "Fictional case note: document already on file."
+        },
+        {
+          "id": "SAMPLE-PLAN-STEP-005",
+          "copied_from": "SAMPLE-ACTION-002",
+          "step_code": "1.2",
+          "step_type": "Action Item",
+          "parent": "SAMPLE-PLAN-STEP-001",
+          "plan_status": "not started",
+          "plan_notes": ""
+        },
+        {
+          "id": "SAMPLE-PLAN-STEP-006",
+          "copied_from": "SAMPLE-NEED-003",
+          "step_code": "1.2.1",
+          "step_type": "Need",
+          "parent": "SAMPLE-PLAN-STEP-005",
+          "plan_status": "not started",
+          "plan_notes": ""
+        },
+        {
+          "id": "SAMPLE-PLAN-STEP-007",
+          "copied_from": "SAMPLE-ACTION-003",
+          "step_code": "1.3",
+          "step_type": "Action Item",
+          "parent": "SAMPLE-PLAN-STEP-001",
+          "plan_status": "skipped-optional",
+          "plan_notes": "Fictional case note: participant declined the optional companion registration."
+        }
+      ]
+    }
+  ]
+}
