@@ -62,6 +62,12 @@ reconcile before assuming anything is or isn't live.
 
 ## Log
 
+### 2026-09-02 22:20 ET · Claude Code (TOOLS.md tool inventory added)
+- **Changed:** Added `TOOLS.md` (10 active rows) — Power Platform, Dataverse, Power Automate, Python 3, pytest, openpyxl, and the repo tooling, with what each is used for and when last used. `AGENTS.md` gained a `## 11. Handoff and Tool Inventory` section (this repo's AGENTS.md uses numbered sections, not the shared handoff-contract shape).
+- **Commit:** `60b6ef3`
+- **Next:** Unchanged. See the block above this log.
+- **Watch out:** 🛑 `TOOLS.md` is a **public file in a public repo** and §4 sanitization applies to it in full. Name the platform, never the organization's instance: no tenant IDs, environment URLs, client names, or anything traceable to `source-private/`. The seeded table deliberately says "Documented, not connected from this repo" in the Access column for all three Microsoft rows.
+
 ### 2026-07-22 — Handoff created (retroactive bank)
 Repo had accumulated ~3 sessions of heavy work (scaffold Jul 13, Service
 Navigation module + privacy hardening Jul 14–15) with no HANDOFF and no memory
