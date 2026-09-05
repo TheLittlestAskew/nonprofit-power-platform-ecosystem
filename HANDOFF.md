@@ -43,9 +43,10 @@ reconcile before assuming anything is or isn't live.
 > nonprofit's production environment as a sanitized case study. `source-private/`
 > holds the raw evidence and is NEVER committed (see `.gitignore` + AGENTS.md +
 > SECURITY.md). Sources are identified in output by role + SHA-256 only —
-> filenames, paths, and export timestamps are withheld. Operating near-HIPAA
-> without paid tooling; donor/guest privacy and grant-reporting compliance are
-> the reason the sanitization rules are strict.
+> filenames, paths, and export timestamps are withheld. The environment holds
+> guest, donor, employee, and volunteer records with no paid compliance tooling
+> in the stack; donor/guest privacy and grant-reporting compliance are the reason
+> the sanitization rules are strict.
 
 > 📐 **Verified metrics (do not drift):** 129 custom `tr_` tables · 94 entities
 > in the primary model-driven app · 6 operational areas · 9 headline KPI targets
@@ -61,6 +62,12 @@ reconcile before assuming anything is or isn't live.
 ---
 
 ## Log
+
+### 2026-09-04 · Claude Code ("near-HIPAA" removed from the Context block)
+- **Changed:** `HANDOFF.md` Context block only. *"Operating near-HIPAA without paid tooling"* → *"The environment holds guest, donor, employee, and volunteer records with no paid compliance tooling in the stack."* Same point, no regulatory assertion. Applied identically to `chore/handoff-on-default-branch` so the two copies stay byte-identical.
+- **Commit:** `<pending>`
+- **Next:** Unchanged. Taylor still merges `chore/handoff-on-default-branch`.
+- **Watch out:** ⚠️ **Why this was a factuality problem, not just tone.** "Near-HIPAA" asserts a regulatory posture that nothing in `source-private/` establishes — no covered-entity determination, no BAA, no assessment. `AGENTS.md` §3.2 requires claims to declare an evidence tier, and this one had none while reading as fact; §3.3 says to identify uncertainty rather than guess. The replacement wording is grounded: §4's never-commit list already names guest, donor, employee, and volunteer records as categories the environment holds. ⚠️ This was the **only** occurrence anywhere in the repo — `git grep -i hipaa` is clean across all four branches now. ⚠️ It had been public since 2026-09-02 on `feat/service-navigation`; this removes it going forward but **it remains in that branch's git history**, same as any published claim.
 
 ### 2026-09-04 · Claude Code (HANDOFF.md/TOOLS.md heading for `main` via PR — they only ever existed on this branch)
 - **Changed:** No content change to the case study. A PAT-rotation verification pass found that this is the **only** one of the ten handoff-enabled repos whose `HANDOFF.md` and `TOOLS.md` are absent from the default branch — they were created on `feat/service-navigation` in September and never reached `main`. `git` + `Claude Code` rows bumped in `TOOLS.md`. A branch off `main` carrying byte-identical copies of both files has been pushed for a PR; per `AGENTS.md:173` this cannot be a direct commit to `main`, so **Taylor merges it**.
