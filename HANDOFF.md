@@ -65,7 +65,7 @@ reconcile before assuming anything is or isn't live.
 
 ### 2026-09-04 · Claude Code ("near-HIPAA" removed from the Context block)
 - **Changed:** `HANDOFF.md` Context block only. *"Operating near-HIPAA without paid tooling"* → *"The environment holds guest, donor, employee, and volunteer records with no paid compliance tooling in the stack."* Same point, no regulatory assertion. Applied identically to `chore/handoff-on-default-branch` so the two copies stay byte-identical.
-- **Commit:** `<pending>`
+- **Commit:** `751017c`
 - **Next:** Unchanged. Taylor still merges `chore/handoff-on-default-branch`.
 - **Watch out:** ⚠️ **Why this was a factuality problem, not just tone.** "Near-HIPAA" asserts a regulatory posture that nothing in `source-private/` establishes — no covered-entity determination, no BAA, no assessment. `AGENTS.md` §3.2 requires claims to declare an evidence tier, and this one had none while reading as fact; §3.3 says to identify uncertainty rather than guess. The replacement wording is grounded: §4's never-commit list already names guest, donor, employee, and volunteer records as categories the environment holds. ⚠️ This was the **only** occurrence anywhere in the repo — `git grep -i hipaa` is clean across all four branches now. ⚠️ It had been public since 2026-09-02 on `feat/service-navigation`; this removes it going forward but **it remains in that branch's git history**, same as any published claim.
 
