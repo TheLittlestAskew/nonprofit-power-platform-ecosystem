@@ -19,9 +19,10 @@
 | **Python 3** | CLI | Running the generator and validator scripts under `scripts/` | local install | 2026-07-15 | Free | No `requirements.txt` — stdlib plus `openpyxl` and `pytest` |
 | **pytest** | Library | The test suite under `tests/` (7 test modules) | `import pytest` | 2026-07-15 | Free | Not pinned in a requirements file; installed ambiently |
 | **openpyxl** | Library | Reading the source workbooks the inventory builders parse | `import openpyxl` | ~2026-07-14 | Free | Only path that touches spreadsheet input |
-| **git** | CLI | Version control, handoff motion | `C:\Program Files\Git` | 2026-07-22 | Free | Working branch + PR, never direct to `main` |
+| **git** | CLI | Version control, handoff motion | `C:\Program Files\Git` | 2026-09-04 | Free | Working branch + PR, never direct to `main` (`AGENTS.md:173`) |
+| **/handoff** | Skill | Banking work here — the log entry and this table | `~/.claude/skills/handoff` | 2026-09-04 | Free | ⚠️ Its Contents-API path must pin an explicit branch for this repo; the handoff files live on `main` **and** the working branch |
 | **GitHub** | Service | Remote host for `TheLittlestAskew/nonprofit-power-platform-ecosystem` | github.com | 2026-07-22 | Free | Public repo; three PRs merged 2026-07-22, some branches still unmerged |
-| **Claude Code** | App | Generator scripts, sanitization passes, evidence register | CLI / IDE extension | 2026-07-22 | Paid | — |
+| **Claude Code** | App | Generator scripts, sanitization passes, evidence register | CLI / IDE extension | 2026-09-04 | Paid | — |
 | **septentrion-sync** | Skill | Rolls this repo's tool table into the vault master | `~/.claude/skills/septentrion-sync` | 2026-09-02 | Free | ⚠️ In `TOOLS_REPOS` but **not** `REPOS` — its handoff state is not on the dashboard |
 
 ## Retired

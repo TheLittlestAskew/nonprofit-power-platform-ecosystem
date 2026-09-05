@@ -62,6 +62,12 @@ reconcile before assuming anything is or isn't live.
 
 ## Log
 
+### 2026-09-04 · Claude Code (HANDOFF.md/TOOLS.md heading for `main` via PR — they only ever existed on this branch)
+- **Changed:** No content change to the case study. A PAT-rotation verification pass found that this is the **only** one of the ten handoff-enabled repos whose `HANDOFF.md` and `TOOLS.md` are absent from the default branch — they were created on `feat/service-navigation` in September and never reached `main`. `git` + `Claude Code` rows bumped in `TOOLS.md`. A branch off `main` carrying byte-identical copies of both files has been pushed for a PR; per `AGENTS.md:173` this cannot be a direct commit to `main`, so **Taylor merges it**.
+- **Commit:** `<this branch's commit>` · PR branch `chore/handoff-on-default-branch`
+- **Next:** Unchanged. See `## Next Steps` above — and note this closes part of its first item, since the branch/merge state question is now answered concretely: `main` holds PRs #1–3, `feat/web-resources` and `feat/development-finance` are content-identical to `main` at root, and this branch is the only one carrying unmerged work.
+- **Watch out:** ⚠️ **Why this mattered rather than being cosmetic.** The GitHub Contents API — the path Claude desktop/chat uses to write handoffs — reads the **default branch** when given no `?ref=`. So a desktop session here would `GET HANDOFF.md`, receive a 404 from `main`, and the skill's error table would translate that to *"this repo isn't handoff-enabled"* — a wrong diagnosis for a repo that is. Worse, the follow-up `PUT` would have **created a second `HANDOFF.md` on `main`**, silently forking the log away from the one on this branch. The skill has been corrected to pin an explicit branch on both calls. ⚠️ The two files are byte-identical across `main` and this branch on purpose, so the eventual merge sees no conflict in them unless one side is edited first. ⚠️ `AGENTS.md` on `main` already instructed Codex to maintain `HANDOFF.md` while `main` had none — that contradiction is what this resolves.
+
 ### 2026-09-02 22:20 ET · Claude Code (TOOLS.md tool inventory added)
 - **Changed:** Added `TOOLS.md` (10 active rows) — Power Platform, Dataverse, Power Automate, Python 3, pytest, openpyxl, and the repo tooling, with what each is used for and when last used. `AGENTS.md` gained a `## 11. Handoff and Tool Inventory` section (this repo's AGENTS.md uses numbered sections, not the shared handoff-contract shape).
 - **Commit:** `60b6ef3`
