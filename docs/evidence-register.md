@@ -6,7 +6,7 @@ which public claims, what was done to sanitize them, and what remains
 unverified.
 
 - **Private source location:** `source-private/` (git-ignored; never committed)
-- **Register last updated:** 2026-07-13
+- **Register last updated:** 2026-07-15
 - **No source file contents are reproduced here** — only filenames, the claims
   they support, and the sanitization performed.
 
@@ -83,34 +83,82 @@ unverified.
 
 ## Source 3 — `Active Common Goals All Details ….xlsx`
 
-- **Supports:** context that the `tr_commongoals` custom table backs a
-  goal-pathway / service-navigation model (186 records in source).
-- **Verified?** Structure verified (186 rows, 19 columns incl. goal/phase/need
-  fields). Used for **context only** in this build.
-- **Public derivatives:** **None committed.** No records or counts of goals are
-  published.
-- **Sanitization performed:** file inspected for structure only (header + row
-  count). Contains contact-style fields (phone, website) → treated as
-  resource-directory-adjacent and held out of publication.
-- **Unresolved questions:** whether/what portion is publishable pending the
-  separate resource-directory review (see Source 4).
-- **Last validated:** 2026-07-12
+- **Supports:** the goal-pathway half of the `service-navigation/` module — the
+  `tr_commongoals` custom table backs a Goal → Action Item → Need hierarchy.
+- **Verified?** **Yes.** Recomputed 2026-07-15 by
+  `scripts/inspect_service_navigation.py`: **186** data rows (0 blank) =
+  **32 Goals + 68 Action Items + 86 Needs** (reconciliation passes: zero
+  unrecognized types and the levels sum to the row count; the source's
+  middle-level label is plural "Action Items"). Dotted hierarchy codes
+  (`#`, `#.#`, `#.#.#`; 31 distinct top-level codes). **Hierarchy integrity:**
+  31/65/86 validly coded rows by level, 0 malformed, 0 duplicate codes, every
+  coded child's prefix matches an existing coded parent (0 missing); 4
+  blank-code rows unresolved; 2 letter-suffixed Need codes are an observed
+  shape with uninterpreted semantics. **165** rows carry a resource reference
+  (16 distinct normalized values; the cross-workbook join under Source 4
+  matches each to exactly one directory row). Optional-step states:
+  **yes 5 / no 46 / blank-unspecified 135** (blank is reported as unspecified,
+  not folded into "required"); phase on 21 rows; one need-text column
+  unpopulated on all 186 rows.
+- **Public derivatives:** `service-navigation/goal-pathway-model.md`,
+  `linkage-model.md`, `metrics.md`, `data-dictionary.csv`,
+  `evidence-and-limitations.md`, `fictional-samples.json` (invented),
+  `architecture/service-navigation-lifecycle.md`.
+- **Sanitization performed:** aggregates, generalized field structure (invented
+  public names), and code pattern shapes only. **Withheld:** every row value —
+  goal/step wording, instructions, eligibility/document requirements, agency
+  references, applications, forms, phones, URLs — plus GUIDs, checksums,
+  timestamps, the hidden re-import sheet, and exact record mappings. Full
+  record in the ignored private manifest
+  (`source-private/service-navigation/`).
+- **Unresolved questions:** pathway coverage was **selective** (16 of 204
+  directory resources); no usage/outcome data exists in this source; the 4
+  blank-code rows are reported exactly, not repaired.
+- **Last validated:** 2026-07-15
 
 ## Source 4 — `Active Resource Collections ….xlsx`
 
-- **Supports:** context that `tr_resourcecollection` backs a community
-  **resource directory** (204 records in source).
-- **Verified?** Structure verified (204 rows, 16 columns incl. Primary Email,
-  Primary Phone, Full Address).
-- **Public derivatives:** **None. Out of scope.** Per project rule, public
-  resource-directory records are **not** published yet — even where the
-  underlying information may be public, it needs separate review.
-- **Sanitization performed:** file inspected for structure only. Contains
-  emails, phones, and addresses → **must not** be committed in any form until
-  reviewed.
-- **Unresolved questions:** the entire publication decision for this dataset is
-  deferred to a dedicated review.
-- **Last validated:** 2026-07-12
+- **Supports:** the resource-directory half of the `service-navigation/`
+  module — the `tr_resourcecollection` custom table backs a curated community
+  resource directory.
+- **Verified?** **Yes.** Recomputed 2026-07-15 by
+  `scripts/inspect_service_navigation.py`: **204** data rows (0 blank);
+  **199** distinct organizations of 200 populated (1 organization value
+  appears on 2 rows; those rows do **not** carry distinct program titles, so
+  no multi-program shape is claimed); program-title cells 204 populated /
+  **201** distinct; **175** distinct service descriptions (trim-only; 174
+  case-folded) of 202 populated; **8** distinct top-level categories
+  (multi-select; 3 multi-category rows). Presence rates: phone 184, email 127,
+  address 171, website 192, hours 115, summary 200, specialization 202,
+  rating 204, copy-target 1 (all /204). **Cross-workbook join** (deterministic,
+  unit-tested; key = normalized program title, the pathway lookup's primary
+  name): 16 distinct pathway references → **16 matched exactly one directory
+  row, 0 ambiguous, 0 unmatched** (denominator: the 204 analyzed rows).
+- **Publication decision (the dedicated review this source was waiting on):**
+  the **row-level collection is not published**. Approved for publication:
+  recomputed aggregates, generalized field structure under invented public
+  names, taxonomy *design* (not the real labels), and invented samples. The
+  curated dataset, contacts, addresses, URLs, ratings, and internal
+  relationships remain private even where an organization's information is
+  public elsewhere.
+- **Public derivatives:** `service-navigation/resource-directory-model.md`,
+  `taxonomy-and-classification.md`, `metrics.md`, `data-dictionary.csv`,
+  `privacy-controls.md`, `evidence-and-limitations.md`,
+  `fictional-samples.json` (invented),
+  `architecture/service-navigation-lifecycle.md`.
+- **Sanitization performed:** aggregates and generalized structure only;
+  enforced by the inspector's output leakage guard and
+  `scripts/validate_service_navigation_samples.py`. **Withheld:** every row
+  value (organizations, programs, contacts, addresses, URLs, descriptions),
+  the real category vocabulary, GUIDs, checksums, timestamps, the hidden
+  re-import sheet, and exact record mappings. Full record in the ignored
+  private manifest (`source-private/service-navigation/`).
+- **Unresolved questions:** current accuracy of the underlying provider
+  contact data is unverifiable from a point-in-time export; the active/inactive
+  status *design* is reconstructed from the active-filtered view; the
+  copy-target field (1 of 204 rows) is a working interpretation of a copy
+  workflow.
+- **Last validated:** 2026-07-15
 
 ## Source 5 — `Entity Diagram for Davies Admin Bridge.png`
 
@@ -271,6 +319,44 @@ unverified.
   names, protected service rules, and exact notification text remain **withheld**.
 - **Last validated:** 2026-07-14
 
+## Source 12 — `CopyCommonGoals.js.txt` (recovered client-side copy workflow)
+
+- **Supports:** the **goal-pathway copy workflow** in the service-navigation
+  module — a production client-side script recovered on 2026-07-15 and
+  reviewed privately (kept only in the git-ignored
+  `source-private/service-navigation/` area; SHA-256 recorded there in the
+  ignored private manifest).
+- **Verified?** **Yes — the workflow existed.** The script directly
+  demonstrates: selecting a reusable Goal template (with a type check);
+  copying the Goal into a person-specific record; retrieving child Action
+  Items and child Needs via a dedicated **parent-reference field** plus a type
+  filter (production parentage is a lookup — the dotted code is an identifier
+  the workflow copies and uses for duplicate checks); creating copies that
+  bind to their newly created parents (hierarchy preserved); duplicate
+  checking within the person's case context (confirmation on a hit);
+  association with a person-specific case context; and copying selected
+  pathway fields — including contact/link fields — onto the new records (a
+  **hybrid reference + snapshot model**).
+- **Public derivatives:** evidence-tier upgrades and corrections in
+  `service-navigation/goal-pathway-model.md`, `linkage-model.md`,
+  `evidence-and-limitations.md`, `data-dictionary.csv`, and
+  `architecture/service-navigation-lifecycle.md`. The filename appears only
+  here and in the ignored private manifest — not in module pages.
+- **Sanitization performed:** nothing from the script is quoted. Withheld:
+  the production schema (table, field, and namespace names), form logic and
+  identifiers, person/case terminology, option-set values,
+  notification/dialog text, and exact field mappings.
+- **Context note (working interpretation):** the copies land in three
+  person-record tables, one of which is the inventory's sole
+  "unclear/manual review" custom table (`tr_ActionItem`, Source 1). This
+  script suggests it holds person-specific action items copied from templates;
+  the inventory classification itself is unchanged pending manual review.
+- **Unresolved questions:** production status fields on the copied records,
+  how often the workflow ran, and the copied records' downstream lifecycle are
+  not demonstrated. The two letter-suffixed Need codes are **not** explained
+  by this script.
+- **Last validated:** 2026-07-15
+
 ---
 
 ## Standing Open Questions
@@ -282,7 +368,10 @@ unverified.
   **records deployed in Dataverse** — no source in this build enumerates the live
   rows.
 - 1 custom `tr_` table (`tr_ActionItem`) lacks a usable description and needs
-  manual classification; reported exactly, not force-classified.
+  manual classification; reported exactly, not force-classified. Source 12 now
+  provides a **working interpretation** (person-specific action items created
+  by the goal-pathway copy workflow); the catalog classification is unchanged
+  pending manual review.
 - The *awarded* grant amount (vs. the $100,000 requested) is unverified.
 - **Finance (Sources 8–10):** the 483+ / 89.7% / four-tier figures are
   **portfolio-documented**, not reproducible from the surviving data. The exact
@@ -290,5 +379,12 @@ unverified.
   composition, and the payout dataset are **not preserved** (not the same as
   pending verification). The surviving sample is **74 charges**, a separate
   export.
-- The resource-directory datasets (Sources 3 & 4) await a dedicated publication
-  review.
+- **Service navigation (Sources 3, 4 & 12): the dedicated publication review
+  is complete.** Outcome: aggregates, generalized structure, and invented
+  samples are published; the row-level collection and the real category
+  vocabulary are withheld. The **copy workflow is now source-backed**
+  (Source 12) and the production linkage was a hybrid reference + snapshot
+  model. Remaining open: pathway coverage was selective (join-verified 16 of
+  204 directory rows); no usage/outcome data exists in the evidence; the 4
+  blank-code rows and the 2 letter-suffixed Need codes are unexplained;
+  production status fields on copied records are not demonstrated.

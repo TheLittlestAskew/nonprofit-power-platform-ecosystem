@@ -180,3 +180,33 @@ local source file and recorded in the evidence register.
   discrepancy** in `dataverse/inventory-summary.md` and the evidence register;
   do not auto-edit the headline metric.
 - No reuse license has been granted yet. See `RIGHTS.md`.
+
+## 11. Handoff and Tool Inventory
+
+This repo has `HANDOFF.md` at its root, so handoffs are **enabled**: bank work in
+the same motion as the change, prepending a newest-first entry under `## Log`
+labeled with the tool that wrote it (`Codex`, `ChatGPT`, `Claude Code`, or
+`Claude desktop`). Banked means committed **and** pushed.
+
+It also has `TOOLS.md` at its root — the standing inventory of what this project
+uses and for what. When a tool, skill, MCP server, CLI, app, site, service, or
+scheduled task is actually **used** here (used, not merely mentioned):
+
+- Already in `## Active` → bump its **Last used** cell to today, change nothing else.
+- Not there → add a row, all seven columns filled.
+- Dropped for good → **move** the row to `## Retired` with a date and a one-line why.
+
+Column order under `## Active` is fixed — Tool, Type, Used for, Access, Last used,
+Cost, Notes — and `septentrion-sync` parses it mechanically to build the vault's
+master tool table. Do not reorder or rename columns. `Type` is a closed list:
+`Skill` · `MCP` · `CLI` · `App` · `Service` · `Site` · `Library` · `Data` · `Task`.
+
+A bare date means the use was observed, `~date` means inferred, `—` means unknown.
+Never invent a date to fill a cell, and never delete a row — retiring is a move.
+
+⚠️ **`TOOLS.md` is a public file in a public repo.** Section 4 sanitization applies
+to it in full: no client names, no tenant identifiers, no environment URLs, no
+license-holder detail, nothing traceable to `source-private/`. Name the *platform*,
+never the *organization's instance of it*.
+
+Stage it with the handoff commit: `git add HANDOFF.md TOOLS.md`.

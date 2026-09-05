@@ -8,8 +8,72 @@ not released software).
 
 ## [Unreleased]
 
+### Fixed
+
+- **Service Navigation evidence corrections** (post-review pass, third source):
+  - **Copy workflow is now source-backed.** A recovered production client-side
+    script (Source 12, reviewed privately, never committed) directly
+    demonstrates copying a reusable Goal template — with its child Action Items
+    and Needs — into person-specific records: parent references preserved,
+    duplicates checked within the person's case context, selected fields
+    copied onto the new records. Production **parentage is a dedicated
+    parent-reference field** (the dotted code is an identifier the workflow
+    copies and uses for duplicate checks), and the linkage was a **hybrid
+    reference + snapshot model**: resource references were retained *and*
+    selected contact/link values were copied, so copied values can go stale
+    unless refreshed. Removed earlier claims that pathway records never
+    duplicated contact/link values and that directory edits automatically
+    updated every pathway and plan; reference-only (or reference plus explicit
+    snapshot) is now framed as a public design recommendation, not a
+    production claim.
+  - **Optional-step semantics:** the three source states are reported
+    separately (yes 5 / no 46 / blank-unspecified 135). Blank is no longer
+    presented as production evidence of "required"; a fail-safe default is a
+    recommendation not preserved in the evidence.
+  - **Coverage claims:** "16 of 204" is now backed by a deterministic,
+    unit-tested **cross-workbook join** (16 distinct pathway references; each
+    matched exactly one directory row; 0 ambiguous; 0 unmatched; denominator =
+    204 analyzed directory rows) instead of being asserted from the reference
+    count alone.
+  - **Multi-program wording retracted:** the one repeated organization value
+    does not carry distinct program titles; repeated organizations are now
+    reported neutrally, with a dedicated aggregate
+    ("repeated organizations with >1 distinct program title": 0).
+  - **Inspector hardening:** type reconciliation is no longer tautological
+    (passes only with zero unrecognized types and level counts summing to the
+    row total); real hierarchy-integrity counts added (31/65/86 validly coded,
+    0 malformed, 0 duplicates, 0 missing parents, 4 blank codes unresolved;
+    letter-suffixed codes reported as observed shapes, not interpreted);
+    worksheet selection is by **visibility + generalized schema** with an
+    explicit ambiguity error (never by row count); and **source filenames,
+    paths, and embedded export timestamps are withheld from output** (sources
+    identified by role and SHA-256 only). All enforced by new invented-fixture
+    tests.
+
 ### Added
 
+- **Service Navigation module** (`service-navigation/`): sanitized documentation
+  of two linked production systems — a curated **resource directory** ("where
+  help exists") and a **Goal → Action Item → Need pathway model** ("how to reach
+  it") — plus the linkage architecture that carries case management from
+  discovery to an individualized, status-tracked plan. Ships model docs,
+  taxonomy/classification guidance, `architecture/service-navigation-lifecycle.md`,
+  a sanitized data dictionary (invented public field names; per-field
+  production-value treatment), clearly fictional samples, and privacy controls.
+  Aggregates were **independently recomputed** from the two private exports:
+  **204** directory rows, **199** distinct organizations, **175** distinct
+  service descriptions (trim-only; 174 case-folded), **8** top-level categories,
+  and **186** pathway rows = **32 Goals + 68 Action Items + 86 Needs**
+  (reconciles exactly). Pathways link to **16** distinct resources (coverage was
+  selective, not universal — stated plainly). Adds a safe-by-construction source
+  inspector (`scripts/inspect_service_navigation.py`: aggregates only, raw
+  headers withheld, every output line passes a leakage guard) and a module
+  validator (`scripts/validate_service_navigation_samples.py`: hierarchy
+  integrity, fiction markers, scans for GUIDs, checksums, emails, phones,
+  URLs, addresses, and schema prefixes, plus Markdown-link and Mermaid
+  checks), with unit tests on invented fixtures. **The row-level collection is not published**: no organization or
+  program names, contacts, addresses, URLs, procedural instructions,
+  identifiers, checksums, or timestamps appear in any tracked file.
 - **Web Resources module** (`web-resources/`): sanitized, reconstructed
   model-driven client-side patterns — form routing, returning-record auto-fill,
   duplicate prevention, date/time validation, cloud-flow refresh coordination,
