@@ -63,6 +63,12 @@ reconcile before assuming anything is or isn't live.
 
 ## Log
 
+### 2026-09-04 · Claude Code (✅ PR merged — `main` now carries the handoff files)
+- **Changed:** Nothing in the tree. Taylor merged `chore/handoff-on-default-branch`, so `origin/main` now has `HANDOFF.md` and `TOOLS.md`. Contents-API verification across all ten handoff-enabled repos went 9/10 → **10/10**. `git grep -i hipaa origin/main` → 0.
+- **Commit:** `—` (merge performed on GitHub)
+- **Next:** Back to the case study. `## Next Steps` above is the live list — its first item is now partly answered: `main` holds PRs #1–3 plus this merge, and `feat/service-navigation` remains the only branch carrying unmerged module work.
+- **Watch out:** ⚠️ **`main` and `feat/service-navigation` now diverge in `HANDOFF.md` by this entry.** That is expected and fine — the byte-identical trick was only needed to make the *first* merge clean, and it did. From here this repo behaves like the other nine: the working branch runs ahead, and `HANDOFF.md` may conflict when the branch merges. Resolve by keeping both sets of log entries, newest on top. ⚠️ `origin/chore/handoff-on-default-branch` still exists and is fully merged — safe to delete whenever.
+
 ### 2026-09-04 · Claude Code (regulatory-posture claim removed from the Context block)
 - **Changed:** `HANDOFF.md` Context block only. The sentence that named a federal health-privacy regime and asserted the environment operated adjacent to it was replaced with *"The environment holds guest, donor, employee, and volunteer records with no paid compliance tooling in the stack."* Same point about why the sanitization rules are strict, no regulatory assertion. Applied identically to `chore/handoff-on-default-branch` so the two copies stay byte-identical.
 - **Commit:** `751017c`, reworded in the commit after `8d44d82`
